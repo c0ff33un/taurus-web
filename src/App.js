@@ -1,8 +1,9 @@
 import React from 'react';
 import logo from './logo.svg';
+import Game from './Game';
 import './App.css';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-const apiURL = 'http://192.168.0.4:8080'
+const apiURL = 'http://localhost:8080'
 
 class CreateRoom extends React.Component {
   constructor(props) {
@@ -11,8 +12,15 @@ class CreateRoom extends React.Component {
   }
 
   handleClick = () => {
-    fetch(apiURL + '/room')
-    .then(response => response.json())
+    console.log('try get room')
+    const options = {
+      method : 'POST',
+    }
+    fetch(apiURL + '/room', options)
+    .then(response => {
+      console.log(response.body)
+      return response.json()
+    })
     .then(json => {
       this.setState({code: json.id})
     })
@@ -24,7 +32,9 @@ class CreateRoom extends React.Component {
         <button onClick={this.handleClick}>
           Create Room
         </button>
-        {this.state.code}
+      {this.state.code !== '' && 
+        <p>Code:{this.state.code} </p>
+      }
       </div>
     );
   }
@@ -33,23 +43,19 @@ class CreateRoom extends React.Component {
 class JoinRoomForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {value: '', ws: null}
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.state = {"roomId": '', "userId": ''}
   }
 
-  componentDidMount() {
-    this.setState({})
-  }
-  
-  handleChange(event) {
-    this.setState({value: event.target.value});
+  handleChange = (event, name) => {
+    console.log(event.target.value, name)
+    console.log(this.state)
+    this.setState({[name]: event.target.value});
   }
 
-  handleSubmit(event) {
-    const { value } = this.state;
-    this.props.connect(value);
+  handleSubmit = (event) => {
     event.preventDefault();
+    const { roomId, userId } = this.state;
+    this.props.connect(roomId, userId);
   }
 
   render () {
@@ -57,10 +63,28 @@ class JoinRoomForm extends React.Component {
       <form onSubmit={this.handleSubmit}>
         <label>
           Room:
-          <input type="text" value={this.state.value} onChange={this.handleChange} />
+          <input type="text" value={this.state.roomId} 
+          onChange={(event) => this.handleChange(event, "roomId")} />
+        </label>
+        <label>
+          User:
+          <input type="text" value={this.state.userId}
+          onChange={(event) => this.handleChange(event, "userId")} />
         </label>
         <input type="submit" value="Join Room" />
       </form>
+    );
+  }
+}
+
+class MessageList extends React.Component {
+  render() {
+    const { messageLog } = this.props
+    console.log(messageLog)
+    return (
+      <ul>
+        {messageLog.map((item, index) => <p key = {index} > {item} </p>)}
+      </ul>
     );
   }
 }
@@ -69,16 +93,13 @@ class MessageForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {value: ''}
-    
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleChange(event) {
+  handleChange = (event) => {
     this.setState({value: event.target.value});
   }
 
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     const { value } = this.state;
     this.sendMessage(value);
     this.setState({value: ''});
@@ -92,9 +113,6 @@ class MessageForm extends React.Component {
   }
 
   render () {
-    const listItems = this.props.messageLog.map((message) =>
-      <li>{message}</li>
-    );
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
@@ -104,7 +122,6 @@ class MessageForm extends React.Component {
           </label>
           <input type="submit" value="Send Message" />
         </form>
-        <ul>{listItems}</ul>
       </div>
     );
   }
@@ -113,7 +130,7 @@ class MessageForm extends React.Component {
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {ready: false, ws: null, messageLog: []};
+    this.state = {ready: false, ws: null, messageLog: [], roomId: null};
   }
 
   toggleReady = () => {
@@ -121,17 +138,20 @@ class App extends React.Component {
     console.log(this.state.ready);
   }
 
-  connect = (id) => {
-    var ws = new W3CWebSocket(`ws://192.168.0.4:8080/ws?id=${id}`);
+  connect = (roomId, userId) => {
+    console.log('try connect')
+    console.log(roomId)
+    var ws = new W3CWebSocket(`ws://localhost:8080/ws?id=${roomId}`);
 
     ws.onopen = () => {
       console.log("Connected");
-      this.setState({ ws: ws })
+      this.setState({ ws, roomId })
+      ws.send(JSON.stringify({"id": userId}));
     }
 
     ws.onmessage = (e) => {
       var messages = e.data.split('\n')
-      this.setState({ messageLog : [this.state.messageLog, ...messages]})   
+      this.setState({ messageLog : [...this.state.messageLog, ...messages]})   
     }
 
   }
@@ -140,11 +160,13 @@ class App extends React.Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <CreateRoom />
-          <JoinRoomForm connect={this.connect}/>
-          <MessageForm ws={this.state.ws} messageLog={this.state.messageLog}/>
+          {<img src={logo} className="App-logo" alt="logo" />}
         </header>
+        <CreateRoom />
+        <JoinRoomForm connect={this.connect}/>
+        <MessageList messageLog={this.state.messageLog}/>
+        <MessageForm ws={this.state.ws}/>
+        <Game ws={this.state.ws} roomId={this.state.roomId}/>
       </div>
     );
   }
