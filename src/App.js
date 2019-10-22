@@ -1,6 +1,8 @@
 import React from 'react';
+import { Route, Switch } from 'react-router-dom'
 import logo from './logo.svg';
 import Game from './Game';
+import SignIn from './SignIn'
 import './App.css';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 const apiURL = 'http://localhost:8080'
@@ -172,4 +174,12 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default function AppRoutes () {
+  return (
+    <Switch>
+      <Route path="/game" component={Game}/>
+      <Route path="/signin" component={SignIn}/>
+    </Switch>
+    
+  )
+}
