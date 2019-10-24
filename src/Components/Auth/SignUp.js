@@ -1,6 +1,6 @@
 import React from 'react';
-import {Avatar, Button, CssBaseline, TextField, Checkbox,
-  Link, Grid, Box, Container, Typography, FormControlLabel} from '@material-ui/core';
+import {Avatar, Button, CssBaseline, TextField,
+  Link, Grid, Box, Container, Typography} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles';
 
 function Copyright() {
@@ -39,7 +39,40 @@ const styles = theme => ({
 });
 
 class SignUp extends React.Component {
-   render () {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            name: 'Jonathan',
+            handle: '',
+            email: '',
+            password: ''
+        }
+        this.performSignUp = this.performSignUp.bind(this);
+    }
+
+    performSignUp(e) {
+        e.preventDefault()
+
+        const url = 'http://localhost:3000/signup'
+
+        var data = {
+            user: this.state
+        }
+
+        var requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        }
+
+        fetch(url,requestOptions)
+            .then(res => res.json())
+            .catch(error=> console.log('Error:', error))
+            .then( response => console.log('Success', response))
+    }
+
+    render () {
     const {classes} = this.props
     return (
         <Container component="main" maxWidth="xs">
@@ -52,27 +85,17 @@ class SignUp extends React.Component {
             </Typography>
             <form className={classes.form} noValidate>
             <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                <TextField
-                    autoComplete="fname"
-                    name="firstName"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="firstName"
-                    label="First Name"
-                    autoFocus
-                />
-                </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12}>
                 <TextField
                     variant="outlined"
                     required
                     fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="lastName"
-                    autoComplete="lname"
+                    id="handle"
+                    label="User Handle"
+                    name="handle"
+                    autoComplete="handle"
+                    onChange={ (e) => this.setState({handle:e.target.value }) }
+                    vaule = {this.state.handle}
                 />
                 </Grid>
                 <Grid item xs={12}>
@@ -84,6 +107,8 @@ class SignUp extends React.Component {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
+                    onChange={ (e) => this.setState({email:e.target.value }) }
+                    vaule = {this.state.email}
                 />
                 </Grid>
                 <Grid item xs={12}>
@@ -96,12 +121,8 @@ class SignUp extends React.Component {
                     type="password"
                     id="password"
                     autoComplete="current-password"
-                />
-                </Grid>
-                <Grid item xs={12}>
-                <FormControlLabel
-                    control={<Checkbox value="allowExtraEmails" color="primary" />}
-                    label="I want to receive inspiration, marketing promotions and updates via email."
+                    onChange={ (e) => this.setState({password:e.target.value }) }
+                    vaule = {this.state.password}
                 />
                 </Grid>
             </Grid>
@@ -111,6 +132,7 @@ class SignUp extends React.Component {
                 variant="contained"
                 color="primary"
                 className={classes.submit}
+                onClick={this.performSignUp}
             >
                 Sign Up
             </Button>
