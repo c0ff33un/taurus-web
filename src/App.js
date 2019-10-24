@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import Game from './Game';
 import './App.css';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-const apiURL = 'http://localhost:8080'
+const apiURL = 'http://localhost:80'
 
 class CreateRoom extends React.Component {
   constructor(props) {
