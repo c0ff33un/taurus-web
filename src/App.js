@@ -1,10 +1,9 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom'
 import logo from './logo.svg';
-import Game from './Game';
+import Game from './Components/Game/Game';
 import './App.css';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-import Login from './Components/Auth/Login';
+
 const apiURL = 'http://localhost:8080'
 
 class CreateRoom extends React.Component {
@@ -184,12 +183,4 @@ class App extends React.Component {
   }
 }
 
-export default function AppRoutes () {
-  return (
-    <Switch>
-      <Route path="/game" component={Game}/>
-      <Route path="/login" component={Login}/>
-    </Switch>
-    
-  )
-}
+export default function App ()
