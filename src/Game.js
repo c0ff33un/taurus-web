@@ -2,26 +2,10 @@ import React from 'react';
 import './Game.css'
 
 const CELL_SIZE = 20;
+const WIDTH = 800;
+const HEIGHT = 800;
 
 class Player extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { width: 0, height: 0 };
-    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-  }
-  
-  componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
-  }
-  
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.updateWindowDimensions);
-  }
-  
-  updateWindowDimensions() {
-    this.setState({ width: window.innerthis.state.width, height: window.innerHeight });
-  }
   // Assumes safe moves
   move = (direction) => {
     const { x, y } = this.state;
@@ -59,8 +43,8 @@ class GameController extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
-      rows : this.state.height / CELL_SIZE, 
-      cols : this.state.this.state.width / CELL_SIZE
+      rows : HEIGHT / CELL_SIZE, 
+      cols : WIDTH / CELL_SIZE
     };
   }
 
@@ -139,8 +123,8 @@ class GameController extends React.Component {
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.rows = this.state.height / CELL_SIZE;
-    this.cols = this.state.width / CELL_SIZE;
+    this.rows = HEIGHT / CELL_SIZE;
+    this.cols = WIDTH / CELL_SIZE;
     this.status = {players: {}};
   }
   
@@ -191,7 +175,7 @@ class Game extends React.Component {
         <GameController ws = {this.props.ws} roomId = {this.props.roomId}/>
         <div 
           className = "Board" 
-          style = {{ width: this.state.width, height: this.state.height, backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`}}
+          style = {{ width: WIDTH, height: HEIGHT, backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`}}
           tabIndex = "0"
           onKeyDown = {this.keyPressed}
         >
