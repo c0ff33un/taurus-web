@@ -134,7 +134,7 @@ class App extends React.Component {
   }
 
   updatePlayers = (message) => {
-    var id = message.id
+    var id = message.id;
     this.setState(prevState => ({...prevState, 
       players : {...prevState.players, 
         [id] : {x : message.x, y : message.y}
@@ -153,15 +153,28 @@ class App extends React.Component {
     ws.onopen = () => {
       console.log("Connected");
       this.setState({ ws, roomId });
-      ws.send(JSON.stringify({"id": userId}));
+      ws.send(JSON.stringify({type: "connect", "id": userId}));
     }
 
     ws.onmessage = (e) => {
       var message = JSON.parse(e.data);
-      if (message.type === "message") {
-        this.setState({ messageLog : [...this.state.messageLog, message.text]})   
-      } else if (message.type === "move") {
-        this.updatePlayers(message);
+      switch (message.type) {
+        case "connect":
+          var id = message.id;
+          console.log("User " + id + " Connected");
+          this.setState(prevState => ({...prevState,
+            players : {...prevState.players,
+              [id] : {}
+            }
+          }));
+          break;
+        case "message":
+          this.setState({ messageLog : [...this.state.messageLog, message.text]})
+          break;
+        case "move":
+          break;
+        default:
+          break;
       }
     }
   }
@@ -176,7 +189,7 @@ class App extends React.Component {
         <JoinRoomForm connect={this.connect}/>
         <MessageList messageLog={this.state.messageLog}/>
         <MessageForm ws={this.state.ws}/>
-        <Game ws={this.state.ws} userId={this.state.userId} roomId={this.state.roomId}/>
+        <Game players={this.state.players} ws={this.state.ws} userId={this.state.userId} roomId={this.state.roomId}/>
       </div>
     );
   }

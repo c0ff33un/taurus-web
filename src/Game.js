@@ -38,7 +38,6 @@ class Player extends React.Component {
   }
 }
 
-
 class GameController extends React.Component {
   constructor(props) {
     super(props);
@@ -172,7 +171,7 @@ class Game extends React.Component {
     }
     return (
       <div>
-        <GameController ws = {this.props.ws} roomId = {this.props.roomId}/>
+        <GameController players = {this.props.players} ws = {this.props.ws} roomId = {this.props.roomId}/>
         <div 
           className = "Board" 
           style = {{ width: WIDTH, height: HEIGHT, backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`}}
