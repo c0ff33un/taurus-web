@@ -64,6 +64,30 @@ class GameController extends React.Component {
       return response.json()
     })
     .then(json => {
+      console.log(json)
+      return json
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }
+
+  startGame = (event) => {
+    event.preventDefault();
+    const { rows, cols } = this.state;
+    const { roomId } = this.props;
+    const options = {
+      method : 'PUT',
+    }
+    const apiURL = process.env.REACT_APP_API_URL
+    fetch(apiURL + `/room/start?id=${roomId}`, options)
+    .then(response => {
+      console.log(response.body)
+      return response.json()
+    })
+    .then(json => {
+      console.log(json)
+      return json
     })
     .catch((error) => {
       console.log(error)
@@ -83,6 +107,12 @@ class GameController extends React.Component {
             <input type="text" value={this.state.cols} readOnly/>
           </label>
           <input type="submit" value="Setup Game" />
+        </form>
+        <form onSubmit={this.startGame}>
+          <label>
+            Start Game:
+            <input type="submit" value="Start Game" />
+          </label>
         </form>
       </div>
     );
