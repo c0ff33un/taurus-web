@@ -139,22 +139,22 @@ class Game extends React.Component {
       case 'a':
       case 'A':
       case 'ArrowLeft':
-        this.moveMessage('l');
+        this.moveMessage('left');
         break;
       case 's':
       case 'S':
       case 'ArrowDown':
-        this.moveMessage('d');
+        this.moveMessage('down');
         break;
       case 'w':
       case 'W':
       case 'ArrowUp':
-        this.moveMessage('u');
+        this.moveMessage('up');
         break;
       case 'd':
       case 'D':
       case 'ArrowRight':
-        this.moveMessage('r');
+        this.moveMessage('right');
         break;
       default:
         break;
@@ -162,7 +162,7 @@ class Game extends React.Component {
   }
 
   render() {
-    const { players } = this.status
+    const { players } = this.props
     let v = []
     for (var key in players) {
       v.push(<Player 
