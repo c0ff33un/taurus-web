@@ -16,6 +16,7 @@ class CreateRoom extends React.Component {
       method : 'POST',
     }
     const apiURL = process.env.REACT_APP_API_URL
+    console.log("apiURL: " + apiURL)
     fetch(apiURL + '/room', options)
     .then(response => {
       console.log(response.body)
