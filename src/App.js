@@ -1,6 +1,7 @@
 import React from 'react';
+import Routes from './Routes';
 import logo from './logo.svg';
-import Game from './Game';
+import Game from './Components/Game/Game';
 import './App.css';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 
@@ -147,7 +148,8 @@ class App extends React.Component {
   }
 
   connect = (roomId, userId) => {
-    var ws = new W3CWebSocket(`ws://localhost:8080/ws?id=${roomId}`);
+    const apiURL = process.env.REACT_APP_API_URL
+    var ws = new W3CWebSocket(`ws://${apiURL}/ws?id=${roomId}`);
 
     ws.onopen = () => {
       console.log("Connected");
