@@ -2,7 +2,7 @@ import React from 'react';
 import {Avatar, Button, CssBaseline, TextField,
   Link, Grid, Box, Container, Typography} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles';
-import { userActions } from '../../Actions'
+import { userActions } from '../../Redux/Actions'
 import { connect } from 'react-redux';
 
 function Copyright() {
@@ -45,7 +45,7 @@ class Login extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      email: 'joacarrilloco@unal.edu.co',
+      email: 't2@mail.com',
       password: '123456'
     }
     this.performLogin = this.performLogin.bind(this);

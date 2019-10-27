@@ -5,7 +5,7 @@ import Routes from './Routes';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom'
 import { render } from 'react-dom';
-import { store } from './Storage'
+import { store } from './Redux/Storage'
 
 render(
     <Provider store ={store}>
