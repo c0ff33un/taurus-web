@@ -3,9 +3,9 @@ import './Game.css'
 import { Button, Container, Grid, TextField, CssBaseline } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
 
-const CELL_SIZE = 20;
-const WIDTH = 800;
-const HEIGHT = 800;
+const CELL_SIZE = 50;
+const WIDTH = 450;
+const HEIGHT = 450;
 
 const styles = theme => ({
   '@global': {
@@ -74,7 +74,17 @@ class GameController extends React.Component {
     };
   }
 
-  handleSubmit = (event) => {
+  randomGrid = (event) => {
+    const { rows, cols } = this.state
+    const n = rows * cols;
+    const grid = [];
+    for (let i = 0; i < n; ++i) {
+      grid.push({wall: Math.random() >= 0.5});
+    }
+    return grid;
+  }
+
+  setupGame = (event) => {
     event.preventDefault();
     const { rows, cols } = this.state;
     const { roomId } = this.props;
@@ -120,13 +130,18 @@ class GameController extends React.Component {
     })
   }
 
+  handleChange = (event, name) => {
+    this.setState({[name] : event.target.value});
+  }
+
   render () {
     const classes = withStyles(styles)
     return (
       <Container component="main" maxWidth="xs">
+        Game Controller
         <CssBaseline />
         <div className={classes.paper}> 
-          <form className={classes.form} noValidate onSubmit={this.handleSubmit}>
+          <form className={classes.form} noValidate>
             <TextField
               variant="outlined"
               margin="normal"
@@ -136,9 +151,7 @@ class GameController extends React.Component {
               label="Rows"
               type="number"
               id="rows"
-              onChange={(e)=>{
-                this.setState({rows: e.target.value});
-              }}
+              onChange={(event) => this.handleChange(event, "rows")}
               value={this.state.rows}
             />
             <TextField
@@ -150,34 +163,28 @@ class GameController extends React.Component {
               label="Cols"
               type="number"
               id="cols"
-              onChange={(e)=>{
-                this.setState({cols: e.target.value});
-              }}
+              onChange={(event) => this.handleChange(event, "cols")}
               value={this.state.cols}
             />
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <Button
-                  type="submit"
                   fullWidth
                   variant="contained"
                   color="primary"
                   className={classes.submit}
+                  onClick={this.setupGame}
                 >
                   Setup Game
                 </Button>
               </Grid>
-            </Grid>
-          </form>
-          <form className={classes.form} onSubmit={this.startGame}>
-            <Grid container spacing={1}>
               <Grid item xs={6}>
                 <Button
-                  type="submit"
                   fullWidth
                   variant="contained"
-                  color="primary"
+                  color="secondary"
                   className={classes.submit}
+                  onClick={this.startGame}
                 >
                   Start Game
                 </Button>
@@ -190,12 +197,69 @@ class GameController extends React.Component {
   }
 }
 
+class MessageList extends React.Component {
+  render() {
+    //const { messageLog } = this.props
+    const messageLog = []
+    console.log(messageLog)
+    return (
+      <ul>
+        {messageLog.map((item, index) => <p key = {index} > {item} </p>)}
+      </ul>
+    );
+  }
+}
+
+class MessageForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {value: ''}
+  }
+
+  handleChange = (event) => {
+    this.setState({value: event.target.value});
+  }
+
+  handleSubmit = (event) => {
+    const { value } = this.state;
+    this.sendMessage(value);
+    this.setState({value: ''});
+    event.preventDefault();
+  }
+
+  sendMessage = (message) => {
+    const { ws } = this.props;
+    ws.send(JSON.stringify({type : "message", text : message}));
+    console.log('Sent message', message);
+  }
+
+  render () {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            Message:
+            <input type="text" value={this.state.value} onChange={this.handleChange} />
+          </label>
+          <input type="submit" value="Send Message" />
+        </form>
+      </div>
+    );
+  }
+}
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.rows = HEIGHT / CELL_SIZE;
-    this.cols = WIDTH / CELL_SIZE;
-    this.status = {players: {}};
+    const rows = HEIGHT / CELL_SIZE, cols = WIDTH / CELL_SIZE;
+    const grid = [];
+    console.log(rows, cols)
+    for (let row = 0; row < rows; ++row) {
+      for (let col = 0; col < cols; ++col) {
+        grid.push({row, col, });
+      }
+    }
+    this.state = {rows, cols, grid, players: {}};
   }
   
   moveMessage = (direction) => {
@@ -233,24 +297,33 @@ class Game extends React.Component {
   }
 
   render() {
-    const { classes, players } = this.props
-    let v = []
+    const { players } = this.props
+    console.log(this.state.grid)
+    const gridItems = this.state.grid.map((cell) => {
+      return <div
+          key={cell.row.toString() + '-' + cell.col.toString()}
+          className="Cell"></div>
+    })
+    /*
     for (var key in players) {
       v.push(<Player 
         x = {players[key]["x"]} 
         y = {players[key]["y"]} />)
-    }
+    }*/
     return (
       <div>
-        <div 
-          className = "Board" 
-          style = {{ width: WIDTH, height: HEIGHT, backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`}}
-          tabIndex = "0"
-          onKeyDown = {this.keyPressed}
+        <GameController players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
+        <MessageList />  
+        <MessageForm />
+        <div
+          className="Container"
+          tabIndex="0"
+          onKeyDown={this.keyPressed}
         >
+          <div className="Board">
+            {gridItems}
+          </div>
         </div>
-        {v}
-        <GameController players = {this.props.players} ws = {this.props.ws} roomId = {this.props.roomId}/>
       </div>
     );  
   }

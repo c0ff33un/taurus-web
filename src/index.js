@@ -1,13 +1,18 @@
 import React from 'react';
-import App from './App'
+import { Provider } from 'react-redux'
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import {BrowserRouter as Router} from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { render } from 'react-dom';
+import { store } from './Storage'
+import App from './App'
+
 render(
-    <Router>
-      <App />
-    </Router>,
+    <Provider store ={store}>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </Provider>,
     document.querySelector('#root')
   )
 // If you want your app to work offline and load faster, you can change

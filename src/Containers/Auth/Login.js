@@ -50,7 +50,7 @@ class Login extends React.Component {
   }
 
   performLogin(e){
-    const url = "http://localhost:3001/login";
+    const url = "http://localhost:3000/login";
     const data = {
       'user':{
         'email': this.state.email,
