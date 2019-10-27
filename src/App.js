@@ -45,7 +45,7 @@ class CreateRoom extends React.Component {
 class JoinRoomForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {"roomId": '', "userId": ''}
+    this.state = {"roomId": '', "token": ''}
   }
 
   handleChange = (event, name) => {
@@ -54,8 +54,8 @@ class JoinRoomForm extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const { roomId, userId } = this.state;
-    this.props.connect(roomId, userId);
+    const { roomId, token } = this.state;
+    this.props.connect(roomId, token);
   }
 
   render () {
@@ -67,9 +67,9 @@ class JoinRoomForm extends React.Component {
           onChange={(event) => this.handleChange(event, "roomId")} />
         </label>
         <label>
-          User:
+          User Token:
           <input type="text" value={this.state.userId}
-          onChange={(event) => this.handleChange(event, "userId")} />
+          onChange={(event) => this.handleChange(event, "token")} />
         </label>
         <input type="submit" value="Join Room" />
       </form>
@@ -147,14 +147,14 @@ class App extends React.Component {
     console.log(this.state.ready);
   }
 
-  connect = (roomId, userId) => {
+  connect = (roomId, token) => {
     const apiURL = process.env.REACT_APP_API_URL
     var ws = new W3CWebSocket(`ws://${apiURL}/ws?id=${roomId}`);
 
     ws.onopen = () => {
       console.log("Connected");
       this.setState({ ws, roomId });
-      ws.send(JSON.stringify({type: "connect", "id": userId}));
+      ws.send(JSON.stringify({type: "connect", "token": token}));
     }
 
     ws.onmessage = (e) => {
@@ -185,14 +185,12 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          {<img src={logo} className="App-logo" alt="logo" />}
-        </header>
+        <Game players={this.state.players} ws={this.state.ws} userId={this.state.userId} roomId={this.state.roomId}/>
         <CreateRoom />
         <JoinRoomForm connect={this.connect}/>
         <MessageList messageLog={this.state.messageLog}/>
         <MessageForm ws={this.state.ws}/>
-        <Game players={this.state.players} ws={this.state.ws} userId={this.state.userId} roomId={this.state.roomId}/>
+        <Routes />
       </div>
     );
   }

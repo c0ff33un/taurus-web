@@ -1,9 +1,36 @@
 import React from 'react';
 import './Game.css'
+import { Button, Container, Grid, TextField, CssBaseline } from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles';
 
 const CELL_SIZE = 20;
 const WIDTH = 800;
 const HEIGHT = 800;
+
+const styles = theme => ({
+  '@global': {
+    body: {
+      backgroundColor: theme.palette.common.white,
+    },
+  },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+});
 
 class Player extends React.Component {
   // Assumes safe moves
@@ -94,29 +121,73 @@ class GameController extends React.Component {
   }
 
   render () {
+    const classes = withStyles(styles)
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Rows:
-            <input type="text" value={this.state.rows} readOnly />
-          </label>
-          <label>
-            Cols:
-            <input type="text" value={this.state.cols} readOnly/>
-          </label>
-          <input type="submit" value="Setup Game" />
-        </form>
-        <form onSubmit={this.startGame}>
-          <label>
-            Start Game:
-            <input type="submit" value="Start Game" />
-          </label>
-        </form>
-      </div>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}> 
+          <form className={classes.form} noValidate onSubmit={this.handleSubmit}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="rows"
+              label="Rows"
+              type="number"
+              id="rows"
+              onChange={(e)=>{
+                this.setState({rows: e.target.value});
+              }}
+              value={this.state.rows}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="cols"
+              label="Cols"
+              type="number"
+              id="cols"
+              onChange={(e)=>{
+                this.setState({cols: e.target.value});
+              }}
+              value={this.state.cols}
+            />
+            <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  Setup Game
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+          <form className={classes.form} onSubmit={this.startGame}>
+            <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                >
+                  Start Game
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        </div>
+      </Container>
     );
   }
-
 }
 
 class Game extends React.Component {
@@ -162,7 +233,7 @@ class Game extends React.Component {
   }
 
   render() {
-    const { players } = this.props
+    const { classes, players } = this.props
     let v = []
     for (var key in players) {
       v.push(<Player 
@@ -171,7 +242,6 @@ class Game extends React.Component {
     }
     return (
       <div>
-        <GameController players = {this.props.players} ws = {this.props.ws} roomId = {this.props.roomId}/>
         <div 
           className = "Board" 
           style = {{ width: WIDTH, height: HEIGHT, backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`}}
@@ -180,6 +250,7 @@ class Game extends React.Component {
         >
         </div>
         {v}
+        <GameController players = {this.props.players} ws = {this.props.ws} roomId = {this.props.roomId}/>
       </div>
     );  
   }
