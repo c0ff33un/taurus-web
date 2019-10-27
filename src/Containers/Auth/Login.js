@@ -49,12 +49,19 @@ class Login extends React.Component {
       password: '123456'
     }
     this.performLogin = this.performLogin.bind(this);
+    this.performLoginGuest = this.performLoginGuest.bind(this);
   }
 
   performLogin(e){
     e.preventDefault();
     this.props.login(this.state.email, this.state.password)
   }
+
+  performLoginGuest(e){
+    e.preventDefault();
+    this.props.guestLogin()
+  }
+
   render() {
     const { classes, logginIn } = this.props;
     return (
@@ -100,7 +107,6 @@ class Login extends React.Component {
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <Button
-                  //type="submit"
                   fullWidth
                   variant="contained"
                   color="primary"
@@ -112,11 +118,11 @@ class Login extends React.Component {
               </Grid>
               <Grid item xs={6}>
                 <Button
-                  //type="submit"
                   fullWidth
                   variant="contained"
                   color="secondary"
                   className={classes.submit}
+                  onClick={this.performLoginGuest}
                 >
                   Guest
                 </Button>
@@ -151,6 +157,7 @@ function mapState(state) {
 
 const loginConnection = connect(mapState, {
   login: userActions.login,
+  guestLogin: userActions.guestLogin,
   logout: userActions.logout
 }) ( withStyles(styles)(Login))
 

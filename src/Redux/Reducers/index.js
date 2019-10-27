@@ -33,6 +33,10 @@ function authentication(state = initialState, action) {
         return {};
       case userConstants.LOGOUT:
         return {};
+      case userConstants.LOGIN_GUEST:
+        return {
+          loggingIn: true
+        }
       default:
         return state
     }
