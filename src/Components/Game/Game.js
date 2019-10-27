@@ -38,7 +38,6 @@ class Player extends React.Component {
   }
 }
 
-
 class GameController extends React.Component {
   constructor(props) {
     super(props);
@@ -58,7 +57,7 @@ class GameController extends React.Component {
     }
     const apiURL = process.env.REACT_APP_API_URL
     console.log(apiURL + `/room/setup?id=${roomId}`)
-    fetch(apiURL + `/room/setup?id=${roomId}`, options)
+    fetch(`http://${apiURL}/room/setup?id=${roomId}`, options)
     .then(response => {
       console.log(response.body)
       return response.json()
@@ -80,7 +79,7 @@ class GameController extends React.Component {
       method : 'PUT',
     }
     const apiURL = process.env.REACT_APP_API_URL
-    fetch(apiURL + `/room/start?id=${roomId}`, options)
+    fetch(`http://${apiURL}/room/start?id=${roomId}`, options)
     .then(response => {
       console.log(response.body)
       return response.json()
@@ -140,22 +139,22 @@ class Game extends React.Component {
       case 'a':
       case 'A':
       case 'ArrowLeft':
-        this.moveMessage('l');
+        this.moveMessage('left');
         break;
       case 's':
       case 'S':
       case 'ArrowDown':
-        this.moveMessage('d');
+        this.moveMessage('down');
         break;
       case 'w':
       case 'W':
       case 'ArrowUp':
-        this.moveMessage('u');
+        this.moveMessage('up');
         break;
       case 'd':
       case 'D':
       case 'ArrowRight':
-        this.moveMessage('r');
+        this.moveMessage('right');
         break;
       default:
         break;
@@ -163,7 +162,7 @@ class Game extends React.Component {
   }
 
   render() {
-    const { players } = this.status
+    const { players } = this.props
     let v = []
     for (var key in players) {
       v.push(<Player 
@@ -172,7 +171,7 @@ class Game extends React.Component {
     }
     return (
       <div>
-        <GameController ws = {this.props.ws} roomId = {this.props.roomId}/>
+        <GameController players = {this.props.players} ws = {this.props.ws} roomId = {this.props.roomId}/>
         <div 
           className = "Board" 
           style = {{ width: WIDTH, height: HEIGHT, backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`}}

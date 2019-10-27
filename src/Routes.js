@@ -1,4 +1,5 @@
 import React from 'react';
+import App from './App'
 import Login from './Components/Auth/Login';
 import registerConnection from './Components/Auth/SignUp';
 import Game from './Components/Game/Game';

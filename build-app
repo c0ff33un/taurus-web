@@ -1,0 +1,2 @@
+npm run build
+sudo docker build -t miaortizma/taurus-web . 

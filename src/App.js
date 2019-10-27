@@ -1,10 +1,9 @@
 import React from 'react';
+import Routes from './Routes';
 import logo from './logo.svg';
 import Game from './Components/Game/Game';
 import './App.css';
 import { w3cwebsocket as W3CWebSocket } from "websocket";
-
-const apiURL = 'http://localhost:8080'
 
 class CreateRoom extends React.Component {
   constructor(props) {
@@ -17,7 +16,9 @@ class CreateRoom extends React.Component {
     const options = {
       method : 'POST',
     }
-    fetch(apiURL + '/room', options)
+    const apiURL = process.env.REACT_APP_API_URL
+    console.log("apiURL: " + apiURL)
+    fetch(`http://${apiURL}/room`, options)
     .then(response => {
       console.log(response.body)
       return response.json()
@@ -48,8 +49,6 @@ class JoinRoomForm extends React.Component {
   }
 
   handleChange = (event, name) => {
-    console.log(event.target.value, name)
-    console.log(this.state)
     this.setState({[name] : event.target.value});
   }
 
@@ -135,7 +134,7 @@ class App extends React.Component {
   }
 
   updatePlayers = (message) => {
-    var id = message.id
+    var id = message.id;
     this.setState(prevState => ({...prevState, 
       players : {...prevState.players, 
         [id] : {x : message.x, y : message.y}
@@ -149,20 +148,36 @@ class App extends React.Component {
   }
 
   connect = (roomId, userId) => {
-    var ws = new W3CWebSocket(`ws://localhost:8080/ws?id=${roomId}`);
+    const apiURL = process.env.REACT_APP_API_URL
+    var ws = new W3CWebSocket(`ws://${apiURL}/ws?id=${roomId}`);
 
     ws.onopen = () => {
       console.log("Connected");
       this.setState({ ws, roomId });
-      ws.send(JSON.stringify({"id": userId}));
+      ws.send(JSON.stringify({type: "connect", "id": userId}));
     }
 
     ws.onmessage = (e) => {
       var message = JSON.parse(e.data);
-      if (message.type === "message") {
-        this.setState({ messageLog : [...this.state.messageLog, message.text]})   
-      } else if (message.type === "move") {
-        this.updatePlayers(message);
+      switch (message.type) {
+        case "connect":
+          var id = message.id;
+          console.log("User " + id + " Connected");
+          this.setState(prevState => ({...prevState,
+            players : {...prevState.players,
+              [id] : {}
+            }
+          }));
+          break;
+        case "message":
+          this.setState({ messageLog : [...this.state.messageLog, message.text]})
+          break;
+        case "move":
+          console.log(message);
+          this.updatePlayers(message);
+          break;
+        default:
+          break;
       }
     }
   }
@@ -177,10 +192,10 @@ class App extends React.Component {
         <JoinRoomForm connect={this.connect}/>
         <MessageList messageLog={this.state.messageLog}/>
         <MessageForm ws={this.state.ws}/>
-        <Game ws={this.state.ws} userId={this.state.userId} roomId={this.state.roomId}/>
+        <Game players={this.state.players} ws={this.state.ws} userId={this.state.userId} roomId={this.state.roomId}/>
       </div>
     );
   }
 }
 
-export default function App ()
+export default App;
