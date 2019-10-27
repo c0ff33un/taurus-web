@@ -46,7 +46,6 @@ class SignUp extends React.Component {
         super(props);
 
         this.state = {
-            name: 'Jonathan',
             handle: '',
             email: '',
             password: ''
@@ -145,5 +144,5 @@ function mapState(state) {
   return { registering };
 }
 
-const registerConnection = connect( mapState, { register: userActions.register },)( withStyles(styles)(SignUp) )
+const registerConnection = connect( mapState, { register: userActions.register } )( withStyles(styles)(SignUp) )
 export default registerConnection

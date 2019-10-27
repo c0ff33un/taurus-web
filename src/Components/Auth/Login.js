@@ -2,6 +2,8 @@ import React from 'react';
 import {Avatar, Button, CssBaseline, TextField,
   Link, Grid, Box, Container, Typography} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles';
+import { userActions } from '../../Actions'
+import { connect } from 'react-redux';
 
 function Copyright() {
   return (
@@ -43,45 +45,18 @@ class Login extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      email: 'edwmapa@gmail.com',
-      password: 'edwmapa'
+      email: 'joacarrilloco@unal.edu.co',
+      password: '123456'
     }
     this.performLogin = this.performLogin.bind(this);
   }
 
   performLogin(e){
-    const url = "http://localhost:3000/login";
-    const data = {
-      'user':{
-        'email': this.state.email,
-        'password': this.state.password
-      }
-    }
-    const fetchData = {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: {
-        "Accept": "appplication/json",
-        "Content-Type" : "application/json"
-      }
-    }
-
-    fetch(url, fetchData)
-    .then(response => {
-      if (response.status !== 201){
-        throw new Error(response.status);
-      }else{
-        return response.json();
-      }
-    })
-    .catch(console.error)
-    .then(json => {
-      console.log(json)
-    })
-    
+    e.preventDefault();
+    this.props.login(this.state.email, this.state.password)
   }
   render() {
-    const { classes } = this.props;
+    const { classes, logginIn } = this.props;
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -169,4 +144,14 @@ class Login extends React.Component {
   }
 }
 
-export default withStyles(styles)(Login);
+function mapState(state) {
+  const { logginIn } = state.authentication;
+  return { logginIn }
+}
+
+const loginConnection = connect(mapState, {
+  login: userActions.login,
+  logout: userActions.logout
+}) ( withStyles(styles)(Login))
+
+export default loginConnection
