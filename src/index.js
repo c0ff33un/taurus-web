@@ -1,16 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux'
 import './index.css';
-import Routes from './Routes';
 import * as serviceWorker from './serviceWorker';
 import { BrowserRouter } from 'react-router-dom'
 import { render } from 'react-dom';
 import { store } from './Redux/Storage'
+import App from './App'
 
 render(
     <Provider store ={store}>
       <BrowserRouter>
-        <Routes />
+        <App />
       </BrowserRouter>
     </Provider>,
     document.querySelector('#root')
