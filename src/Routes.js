@@ -1,6 +1,6 @@
 import React from 'react';
 import Login from './Components/Auth/Login';
-import SignUp from './Components/Auth/SignUp';
+import registerConnection from './Components/Auth/SignUp';
 import Game from './Components/Game/Game';
 import { Route, Switch } from 'react-router-dom'
 export default function Routes () {
@@ -8,8 +8,7 @@ export default function Routes () {
     <Switch>
       <Route path="/game" component={Game}/>
       <Route path="/login" component={Login}/>
-      <Route path="/signup" component={SignUp}/>
+      <Route path="/signup" component={registerConnection}/>
     </Switch>
-    
   )
 }

@@ -2,6 +2,9 @@ import React from 'react';
 import {Avatar, Button, CssBaseline, TextField,
   Link, Grid, Box, Container, Typography} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles';
+import { userActions } from '../../Actions'
+import { connect } from 'react-redux';
+
 
 function Copyright() {
   return (
@@ -53,27 +56,11 @@ class SignUp extends React.Component {
 
     performSignUp(e) {
         e.preventDefault()
-
-        const url = 'http://localhost:3000/signup'
-
-        var data = {
-            user: this.state
-        }
-
-        var requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        }
-
-        fetch(url,requestOptions)
-            .then(res => res.json())
-            .catch(error=> console.log('Error:', error))
-            .then( response => console.log('Success', response))
+        this.props.register(this.state)        
     }
 
     render () {
-    const {classes} = this.props
+    const { classes, registering } = this.props
     return (
         <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -153,4 +140,10 @@ class SignUp extends React.Component {
    } 
 }
 
-export default withStyles(styles)(SignUp);
+function mapState(state) {
+  const { registering } = state.registration;
+  return { registering };
+}
+
+const registerConnection = connect( mapState, { register: userActions.register },)( withStyles(styles)(SignUp) )
+export default registerConnection
