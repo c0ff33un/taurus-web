@@ -74,7 +74,7 @@ class GameController extends React.Component {
     };
   }
 
-  randomGrid = (event) => {
+  randomGrid = () => {
     const { rows, cols } = this.state
     const n = rows * cols;
     const grid = [];
@@ -84,16 +84,73 @@ class GameController extends React.Component {
     return grid;
   }
 
-  setupGame = (event) => {
+  setupGame = async (event) => {
+
     event.preventDefault();
+    
+    // Grid endponint from the API
+    const apiURL = process.env.REACT_APP_API_URL
+
+    const seed = Math.floor( Math.random() * Math.pow(10,18))
     const { rows, cols } = this.state;
+
+    const mutation = {
+      "query" : `mutation{
+        grid(settings:{seed: \"${seed}\" w:\"${cols}\" h:\"${rows}\"}){seed exit{x y} matrix}}`
+    }
+
+    let user = JSON.parse(localStorage.getItem('user'))
+    var options = {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": `Token ${user.token}`
+      },
+      body: JSON.stringify(mutation),
+    }
+
+    let response
+    try{
+      response = await fetch(apiURL, options).then( res => res.json())
+    }catch(e){
+      throw new Error(e)
+    }
+
+//    console.log( response )
+    let mat = response.data.grid.matrix
+    let exit = response.data.grid.exit
+
+    //Temporally beginPosition search from players
+
+    var currentDistance = 0
+    var currentBegin = exit
+
+    for( let x = 0; x < rows; ++ x )
+    {
+      for( let y = 0; y < cols; ++ y )
+      {
+        let pos = x * cols + y
+        if( mat[pos] == false )
+        {
+          let manhattanDistance = Math.abs(x - exit.x ) + Math.abs( y - exit.y )
+          if( manhattanDistance > currentDistance )
+          {
+            currentDistance = manhattanDistance
+            currentBegin = { x, y }
+          }
+        }
+      }
+    }
+
+    console.log( currentBegin )
+    /*
     const { roomId } = this.props;
     console.log("The Room Id is:" + roomId)
     const options = {
       method : 'PUT',
       body : JSON.stringify({rows, cols})
     }
-    const apiURL = process.env.REACT_APP_API_URL
+    
     console.log(apiURL + `/room/setup/${roomId}`)
     fetch(`http://${apiURL}/room/setup/${roomId}`, options)
     .then(response => {
@@ -107,6 +164,7 @@ class GameController extends React.Component {
     .catch((error) => {
       console.log(error)
     })
+    */
   }
 
   startGame = (event) => {
