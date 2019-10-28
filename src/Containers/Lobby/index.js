@@ -8,7 +8,6 @@ class CreateRoom extends React.Component {
   }
 
   handleClick = () => {
-    console.log('try get room')
     const options = {
       method : 'POST',
     }
@@ -75,9 +74,9 @@ class Lobby extends React.Component {
       <div>
         Lobby:
         <CreateRoom />
-        <JoinRoomForm />
+        <JoinRoomForm connect={this.props.connect}/>
         {room &&
-          <Game />
+          <Game ws={this.props.ws} roomId={this.props.roomId} messageLog={this.props.messageLog} players={this.props.players} />
         }
       </div>
     );

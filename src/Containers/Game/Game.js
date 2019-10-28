@@ -88,13 +88,14 @@ class GameController extends React.Component {
     event.preventDefault();
     const { rows, cols } = this.state;
     const { roomId } = this.props;
+    console.log("The Room Id is:" + roomId)
     const options = {
       method : 'PUT',
       body : JSON.stringify({rows, cols})
     }
     const apiURL = process.env.REACT_APP_API_URL
-    console.log(apiURL + `/room/setup?id=${roomId}`)
-    fetch(`http://${apiURL}/room/setup?id=${roomId}`, options)
+    console.log(apiURL + `/room/setup/${roomId}`)
+    fetch(`http://${apiURL}/room/setup/${roomId}`, options)
     .then(response => {
       console.log(response.body)
       return response.json()
@@ -116,7 +117,7 @@ class GameController extends React.Component {
       method : 'PUT',
     }
     const apiURL = process.env.REACT_APP_API_URL
-    fetch(`http://${apiURL}/room/start?id=${roomId}`, options)
+    fetch(`http://${apiURL}/room/start/${roomId}`, options)
     .then(response => {
       console.log(response.body)
       return response.json()
@@ -199,8 +200,7 @@ class GameController extends React.Component {
 
 class MessageList extends React.Component {
   render() {
-    //const { messageLog } = this.props
-    const messageLog = []
+    const { messageLog } = this.props
     console.log(messageLog)
     return (
       <ul>
@@ -313,8 +313,8 @@ class Game extends React.Component {
     return (
       <div>
         <GameController players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
-        <MessageList />  
-        <MessageForm />
+        <MessageList messageLog={this.props.messageLog}/>  
+        <MessageForm ws={this.props.ws}/>
         <div
           className="Container"
           tabIndex="0"

@@ -4,13 +4,18 @@ import SignUp from './Containers/Auth/SignUp';
 import Lobby from './Containers/Lobby';
 import Game from './Containers/Game/Game';
 import { Route, Switch } from 'react-router-dom'
-export default function Routes () {
+import AppliedRoute from './Components/AppliedRoute';
+import NotFound from './Containers/NotFound'
+
+export default function Routes ({ appProps }) {
   return (
     <Switch>
-      <Route exact path="/lobby" component={Lobby}/>
-      <Route exact path="/game" component={Game}/>
-      <Route exact path="/login" component={Login}/>
-      <Route exact path="/signup" component={SignUp}/>
+      <AppliedRoute exact path="/lobby" component={Lobby} appProps={appProps}/>
+      <AppliedRoute exact path="/game" component={Game} appProps={appProps}/>
+      <AppliedRoute exact path="/login" component={Login} appProps={appProps}/>
+      <AppliedRoute exact path="/signup" component={SignUp} appProps={appProps}/>
+      { /* Finally, catch all unmatched routes */}
+      <Route component component={NotFound}/>
     </Switch>
   )
 }
