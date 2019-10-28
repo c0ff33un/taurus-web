@@ -3,9 +3,9 @@ import './Game.css'
 import { Button, Container, Grid, TextField, CssBaseline } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
 
-const CELL_SIZE = 50;
-const WIDTH = 450;
-const HEIGHT = 450;
+const CELL_SIZE = 25;
+const WIDTH = 625;
+const HEIGHT = 625;
 
 const styles = theme => ({
   '@global': {
@@ -74,7 +74,7 @@ class GameController extends React.Component {
     };
   }
 
-  randomGrid = (event) => {
+  randomGrid = () => {
     const { rows, cols } = this.state
     const n = rows * cols;
     const grid = [];
@@ -91,7 +91,7 @@ class GameController extends React.Component {
     console.log("The Room Id is:" + roomId)
     const options = {
       method : 'PUT',
-      body : JSON.stringify({rows, cols})
+      body : JSON.stringify({rows: parseInt(rows), cols: parseInt(cols)})
     }
     const apiURL = process.env.REACT_APP_API_URL
     console.log(apiURL + `/room/setup/${roomId}`)
@@ -256,7 +256,8 @@ class Game extends React.Component {
     console.log(rows, cols)
     for (let row = 0; row < rows; ++row) {
       for (let col = 0; col < cols; ++col) {
-        grid.push({row, col, });
+        const wall = Math.random() >= 0.5
+        grid.push({row, col, wall});
       }
     }
     this.state = {rows, cols, grid, players: {}};
@@ -270,6 +271,7 @@ class Game extends React.Component {
   }
   
   keyPressed = (event) => {
+    event.preventDefault();
     switch (event.key) {
       case 'a':
       case 'A':
@@ -297,19 +299,29 @@ class Game extends React.Component {
   }
 
   render() {
-    const { players } = this.props
-    console.log(this.state.grid)
-    const gridItems = this.state.grid.map((cell) => {
-      return <div
-          key={cell.row.toString() + '-' + cell.col.toString()}
-          className="Cell"></div>
-    })
-    /*
+    const { players } = this.props;
+    const { grid, cols, rows } = this.state;
+    //console.log(this.state.grid);
+    const drawGrid = [...grid];
     for (var key in players) {
-      v.push(<Player 
-        x = {players[key]["x"]} 
-        y = {players[key]["y"]} />)
-    }*/
+      var x = players[key]["x"];
+      var y = players[key]["y"];
+      console.log(x, y)
+      drawGrid[y * cols + x] = {"row": y, "col": x, "occupied": true};
+    }
+    console.log(drawGrid);
+    const gridItems = drawGrid.map((cell) => {
+      const key = cell.row.toString() + '-' + cell.col.toString() + (cell.occupied ? "occ" : "")
+      var className;
+      if (cell.wall) {
+        className = "Wall Cell";
+      } else {
+        className = cell.occupied ? "Occupied Cell" : "Cell";
+      }
+      return <div
+          key={key}
+          className={className}></div>
+    })
     return (
       <div>
         <GameController players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>

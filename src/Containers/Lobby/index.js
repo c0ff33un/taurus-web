@@ -1,6 +1,34 @@
 import React from 'react'
 import Game from '../Game/Game'
 
+import { Button, CssBaseline, Container} from '@material-ui/core';
+
+import { withStyles } from '@material-ui/core/styles';
+
+const styles = theme => ({
+  '@global': {
+    body: {
+      backgroundColor: theme.palette.common.white,
+    },
+  },
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+});
 class CreateRoom extends React.Component {
   constructor(props) {
     super(props);
@@ -24,16 +52,25 @@ class CreateRoom extends React.Component {
   }
 
   render () {
-    //const classes = withStyles(styles)
+    const classes = withStyles(styles)
     return (
-      <div>
-        <button onClick={this.handleClick}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+        <Button 
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+          onClick={this.handleClick}
+        >
           Create Room
-        </button>
-      {this.state.code !== '' && 
-        <p>Code:{this.state.code} </p>
-      }
-      </div>
+        </Button>
+        {this.state.code !== '' && 
+          <p>Code:{this.state.code} </p>
+        }
+        </div>
+      </Container>
     );
   }
 }
