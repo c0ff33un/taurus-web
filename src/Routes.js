@@ -3,6 +3,7 @@ import Login from './Containers/Auth/Login';
 import SignUp from './Containers/Auth/SignUp';
 import Lobby from './Containers/Lobby';
 import Game from './Containers/Game/Game';
+import Menu from './Containers/Menu/Menu'
 import { Route, Switch } from 'react-router-dom'
 export default function Routes () {
   return (
@@ -11,6 +12,7 @@ export default function Routes () {
       <Route exact path="/game" component={Game}/>
       <Route exact path="/login" component={Login}/>
       <Route exact path="/signup" component={SignUp}/>
+      <Route exact path="/menu" component={Menu}/>
     </Switch>
   )
 }

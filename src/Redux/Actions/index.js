@@ -1,4 +1,4 @@
-import { userHelper } from '../Helpers'
+import { userHelper, history } from '../Helpers'
 import { fail } from 'assert';
 
 export const userConstants = {
@@ -24,7 +24,7 @@ export const userActions = {
 function register(user) {
     return dispatch => {
         dispatch(request(user));
-        userHelper.register(user)
+        return userHelper.register(user)
             .then(user => dispatch(success(user)) )
             .catch(error => dispatch(failure(error)));
     };
@@ -38,8 +38,8 @@ function register(user) {
 function login(email, password) {
     return dispatch => {
         dispatch(request({ email }));
-        userHelper.login(email, password)
-            .then(user => dispatch(success(user)) )
+        return userHelper.login(email, password)
+            .then(user => dispatch(success(user)))
             .catch(error => dispatch(failure(error)));
     };
 
@@ -52,7 +52,7 @@ function login(email, password) {
 function guestLogin(){
     return dispatch => {
         dispatch(guest());
-        userHelper.guestLogin()
+        return userHelper.guestLogin()
             .then(user => dispatch(success(user)))
             .catch(error => dispatch(failure(error)))
     };
