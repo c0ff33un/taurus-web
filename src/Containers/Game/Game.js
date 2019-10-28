@@ -110,9 +110,9 @@ class GameController extends React.Component {
     }
 
     let response
-    try{
+    try {
       response = await fetch(apiURL, options).then( res => res.json())
-    }catch(e){
+    } catch(e) {
       throw new Error(e)
     }
 
@@ -142,17 +142,22 @@ class GameController extends React.Component {
       }
     }
 
-    console.log( currentBegin )
-    /*
+    
     const { roomId } = this.props;
     console.log("The Room Id is:" + roomId)
-    const options = {
+    const options1 = {
       method : 'PUT',
-      body : JSON.stringify({rows: parseInt(rows), cols: parseInt(cols)})
+      body : JSON.stringify({rows: parseInt(rows),
+        cols: parseInt(cols),
+        exit: exit,
+        begin: currentBegin,
+        grid: mat
+      })
     }
-    
-    console.log(apiURL + `/room/setup/${roomId}`)
-    fetch(`http://${apiURL}/room/setup/${roomId}`, options)
+    console.log("GAME SETUP");
+    console.log(options1.body);
+    const gameURL = process.env.REACT_APP_GAME_URL;
+    fetch(`http://${gameURL}/room/setup/${roomId}`, options1)
     .then(response => {
       console.log(response.body)
       return response.json()
@@ -164,7 +169,7 @@ class GameController extends React.Component {
     .catch((error) => {
       console.log(error)
     })
-    */
+    
   }
 
   startGame = (event) => {
@@ -174,7 +179,7 @@ class GameController extends React.Component {
     const options = {
       method : 'PUT',
     }
-    const apiURL = process.env.REACT_APP_API_URL
+    const apiURL = process.env.REACT_APP_GAME_URL
     fetch(`http://${apiURL}/room/start/${roomId}`, options)
     .then(response => {
       console.log(response.body)
@@ -311,10 +316,9 @@ class Game extends React.Component {
     super(props);
     const rows = HEIGHT / CELL_SIZE, cols = WIDTH / CELL_SIZE;
     const grid = [];
-    console.log(rows, cols)
     for (let row = 0; row < rows; ++row) {
       for (let col = 0; col < cols; ++col) {
-        const wall = Math.random() >= 0.5
+        const wall = false;
         grid.push({row, col, wall});
       }
     }
@@ -358,28 +362,39 @@ class Game extends React.Component {
 
   render() {
     const { players } = this.props;
-    const { grid, cols, rows } = this.state;
-    //console.log(this.state.grid);
-    const drawGrid = [...grid];
-    for (var key in players) {
-      var x = players[key]["x"];
-      var y = players[key]["y"];
-      console.log(x, y)
-      drawGrid[y * cols + x] = {"row": y, "col": x, "occupied": true};
-    }
-    console.log(drawGrid);
-    const gridItems = drawGrid.map((cell) => {
-      const key = cell.row.toString() + '-' + cell.col.toString() + (cell.occupied ? "occ" : "")
-      var className;
-      if (cell.wall) {
-        className = "Wall Cell";
-      } else {
-        className = cell.occupied ? "Occupied Cell" : "Cell";
+    const { cols, rows } = this.state;
+    const { grid } = this.props;
+    var draw = false;
+    var gridItems = null;
+    if (grid !== null) {
+      draw = true;
+      const drawGrid = [...grid];
+      for (var key in players) {
+        var x = players[key]["x"];
+        var y = players[key]["y"];
+        console.log(players[key])
+        console.log(x, y)
+        drawGrid[y * cols + x] = {"occupied": true};
       }
-      return <div
-          key={key}
-          className={className}></div>
-    })
+      console.log("CHECK THIS");
+      console.log(drawGrid);
+      gridItems = drawGrid.map((cell, index) => {
+        const x = index / cols, y = index % cols;
+        const key = x.toString() + '-' + y.toString();
+        var className;
+        if (cell && !cell.occupied) {
+          className = "Wall Cell";
+        } else {
+          className = cell.occupied ? "Occupied Cell" : "Cell";
+          if (cell.occupied) {
+            console.log(className);
+          }
+        }
+        return <div
+            key={key}
+            className={className}></div>
+      })
+    }
     return (
       <div>
         <GameController players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
@@ -391,7 +406,7 @@ class Game extends React.Component {
           onKeyDown={this.keyPressed}
         >
           <div className="Board">
-            {gridItems}
+            {draw && gridItems}
           </div>
         </div>
       </div>

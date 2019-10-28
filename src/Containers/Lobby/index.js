@@ -39,7 +39,7 @@ class CreateRoom extends React.Component {
     const options = {
       method : 'POST',
     }
-    const apiURL = process.env.REACT_APP_API_URL
+    const apiURL = process.env.REACT_APP_GAME_URL
     console.log("apiURL: " + apiURL)
     fetch(`http://${apiURL}/room`, options)
     .then(response => {
@@ -87,7 +87,8 @@ class JoinRoomForm extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const { roomId, token } = this.state;
+    const { roomId } = this.state;
+    const token = JSON.parse(localStorage.getItem("user")).token
     this.props.connect(roomId, token);
   }
 
@@ -114,7 +115,13 @@ class Lobby extends React.Component {
         <CreateRoom />
         <JoinRoomForm connect={this.props.connect}/>
         {room &&
-          <Game ws={this.props.ws} roomId={this.props.roomId} messageLog={this.props.messageLog} players={this.props.players} />
+          <Game 
+            ws={this.props.ws} 
+            roomId={this.props.roomId} 
+            messageLog={this.props.messageLog} 
+            players={this.props.players} 
+            grid={this.props.grid}
+          />
         }
       </div>
     );

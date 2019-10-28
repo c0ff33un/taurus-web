@@ -6,7 +6,7 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {ready: false, ws: null, messageLog: [], roomId: null, players: {}};
+    this.state = {ready: false, grid: null, ws: null, messageLog: [], roomId: null, players: {}};
   }
 
   updatePlayers = (message) => {
@@ -24,9 +24,8 @@ class App extends React.Component {
   }
 
   connect = (roomId, token) => {
-    const apiURL = process.env.REACT_APP_API_URL
-    const tokenB = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIzIiwic2NwIjoidXNlciIsImF1ZCI6bnVsbCwiaWF0IjoxNTcyMjAyMjQwLCJleHAiOjE1NzIyODg2NDAsImp0aSI6IjEzODZiZjk0LTY2ZWMtNDUwZS1hOGY4LTcwNjQzNmU3M2JhMiJ9.ZatDAWQ_9p_y-G9Po1MSqZaSbQsFM5i3hVn_WoqyBHU'
-    var ws = new W3CWebSocket(`ws://${apiURL}/ws/${roomId}?token=${tokenB}`);
+    const apiURL = process.env.REACT_APP_GAME_URL
+    var ws = new W3CWebSocket(`ws://${apiURL}/ws/${roomId}?token=${token}`);
 
     ws.onopen = () => {
       console.log("Connected");
@@ -43,17 +42,25 @@ class App extends React.Component {
           this.setState(prevState => ({...prevState,
             players : {...prevState.players,
               [id] : {}
-            }
+            },
+            messageLog : [...prevState.messageLog, ("User " + id + " Connected")]
           }));
           break;
         case "message":
-          this.setState({ messageLog : [...this.state.messageLog, message.text]})
+          this.setState(prevState => ({...prevState,
+            messageLog : [...prevState.messageLog, message.text]}
+          ))
           break;
         case "move":
-          console.log(message);
           this.updatePlayers(message);
           break;
+        case "grid":
+          const { grid } = message;
+          this.setState({ grid });
+          break;
         default:
+          console.log("Unhandled Message:")
+          console.log(message);
           break;
       }
     }
@@ -61,14 +68,10 @@ class App extends React.Component {
 
   render() {
     const connect = this.connect;
-    const { ws, messageLog, roomId, players } = this.state;
+    const { ws, messageLog, roomId, players, grid } = this.state;
     return (
       <div className="App">
-        {/*<JoinRoomForm connect={this.connect}/>
-        <MessageList messageLog={this.state.messageLog}/>
-        <MessageForm ws={this.state.ws}/>
-        */}
-        <Routes appProps={{ws, roomId, players, messageLog, connect}}/>
+        <Routes appProps={{ws, roomId, players, messageLog, connect, grid}}/>
       </div>
     );
   }
