@@ -54,12 +54,26 @@ class Login extends React.Component {
 
   performLogin(e){
     e.preventDefault();
+
     this.props.login(this.state.email, this.state.password)
+    .then(resp => {
+      if(!resp.error){
+        this.props.history.push('/menu')
+      }
+    }).catch(error => console.log(error))
+    
   }
 
   performLoginGuest(e){
     e.preventDefault();
+    
     this.props.guestLogin()
+    .then(resp => {
+      if(!resp.error){
+        this.props.history.push('/menu')
+      }
+    }).catch(error => console.log(error))
+    
   }
 
   render() {
