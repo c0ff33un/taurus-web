@@ -86,9 +86,16 @@ class JoinRoomForm extends React.Component {
   }
 
   handleSubmit = (event) => {
-    event.preventDefault();
-    const { roomId } = this.state;
-    const token = JSON.parse(localStorage.getItem("user")).token
+    event.preventDefault()
+    const { roomId } = this.state
+    var token
+    console.log('NO_AUTH', process.env.NO_AUTH)
+    if (process.env.NO_AUTH) {
+      token = '1';
+    } else {
+      token = JSON.parse(localStorage.getItem("user")).token
+    }
+    
     this.props.connect(roomId, token);
   }
 

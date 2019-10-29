@@ -12,8 +12,6 @@ FROM node:12.7.0-alpine
 
 RUN npm install -g serve
 
-RUN apk --no-cache add bash
-
 COPY --from=builder /app/build/ ./build
 
 CMD ["serve", "-s", "build"]
