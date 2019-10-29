@@ -141,7 +141,7 @@ class GameController extends React.Component {
       }
     }
 
-    //game setup troguht the websocket
+    //game setup through the websocket
     
     const options1 = {
       method : 'PUT',
@@ -203,7 +203,7 @@ class GameController extends React.Component {
         <CssBaseline />
         <div className={classes.paper}> 
           <form className={classes.form} noValidate>
-            <TextField
+            { /*<TextField
               variant="outlined"
               margin="normal"
               required
@@ -214,8 +214,8 @@ class GameController extends React.Component {
               id="rows"
               onChange={(event) => this.handleChange(event, "rows")}
               value={this.state.rows}
-            />
-            <TextField
+            /> */} 
+            { /*<TextField
               variant="outlined"
               margin="normal"
               required
@@ -226,7 +226,7 @@ class GameController extends React.Component {
               id="cols"
               onChange={(event) => this.handleChange(event, "cols")}
               value={this.state.cols}
-            />
+            /> */ }
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <Button
@@ -250,6 +250,9 @@ class GameController extends React.Component {
                   Start Game
                 </Button>
               </Grid>
+              <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={()=>this.props.history.push("/menu")} >
+                Return to menu
+              </Button>  
             </Grid>
           </form>
         </div>
@@ -390,17 +393,24 @@ class Game extends React.Component {
       console.log("CHECK THIS");
       console.log(drawGrid);
       gridItems = drawGrid.map((cell, index) => {
-        const x = index / cols, y = index % cols;
+        const x = Math.floor(index / cols), y = index % cols;
         const key = x.toString() + '-' + y.toString();
         var className;
         if (cell && !cell.occupied) {
           className = "Wall Cell";
-        } else {
-          className = cell.occupied ? "Occupied Cell" : "Cell";
-          if (cell.occupied) {
-            console.log(className);
-          }
+        } else if( !cell.occupied ) {
+          className = "Cell"
+        } 
+        else if( x == 0 || x == 24 || y == 0 || y == 24 )
+        {
+           console.log('exit');
+          className = "Win Cell"
         }
+        else
+        {
+          className = "Occupied Cell"
+        }
+
         return <div
             key={key}
             className={className}></div>
@@ -410,7 +420,7 @@ class Game extends React.Component {
     return (
       <div>
         RoomId: {this.props.roomId}
-        <GameController players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
+        <GameController history={this.props.history} players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
         <MessageList messageLog={this.props.messageLog}/>  
         <MessageForm ws={this.props.ws}/>
         <div

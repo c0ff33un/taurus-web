@@ -12,8 +12,8 @@ import NotFound from './Containers/NotFound'
 export default function Routes ({ appProps }) {
   return (
     <Switch>
-      <AppliedRoute exact path="/lobby" component={Lobby} appProps={appProps}/>
-      <AppliedRoute exact path="/game" component={Game} appProps={appProps}/>
+      <ProtectedRoute exact path="/lobby" component={Lobby} appProps={appProps}/>
+      <ProtectedRoute exact path="/game" component={Game} appProps={appProps}/>
       <AppliedRoute exact path="/" component={Login} appProps={appProps}/>
       <AppliedRoute exact path="/signup" component={SignUp} appProps={appProps}/>
       <ProtectedRoute exact path="/menu" component={Menu} appProps={appProps}/>

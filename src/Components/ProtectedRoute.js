@@ -8,7 +8,7 @@ export default function ProtectedRoute({ component: C, appProps, ...rest }) {
         localStorage.getItem('user')?
         <C {...props} {...appProps} />
         :
-        <Redirect to='/login'/>
+        <Redirect to='/'/>
     } />
   );
 }
