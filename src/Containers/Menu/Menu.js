@@ -26,13 +26,6 @@ class Menu extends React.Component {
     super(props);
   }
 
-  componentWillMount(){ // THis is Wrong.... Culpa de juan camilo :v
-    const user = localStorage.getItem('user')
-    if (!user.jwt){
-      this.props.history.push('/login')
-    }
-  }
-
   render() {
     const { classes } = this.props;
     return (
