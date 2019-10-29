@@ -17,7 +17,6 @@ return {
 }
 
 function register(user) {
-
 const {handle, email, password} = user
 const data = {
   "query": `mutation {signup(user:{handle:"${handle}" email:"${email}" password:"${password}"}){id handle email guest}}`
@@ -101,5 +100,26 @@ return fetch(url, requestOptions(data))
 }
 
 function logout() {
-  localStorage.removeItem('user');
+
+  const mutation = {
+    "query": `mutation {logout{msg}}`
+  }
+
+  let user = JSON.parse(localStorage.getItem('user'))
+  var options = {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Token ${user.token}`
+    },
+    body: JSON.stringify(mutation),
+  }
+
+  return fetch(url,options)
+  .then( response=> {
+    console.log( response )
+    response.json()
+  })
+  .catch(error => {throw new Error(error)})
+  .then(localStorage.removeItem('user'))
 }
