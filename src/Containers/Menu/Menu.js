@@ -27,13 +27,45 @@ class Menu extends React.Component {
   constructor(props){
     super(props);
     this.performLogout = this.performLogout.bind(this);
+    this.state = { roomid: ''}
   }
 
-  performLogout(e)
-  {
+  performLogout = (e) => {
     e.preventDefault()
     this.props.logout()
-    this.props.history.push('/menu')
+    this.props.history.push('/')
+  }
+
+  createRoom = (event) => {
+    const options = {
+      method : 'POST',
+    }
+    const apiURL = process.env.REACT_APP_GAME_URL
+    console.log("apiURL: " + apiURL)
+    fetch(`http://${apiURL}/room`, options)
+    .then(response => {
+      console.log(response.body)
+      return response.json()
+    })
+    .then(json => {
+      const roomid = json.id
+      var token
+      token = JSON.parse(localStorage.getItem("user")).token
+      this.props.connect(roomid, token);
+      this.props.history.push("/game")
+    })
+  }
+  
+  joinRoom = (event) => {
+    event.preventDefault()
+    const { roomid } = this.state
+    const token = JSON.parse(localStorage.getItem("user")).token
+    this.props.connect(roomid, token);
+    this.props.history.push("/game")
+  }
+
+  handleChange = (event, name) => {
+    this.setState({[name] : event.target.value})
   }
 
   render() {
@@ -45,11 +77,27 @@ class Menu extends React.Component {
           <Typography  variant="h2">
             τrus
           </Typography>
-          <Button fullWidth variant="contained" color="primary" className={classes.customBtn}>
+          <div className={classes.paper}>
+            <form className={classes.form} noValidate>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="rows"
+                label="Room Id"
+                type="string"
+                id="roomid"
+                onChange={(event) => this.handleChange(event, "roomid")}
+                value={this.state.roomid}
+              />
+            </form>
+          </div>
+          <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.joinRoom}>
             Join Room
           </Button>
-          <Button fullWidth variant="contained" color="primary" className={classes.customBtn}>
-            Create Room
+      <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.createRoom}>
+      Create Room
           </Button>
           <Button fullWidth variant="contained" color="secondary" className={classes.customBtn} onClick={this.performLogout}>
             Logout

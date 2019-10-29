@@ -14,9 +14,9 @@ export default function Routes ({ appProps }) {
     <Switch>
       <AppliedRoute exact path="/lobby" component={Lobby} appProps={appProps}/>
       <AppliedRoute exact path="/game" component={Game} appProps={appProps}/>
-      <AppliedRoute exact path="/login" component={Login} appProps={appProps}/>
+      <AppliedRoute exact path="/" component={Login} appProps={appProps}/>
       <AppliedRoute exact path="/signup" component={SignUp} appProps={appProps}/>
-      <ProtectedRoute exact path="/menu" component={Menu}/>
+      <ProtectedRoute exact path="/menu" component={Menu} appProps={appProps}/>
       { /* Finally, catch all unmatched routes */}
       <Route component component={NotFound}/>
     </Switch>

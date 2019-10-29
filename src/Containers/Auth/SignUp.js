@@ -55,7 +55,15 @@ class SignUp extends React.Component {
 
     performSignUp(e) {
         e.preventDefault()
-        this.props.register(this.state)        
+        this.props.register(this.state)
+        .then(response => {
+          console.log(response)
+          if(!response.error) {
+            this.props.history.push("/")
+          } else {
+            alert("Register Error")
+          }
+        })
     }
 
     render () {
@@ -124,7 +132,7 @@ class SignUp extends React.Component {
             </Button>
             <Grid container justify="flex-end">
                 <Grid item>
-                <Link href="/login" variant="body2">
+                <Link href="/" variant="body2">
                     Already have an account? Sign in
                 </Link>
                 </Grid>

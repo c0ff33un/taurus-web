@@ -28,8 +28,8 @@ class App extends React.Component {
     var ws = new W3CWebSocket(`ws://${apiURL}/ws/${roomId}?token=${token}`);
 
     ws.onopen = () => {
-      console.log("Connected");
-      this.setState({ ws, roomId });
+      console.log("Connected")
+      this.setState({ ws, roomId })
       ws.send(JSON.stringify({type: "connect", "token": token}));
     }
 
@@ -69,6 +69,7 @@ class App extends React.Component {
   render() {
     const connect = this.connect;
     const { ws, messageLog, roomId, players, grid } = this.state;
+    console.log(this.state)
     return (
       <div className="App">
         <Routes appProps={{ws, roomId, players, messageLog, connect, grid}}/>

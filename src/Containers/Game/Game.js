@@ -143,8 +143,6 @@ class GameController extends React.Component {
 
     //game setup troguht the websocket
     
-    const { roomId } = this.props;
-    console.log("The Room Id is:" + roomId)
     const options1 = {
       method : 'PUT',
       body : JSON.stringify({rows: parseInt(rows),
@@ -154,8 +152,7 @@ class GameController extends React.Component {
         grid: mat
       })
     }
-    console.log("GAME SETUP");
-    console.log(options1.body);
+    const { roomId } = this.props
     const gameURL = process.env.REACT_APP_GAME_URL;
     fetch(`http://${gameURL}/room/setup/${roomId}`, options1)
     .then(response => {
@@ -297,8 +294,12 @@ class MessageForm extends React.Component {
   }
 
   render () {
+    const { roomId } = this.props
+    console.log(this.props)
+    console.log('RoomId:', roomId)
     return (
       <div>
+        RoomId {roomId}
         <form onSubmit={this.handleSubmit}>
           <label>
             Message:
@@ -405,8 +406,10 @@ class Game extends React.Component {
             className={className}></div>
       })
     }
+    console.log('GameProps:', this.props)
     return (
       <div>
+        RoomId: {this.props.roomId}
         <GameController players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
         <MessageList messageLog={this.props.messageLog}/>  
         <MessageForm ws={this.props.ws}/>
