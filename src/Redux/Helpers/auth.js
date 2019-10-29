@@ -17,7 +17,6 @@ return {
 }
 
 function register(user) {
-
 const {handle, email, password} = user
 const data = {
   "query": `mutation {signup(user:{handle:"${handle}" email:"${email}" password:"${password}"}){id handle email guest}}`

@@ -58,6 +58,7 @@ class Login extends React.Component {
     this.props.login(this.state.email, this.state.password)
     .then(resp => {
       if(!resp.error){
+        console.log('jasdf')
         this.props.history.push('/menu')
       }
     }).catch(error => console.log(error))
