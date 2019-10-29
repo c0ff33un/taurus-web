@@ -62,7 +62,7 @@ function guestLogin(){
     function failure(error) { return { type: userConstants.LOGIN_FAILURE, error } }
 }
 
-function logout() {
+function logout(){
     userHelper.logout()
     return { type: userConstants.LOGOUT } 
 }

@@ -116,7 +116,6 @@ class GameController extends React.Component {
       throw new Error(e)
     }
 
-//    console.log( response )
     let mat = response.data.grid.matrix
     let exit = response.data.grid.exit
 
@@ -142,6 +141,7 @@ class GameController extends React.Component {
       }
     }
 
+    //game setup troguht the websocket
     
     const { roomId } = this.props;
     console.log("The Room Id is:" + roomId)
@@ -311,6 +311,8 @@ class MessageForm extends React.Component {
   }
 }
 
+var lastPressed = new Date().getTime()
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -334,6 +336,14 @@ class Game extends React.Component {
   
   keyPressed = (event) => {
     event.preventDefault();
+
+    while( (new Date().getTime() - lastPressed) < 200 )
+    {
+
+    }
+    console.log("Sending request")
+    console.log(new Date().getTime())
+    lastPressed = new Date().getTime()
     switch (event.key) {
       case 'a':
       case 'A':

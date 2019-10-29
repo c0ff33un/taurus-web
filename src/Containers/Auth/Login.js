@@ -172,8 +172,7 @@ function mapState(state) {
 
 const loginConnection = connect(mapState, {
   login: userActions.login,
-  guestLogin: userActions.guestLogin,
-  logout: userActions.logout
+  guestLogin: userActions.guestLogin
 }) ( withStyles(styles)(Login))
 
 export default loginConnection
