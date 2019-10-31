@@ -18,7 +18,7 @@ export default function Routes ({ appProps }) {
       <AppliedRoute exact path="/signup" component={SignUp} appProps={appProps}/>
       <ProtectedRoute exact path="/menu" component={Menu} appProps={appProps}/>
       { /* Finally, catch all unmatched routes */}
-      <Route component component={NotFound}/>
+      <Route component={NotFound}/>
     </Switch>
   )
 }

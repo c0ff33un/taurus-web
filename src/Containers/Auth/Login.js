@@ -78,7 +78,7 @@ class Login extends React.Component {
   }
 
   render() {
-    const { classes, logginIn } = this.props;
+    const { classes } = this.props;
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />

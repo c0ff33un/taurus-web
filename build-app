@@ -1,2 +1,2 @@
 npm run build
-sudo docker build -t miaortizma/taurus-web . 
+sudo docker build -t miaortizma/taurus-web -f Dockerfile.multistage .

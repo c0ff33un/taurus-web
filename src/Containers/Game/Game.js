@@ -32,39 +32,6 @@ const styles = theme => ({
   },
 });
 
-class Player extends React.Component {
-  // Assumes safe moves
-  move = (direction) => {
-    const { x, y } = this.state;
-    switch (direction) {
-      case 'l':
-        this.setState({ 'x' : x - 1 });
-        break
-      case 'd':
-        this.setState({ 'y' : y + 1 });
-        break;
-      case 'u':
-        this.setState({ 'y' : y - 1 });
-        break;
-      case 'r':
-        this.setState({ 'x' : x + 1 });
-        break;
-      default:
-        break;
-    }
-  }
-  
-  render() {
-    const { x, y } = this.props
-    return (
-      <div
-        className = "Cell" 
-        style = {{ left: `${CELL_SIZE * x + 1}px`, top: `${CELL_SIZE * y + 1}px`, width: `${CELL_SIZE - 1}px`, height: `${CELL_SIZE - 1}px`,      }}
-      />
-    );
-  }
-}
-
 class GameController extends React.Component {
   constructor(props) {
     super(props);
@@ -85,7 +52,7 @@ class GameController extends React.Component {
   }
 
   setupGame = async (event) => {
-
+    console.log('Setup Game')
     event.preventDefault();
     
     // Grid endponint from the API
@@ -96,7 +63,7 @@ class GameController extends React.Component {
 
     const mutation = {
       "query" : `mutation{
-        grid(settings:{seed: \"${seed}\" w:\"${cols}\" h:\"${rows}\"}){seed exit{x y} matrix}}`
+        grid(settings:{seed: "${seed}" w:"${cols}" h:"${rows}"}){seed exit{x y} matrix}}`
     }
 
     let user = JSON.parse(localStorage.getItem('user'))
@@ -104,7 +71,7 @@ class GameController extends React.Component {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
-        "Authorization": `Token ${user.token}`
+        "Authorization": `Bearer ${user.token}`
       },
       body: JSON.stringify(mutation),
     }
@@ -124,16 +91,12 @@ class GameController extends React.Component {
     var currentDistance = 0
     var currentBegin = exit
 
-    for( let x = 0; x < rows; ++ x )
-    {
-      for( let y = 0; y < cols; ++ y )
-      {
+    for (let x = 0; x < rows; ++x) {
+      for (let y = 0; y < cols; ++y) {
         let pos = x * cols + y
-        if( mat[pos] == false )
-        {
+        if (mat[pos] === false) {
           let manhattanDistance = Math.abs(x - exit.x ) + Math.abs( y - exit.y )
-          if( manhattanDistance > currentDistance )
-          {
+          if (manhattanDistance > currentDistance) {
             currentDistance = manhattanDistance
             currentBegin = { x, y }
           }
@@ -171,7 +134,6 @@ class GameController extends React.Component {
 
   startGame = (event) => {
     event.preventDefault();
-    const { rows, cols } = this.state;
     const { roomId } = this.props;
     const options = {
       method : 'PUT',
@@ -191,8 +153,15 @@ class GameController extends React.Component {
     })
   }
 
+  goToMenu = () => {
+    if (this.props.ws !== null) {
+     this.props.ws.close() // clears room info
+    }
+    this.props.history.push("/menu")
+  }
+
   handleChange = (event, name) => {
-    this.setState({[name] : event.target.value});
+    this.setState({[name] : event.target.value})
   }
 
   render () {
@@ -262,7 +231,7 @@ class GameController extends React.Component {
                   Start Game
                 </Button>
               </Grid>
-              <Button fullWidth variant="contained" color="secondary" className={classes.customBtn} onClick={()=>this.props.history.push("/menu")} >
+              <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.goToMenu} >
                 Return to menu
               </Button>  
               <Grid item xs={12}></Grid>
@@ -362,7 +331,7 @@ class Game extends React.Component {
   keyPressed = (event) => {
     event.preventDefault();
 
-    while( (new Date().getTime() - lastPressed) < 200 )
+    while( (new Date().getTime() - lastPressed) < 50 )
     {
 
     }
@@ -397,7 +366,7 @@ class Game extends React.Component {
 
   render() {
     const { players } = this.props;
-    const { cols, rows } = this.state;
+    const { cols } = this.state;
     const { grid } = this.props;
     var draw = false;
     var gridItems = null;
@@ -421,14 +390,10 @@ class Game extends React.Component {
           className = "Wall Cell";
         } else if( !cell.occupied ) {
           className = "Cell"
-        } 
-        else if( x == 0 || x == 24 || y == 0 || y == 24 )
-        {
+        } else if( x === 0 || x === 24 || y === 0 || y === 24 ){
            console.log('exit');
           className = "Win Cell"
-        }
-        else
-        {
+        } else{
           className = "Occupied Cell"
         }
 
