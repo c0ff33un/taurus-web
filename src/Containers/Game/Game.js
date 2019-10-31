@@ -32,39 +32,6 @@ const styles = theme => ({
   },
 });
 
-class Player extends React.Component {
-  // Assumes safe moves
-  move = (direction) => {
-    const { x, y } = this.state;
-    switch (direction) {
-      case 'l':
-        this.setState({ 'x' : x - 1 });
-        break
-      case 'd':
-        this.setState({ 'y' : y + 1 });
-        break;
-      case 'u':
-        this.setState({ 'y' : y - 1 });
-        break;
-      case 'r':
-        this.setState({ 'x' : x + 1 });
-        break;
-      default:
-        break;
-    }
-  }
-  
-  render() {
-    const { x, y } = this.props
-    return (
-      <div
-        className = "Cell" 
-        style = {{ left: `${CELL_SIZE * x + 1}px`, top: `${CELL_SIZE * y + 1}px`, width: `${CELL_SIZE - 1}px`, height: `${CELL_SIZE - 1}px`,      }}
-      />
-    );
-  }
-}
-
 class GameController extends React.Component {
   constructor(props) {
     super(props);
@@ -85,7 +52,7 @@ class GameController extends React.Component {
   }
 
   setupGame = async (event) => {
-
+    console.log('Setup Game')
     event.preventDefault();
     
     // Grid endponint from the API

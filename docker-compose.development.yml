@@ -1,0 +1,8 @@
+version: '3'
+services:
+  taurus-game-server-ms:
+    image: miaortizma/taurus-game-server-ms
+    environment:
+      NO_AUTH: "NO_AUTH"
+    ports:
+      - "8080:8080"
