@@ -34,9 +34,9 @@ function register(user) {
   })
   .catch(error => console.log(error))
   .then(response => {
-    const user = {
+    /*const user = {
       data: response.data.signup.user,
-    }
+    }*/
     
     // -------- Do stuff here ----------
 

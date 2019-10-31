@@ -30,38 +30,50 @@ class App extends React.Component {
     ws.onopen = () => {
       console.log("Connected")
       this.setState({ ws, roomId })
-      ws.send(JSON.stringify({type: "connect"}));
+      ws.send(JSON.stringify({ "type" : "connect" }))
+    }
+
+    ws.onclose = () => {
+      console.log("WS Connection closed")
+      this.setState({ grid: null, ws: null, roomId: null, messageLog: [], players: {}})
     }
 
     ws.onmessage = (e) => {
-      var message = JSON.parse(e.data);
-      switch (message.type) {
-        case "connect":
-          var id = message.id;
-          console.log("User " + id + " Connected");
-          this.setState(prevState => ({...prevState,
-            players : {...prevState.players,
-              [id] : {}
-            },
-            messageLog : [...prevState.messageLog, ("User " + id + " Connected")]
-          }));
-          break;
-        case "message":
-          this.setState(prevState => ({...prevState,
-            messageLog : [...prevState.messageLog, message.text]}
-          ))
-          break;
-        case "move":
-          this.updatePlayers(message);
-          break;
-        case "grid":
-          const { grid } = message;
-          this.setState({ grid });
-          break;
-        default:
-          console.log("Unhandled Message:")
-          console.log(message);
-          break;
+      console.log('e.data', e.data)
+      const messages = e.data.split("\n")
+      console.log("messages", messages)
+      for (var i = 0; i < messages.length - 1; ++i) {
+        const message = JSON.parse(messages[i])
+        console.log("message", message)
+        switch (message.type) {
+          case "connect":
+            const id = message.id
+            const handle = message.handle
+            console.log("User " + id + " Connected");
+            this.setState(prevState => ({...prevState,
+              players : {...prevState.players,
+                [id] : {}
+              },
+              messageLog : [...prevState.messageLog, ("User " + handle + " Connected")]
+            }));
+            break;
+          case "message":
+            this.setState(prevState => ({...prevState,
+              messageLog : [...prevState.messageLog, message.text]}
+            ))
+            break;
+          case "move":
+            this.updatePlayers(message);
+            break;
+          case "grid":
+            const { grid } = message;
+            this.setState({ grid });
+            break;
+          default:
+            console.log("Unhandled Message:")
+            console.log(message);
+            break;
+        }
       }
     }
   }

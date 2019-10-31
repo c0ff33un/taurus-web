@@ -1,6 +1,5 @@
 import React from 'react';
-import {Avatar, Button, CssBaseline, TextField,
-  Link, Grid, Box, Container, Typography} from '@material-ui/core';
+import { Button, CssBaseline, TextField, Container, Typography} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles';
 import { userActions } from '../../Redux/Actions'
 import { connect } from 'react-redux';

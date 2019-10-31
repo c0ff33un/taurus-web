@@ -1,5 +1,4 @@
-import { userHelper, history } from '../Helpers'
-import { fail } from 'assert';
+import { userHelper } from '../Helpers'
 
 export const userConstants = {
     REGISTER_REQUEST: 'USERS_REGISTER_REQUEST',
