@@ -21,6 +21,10 @@
   height: 25px;
 }
 
+.Win {
+  background-color: yellow;
+}
+
 .Wall {
   background-color: black;
 }
