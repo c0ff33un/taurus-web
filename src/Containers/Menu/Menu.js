@@ -37,20 +37,22 @@ class Menu extends React.Component {
   }
 
   createRoom = (event) => {
+    const apiURL = process.env.REACT_APP_API_URL
+    const token = JSON.parse(localStorage.getItem("user")).token
     const options = {
+      headers : {
+        'Accept' : 'application/json',
+        'Content-Type' : 'application/json',
+        'Authorization' : `Bearer ${token}`
+      },
       method : 'POST',
+      body : JSON.stringify({"query": "mutation{room{id}}"})
     }
-    const apiURL = process.env.REACT_APP_GAME_URL
-    console.log("apiURL: " + apiURL)
-    fetch(`http://${apiURL}/room`, options)
-    .then(response => {
-      console.log(response.body)
-      return response.json()
-    })
+    fetch(`${apiURL}`, options)
+    .then(response => response.json())
     .then(json => {
-      const roomid = json.id
-      var token
-      token = JSON.parse(localStorage.getItem("user")).token
+      const roomid = json.data.room.id
+      console.log(json.data.room.id)
       this.props.connect(roomid, token);
       this.props.history.push("/game")
     })

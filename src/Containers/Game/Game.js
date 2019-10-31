@@ -71,7 +71,7 @@ class GameController extends React.Component {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
-        "Authorization": `Token ${user.token}`
+        "Authorization": `Bearer ${user.token}`
       },
       body: JSON.stringify(mutation),
     }
@@ -91,16 +91,12 @@ class GameController extends React.Component {
     var currentDistance = 0
     var currentBegin = exit
 
-    for( let x = 0; x < rows; ++ x )
-    {
-      for( let y = 0; y < cols; ++ y )
-      {
+    for (let x = 0; x < rows; ++x) {
+      for (let y = 0; y < cols; ++y) {
         let pos = x * cols + y
-        if( mat[pos] == false )
-        {
+        if (mat[pos] == false) {
           let manhattanDistance = Math.abs(x - exit.x ) + Math.abs( y - exit.y )
-          if( manhattanDistance > currentDistance )
-          {
+          if (manhattanDistance > currentDistance) {
             currentDistance = manhattanDistance
             currentBegin = { x, y }
           }

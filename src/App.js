@@ -30,7 +30,7 @@ class App extends React.Component {
     ws.onopen = () => {
       console.log("Connected")
       this.setState({ ws, roomId })
-      ws.send(JSON.stringify({type: "connect", "token": token}));
+      ws.send(JSON.stringify({type: "connect"}));
     }
 
     ws.onmessage = (e) => {
