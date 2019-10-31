@@ -45,8 +45,8 @@ class Login extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      email: 't2@mail.com',
-      password: '123456'
+      email: '',
+      password: ''
     }
     this.performLogin = this.performLogin.bind(this);
     this.performLoginGuest = this.performLoginGuest.bind(this);
@@ -144,11 +144,13 @@ class Login extends React.Component {
               </Grid>
             </Grid>
             <Grid container>
+              {/*
               <Grid item xs>
                 <Link href="#" variant="body2">
                   Forgot password?
                 </Link>   
               </Grid>
+              */}
               <Grid item>
                 <Link href="signup" variant="body2">
                   {"Don't have an account? Sign Up"}

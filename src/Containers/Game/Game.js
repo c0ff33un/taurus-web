@@ -1,6 +1,6 @@
 import React from 'react';
 import './Game.css'
-import { Button, Container, Grid, TextField, CssBaseline } from '@material-ui/core'
+import { Button, Container, Grid, TextField, CssBaseline, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
 
 const CELL_SIZE = 25;
@@ -14,7 +14,7 @@ const styles = theme => ({
     },
   },
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(16),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -28,7 +28,7 @@ const styles = theme => ({
     marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(1, 0, 2),
   },
 });
 
@@ -199,11 +199,13 @@ class GameController extends React.Component {
     const classes = withStyles(styles)
     return (
       <Container component="main" maxWidth="xs">
-        Game Controller
         <CssBaseline />
         <div className={classes.paper}> 
-          <form className={classes.form} noValidate>
-            { /*<TextField
+          {
+            /*
+
+            <form className={classes.form} noValidate>
+            <TextField
               variant="outlined"
               margin="normal"
               required
@@ -214,8 +216,8 @@ class GameController extends React.Component {
               id="rows"
               onChange={(event) => this.handleChange(event, "rows")}
               value={this.state.rows}
-            /> */} 
-            { /*<TextField
+            />  
+            <TextField
               variant="outlined"
               margin="normal"
               required
@@ -226,8 +228,18 @@ class GameController extends React.Component {
               id="cols"
               onChange={(event) => this.handleChange(event, "cols")}
               value={this.state.cols}
-            /> */ }
-            <Grid container spacing={1}>
+            />
+            
+          </form>
+            */
+          }
+          <Grid container spacing={2}>
+              <Grid item xs={12}></Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1">
+                  RoomId: {this.props.roomId}
+                </Typography>
+              </Grid>
               <Grid item xs={6}>
                 <Button
                   fullWidth
@@ -243,18 +255,19 @@ class GameController extends React.Component {
                 <Button
                   fullWidth
                   variant="contained"
-                  color="secondary"
+                  color="primary"
                   className={classes.submit}
                   onClick={this.startGame}
                 >
                   Start Game
                 </Button>
               </Grid>
-              <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={()=>this.props.history.push("/menu")} >
+              <Button fullWidth variant="contained" color="secondary" className={classes.customBtn} onClick={()=>this.props.history.push("/menu")} >
                 Return to menu
               </Button>  
+              <Grid item xs={12}></Grid>
+              <Grid item xs={12}></Grid>
             </Grid>
-          </form>
         </div>
       </Container>
     );
@@ -280,14 +293,16 @@ class MessageForm extends React.Component {
   }
 
   handleChange = (event) => {
+    event.preventDefault();
     this.setState({value: event.target.value});
   }
 
   handleSubmit = (event) => {
+    console.log( "Submitting ")
+    event.preventDefault();
     const { value } = this.state;
     this.sendMessage(value);
     this.setState({value: ''});
-    event.preventDefault();
   }
 
   sendMessage = (message) => {
@@ -297,20 +312,26 @@ class MessageForm extends React.Component {
   }
 
   render () {
-    const { roomId } = this.props
-    console.log(this.props)
-    console.log('RoomId:', roomId)
+    const clasees = withStyles(styles)
     return (
-      <div>
-        RoomId {roomId}
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Message:
-            <input type="text" value={this.state.value} onChange={this.handleChange} />
-          </label>
-          <input type="submit" value="Send Message" />
-        </form>
-      </div>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline/>
+        <div className={clasees.paper} >
+          <form className={clasees.form} noValidate onSubmit={this.handleSubmit}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              name="message form"
+              label="Send message"
+              type="string"
+              id="send message"
+              onChange={this.handleChange}
+              value={this.state.value}
+            />
+          </form>
+        </div>
+      </Container>
     );
   }
 }
@@ -419,7 +440,6 @@ class Game extends React.Component {
     console.log('GameProps:', this.props)
     return (
       <div>
-        RoomId: {this.props.roomId}
         <GameController history={this.props.history} players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
         <MessageList messageLog={this.props.messageLog}/>  
         <MessageForm ws={this.props.ws}/>

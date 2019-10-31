@@ -65,6 +65,7 @@ class Menu extends React.Component {
   }
 
   handleChange = (event, name) => {
+    event.preventDefault()
     this.setState({[name] : event.target.value})
   }
 
@@ -84,7 +85,7 @@ class Menu extends React.Component {
                 margin="normal"
                 required
                 fullWidth
-                name="rows"
+                name="roomId"
                 label="Room Id"
                 type="string"
                 id="roomid"
@@ -93,15 +94,22 @@ class Menu extends React.Component {
               />
             </form>
           </div>
-          <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.joinRoom}>
-            Join Room
-          </Button>
-      <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.createRoom}>
-      Create Room
-          </Button>
-          <Button fullWidth variant="contained" color="secondary" className={classes.customBtn} onClick={this.performLogout}>
-            Logout
-          </Button>
+          <Grid container spacing={1}>
+            
+            <Grid item xs={6}>
+                <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.createRoom}>
+                  Create Room
+                </Button>
+            </Grid>
+            <Grid item xs={6}>
+                <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.joinRoom}>
+                  Join Room
+                </Button>
+            </Grid>
+            <Button fullWidth variant="contained" color="secondary" className={classes.customBtn} onClick={this.performLogout}>
+                  Logout
+            </Button>
+          </Grid>
         </div>
       </Container>
     );
