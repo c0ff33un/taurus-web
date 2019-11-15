@@ -1,22 +1,22 @@
 import React from 'react';
 import Login from './Containers/Auth/Login';
 import SignUp from './Containers/Auth/SignUp';
-import Lobby from './Containers/Lobby';
 import Game from './Containers/Game/Game';
 import Menu from './Containers/Menu/Menu'
 import { Route, Switch } from 'react-router-dom'
-import AppliedRoute from './Components/AppliedRoute';
-import ProtectedRoute from './Components/ProtectedRoute'
+import AuthenticatedRoute from './Components/AuthenticatedRoute'
+import UnathenticatedRoute from './Components/UnathenticatedRoute'
 import NotFound from './Containers/NotFound'
+
 
 export default function Routes ({ appProps }) {
   return (
     <Switch>
-      <ProtectedRoute exact path="/lobby" component={Lobby} appProps={appProps}/>
-      <ProtectedRoute exact path="/game" component={Game} appProps={appProps}/>
-      <AppliedRoute exact path="/" component={Login} appProps={appProps}/>
-      <AppliedRoute exact path="/signup" component={SignUp} appProps={appProps}/>
-      <ProtectedRoute exact path="/menu" component={Menu} appProps={appProps}/>
+      <UnathenticatedRoute exact path="/" component={Login} appProps={appProps}/>
+      <UnathenticatedRoute exact path="/signup" component={SignUp} appProps={appProps}/>
+
+      <AuthenticatedRoute exact path="/menu" component={Menu} appProps={appProps}/>
+      <AuthenticatedRoute exact path="/game" component={Game} appProps={appProps}/>
       { /* Finally, catch all unmatched routes */}
       <Route component={NotFound}/>
     </Switch>

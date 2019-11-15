@@ -1,7 +1,8 @@
-import React from 'react';
-import Routes from './Routes';
-import './App.css';
-import { w3cwebsocket as W3CWebSocket } from "websocket";
+import React from 'react'
+import { withRouter } from 'react-router-dom'
+import Routes from './Routes'
+import './App.css'
+import { w3cwebsocket as W3CWebSocket } from "websocket"
 
 class App extends React.Component {
   constructor(props) {
@@ -31,6 +32,11 @@ class App extends React.Component {
       console.log("Connected")
       this.setState({ ws, roomId })
       ws.send(JSON.stringify({ "type" : "connect" }))
+      this.props.history.push("/game")
+    }
+    
+    ws.onerror = (event) => {
+      alert('Error connecting to room')
     }
 
     ws.onclose = () => {
@@ -90,4 +96,4 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withRouter(App);

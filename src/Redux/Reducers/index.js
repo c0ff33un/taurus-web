@@ -15,7 +15,7 @@ function registration( state = {}, action ) {
 }
 
 let user = JSON.parse(localStorage.getItem('user'));
-const initialState = user ? { loggedIn: true, user } : {};
+const initialState = user ? { isAuthenticated: true, user } : {};
 
 function authentication(state = initialState, action) {
     switch (action.type) {
@@ -26,7 +26,7 @@ function authentication(state = initialState, action) {
         };
       case userConstants.LOGIN_SUCCESS:
         return {
-          loggedIn: true,
+          isAuthenticated: true,
           user: action.user
         };
       case userConstants.LOGIN_FAILURE:

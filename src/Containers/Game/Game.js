@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import './Game.css'
-import { Button, Container, Grid, TextField, CssBaseline, Typography } from '@material-ui/core'
+import { Button, Container, Grid, TextField, Typography } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles';
 
 const CELL_SIZE = 25;
@@ -165,80 +165,50 @@ class GameController extends React.Component {
   }
 
   render () {
-    const classes = withStyles(styles)
+    const { classes } = this.props
     return (
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}> 
-          {
-            /*
-
-            <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
+      <Fragment>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="subtitle1">
+              RoomId: {this.props.roomId}
+            </Typography>
+          </Grid>
+          <Grid item xs={6}>
+            <Button
               fullWidth
-              name="rows"
-              label="Rows"
-              type="number"
-              id="rows"
-              onChange={(event) => this.handleChange(event, "rows")}
-              value={this.state.rows}
-            />  
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={this.setupGame}
+            >
+              Setup Game
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button
               fullWidth
-              name="cols"
-              label="Cols"
-              type="number"
-              id="cols"
-              onChange={(event) => this.handleChange(event, "cols")}
-              value={this.state.cols}
-            />
-            
-          </form>
-            */
-          }
-          <Grid container spacing={2}>
-              <Grid item xs={12}></Grid>
-              <Grid item xs={12}>
-                <Typography variant="subtitle1">
-                  RoomId: {this.props.roomId}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={this.setupGame}
-                >
-                  Setup Game
-                </Button>
-              </Grid>
-              <Grid item xs={6}>
-                <Button
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={this.startGame}
-                >
-                  Start Game
-                </Button>
-              </Grid>
-              <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.goToMenu} >
-                Return to menu
-              </Button>  
-              <Grid item xs={12}></Grid>
-              <Grid item xs={12}></Grid>
-            </Grid>
-        </div>
-      </Container>
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={this.startGame}
+            >
+              Start Game
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            <Button 
+              fullWidth 
+              variant="contained" 
+              color="primary" 
+              className={classes.customBtn} 
+              onClick={this.goToMenu} 
+            >
+              Return to menu
+            </Button>  
+          </Grid>
+        </Grid>
+      </Fragment>
     );
   }
 }
@@ -281,26 +251,21 @@ class MessageForm extends React.Component {
   }
 
   render () {
-    const clasees = withStyles(styles)
+    const { classes } = this.props
     return (
-      <Container component="main" maxWidth="xs">
-        <CssBaseline/>
-        <div className={clasees.paper} >
-          <form className={clasees.form} noValidate onSubmit={this.handleSubmit}>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              name="message form"
-              label="Send message"
-              type="string"
-              id="send message"
-              onChange={this.handleChange}
-              value={this.state.value}
-            />
-          </form>
-        </div>
-      </Container>
+      <form className={classes.form} noValidate onSubmit={this.handleSubmit}>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          name="message form"
+          label="Send message"
+          type="string"
+          id="send message"
+          onChange={this.handleChange}
+          value={this.state.value}
+        />
+      </form>
     );
   }
 }
@@ -365,7 +330,7 @@ class Game extends React.Component {
   }
 
   render() {
-    const { players } = this.props;
+    const { players, classes } = this.props;
     const { cols } = this.state;
     const { grid } = this.props;
     var draw = false;
@@ -376,12 +341,8 @@ class Game extends React.Component {
       for (var key in players) {
         var x = players[key]["x"];
         var y = players[key]["y"];
-        console.log(players[key])
-        console.log(x, y)
         drawGrid[y * cols + x] = {"occupied": true};
       }
-      console.log("CHECK THIS");
-      console.log(drawGrid);
       gridItems = drawGrid.map((cell, index) => {
         const x = Math.floor(index / cols), y = index % cols;
         const key = x.toString() + '-' + y.toString();
@@ -402,24 +363,25 @@ class Game extends React.Component {
             className={className}></div>
       })
     }
-    console.log('GameProps:', this.props)
     return (
-      <div>
-        <GameController history={this.props.history} players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
-        <MessageList messageLog={this.props.messageLog}/>  
-        <MessageForm ws={this.props.ws}/>
-        <div
-          className="Container"
-          tabIndex="0"
-          onKeyDown={this.keyPressed}
-        >
-          <div className="Board">
-            {draw && gridItems}
+      <Container component="main" maxWidth="xs">
+        <div className={classes.paper}>
+          <GameController classes={classes} history={this.props.history} players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
+          <MessageList messageLog={this.props.messageLog}/>  
+          <MessageForm classes={classes} ws={this.props.ws}/>
+          <div
+            className="Container"
+            tabIndex="0"
+            onKeyDown={this.keyPressed}
+          >
+            <div className="Board">
+              {draw && gridItems}
+            </div>
           </div>
         </div>
-      </div>
+      </Container>
     );  
   }
 }
 
-export default Game;
+export default withStyles(styles)(Game);

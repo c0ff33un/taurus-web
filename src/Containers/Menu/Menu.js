@@ -1,8 +1,8 @@
-import React from 'react';
-import { Button, CssBaseline, TextField, Container, Typography, Grid} from '@material-ui/core';
-import {withStyles} from '@material-ui/core/styles';
+import React from 'react'
+import {Button, TextField, Container, Typography, Grid} from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
 import { userActions } from '../../Redux/Actions'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 
 const styles = theme => ({
   '@global': {
@@ -10,14 +10,15 @@ const styles = theme => ({
       backgroundColor: theme.palette.common.white,
     },
   },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(3),
+  },
   paper: {
     marginTop: theme.spacing(16),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  },
-  customBtn: {
-    margin: theme.spacing(1, 0, 2),
   },
 });
 
@@ -53,7 +54,6 @@ class Menu extends React.Component {
       const roomid = json.data.room.id
       console.log(json.data.room.id)
       this.props.connect(roomid, token);
-      this.props.history.push("/game")
     })
   }
   
@@ -62,7 +62,6 @@ class Menu extends React.Component {
     const { roomid } = this.state
     const token = JSON.parse(localStorage.getItem("user")).token
     this.props.connect(roomid, token);
-    this.props.history.push("/game")
   }
 
   handleChange = (event, name) => {
@@ -74,43 +73,49 @@ class Menu extends React.Component {
     const { classes } = this.props;
     return (
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <div className={classes.paper}>
           <Typography  variant="h2">
             τrus
           </Typography>
-          <div className={classes.paper}>
-            <form className={classes.form} noValidate>
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="roomId"
-                label="Room Id"
-                type="string"
-                id="roomid"
-                onChange={(event) => this.handleChange(event, "roomid")}
-                value={this.state.roomid}
-              />
-            </form>
-          </div>
-          <Grid container spacing={1}>
-            
-            <Grid item xs={6}>
-                <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.createRoom}>
-                  Create Room
+          <form className={classes.form} noValidate>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                  <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.createRoom}>
+                    Create Room
+                  </Button>
+              </Grid>
+              <Grid item container direction='row' justify='space-between'>
+                <Grid item>
+                  <TextField
+                    variant="outlined"
+                    required
+                    name="roomId"
+                    label="Room Id"
+                    type="string"
+                    id="roomid"
+                    onChange={(event) => this.handleChange(event, "roomid")}
+                    value={this.state.roomid}
+                  />
+                </Grid>
+                <Grid item>
+                    <Button
+                      style={{height: "100%"}}
+                      fullWidth 
+                      variant="contained" 
+                      color="primary" 
+                      size="large"
+                      onClick={this.joinRoom}>
+                      Join Room
+                    </Button>
+                </Grid>  
+              </Grid>
+              <Grid item xs={12}>
+                <Button fullWidth variant="contained" color="secondary" className={classes.customBtn} onClick={this.performLogout}>
+                      Logout
                 </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={6}>
-                <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.joinRoom}>
-                  Join Room
-                </Button>
-            </Grid>
-            <Button fullWidth variant="contained" color="secondary" className={classes.customBtn} onClick={this.performLogout}>
-                  Logout
-            </Button>
-          </Grid>
+          </form>
         </div>
       </Container>
     );

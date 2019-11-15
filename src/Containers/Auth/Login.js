@@ -1,5 +1,5 @@
 import React from 'react';
-import {Avatar, Button, CssBaseline, TextField,
+import {Avatar, Button, TextField,
   Link, Grid, Box, Container, Typography} from '@material-ui/core';
 import {withStyles} from '@material-ui/core/styles';
 import { userActions } from '../../Redux/Actions'
@@ -59,7 +59,6 @@ class Login extends React.Component {
     .then(resp => {
       if(!resp.error){
         console.log('jasdf')
-        this.props.history.push('/menu')
       }
     }).catch(error => console.log(error))
     
@@ -71,7 +70,6 @@ class Login extends React.Component {
     this.props.guestLogin()
     .then(resp => {
       if(!resp.error){
-        this.props.history.push('/menu')
       }
     }).catch(error => console.log(error))
     
@@ -81,7 +79,6 @@ class Login extends React.Component {
     const { classes } = this.props;
     return (
       <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <div className={classes.paper}>
           <Avatar className={classes.avatar}>
           </Avatar>

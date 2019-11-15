@@ -1,5 +1,5 @@
 import React from 'react';
-import {Avatar, Button, CssBaseline, TextField,
+import {Avatar, Button, TextField,
   Link, Grid, Box, Container, Typography} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { userActions } from '../../Redux/Actions'
@@ -70,7 +70,6 @@ class SignUp extends React.Component {
     const { classes } = this.props
     return (
         <Container component="main" maxWidth="xs">
-        <CssBaseline />
         <div className={classes.paper}>
             <Avatar className={classes.avatar}>
             </Avatar>
