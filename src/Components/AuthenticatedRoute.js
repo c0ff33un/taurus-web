@@ -20,7 +20,6 @@ function AuthenticatedRoute({ component: C, appProps, ...rest }) {
 
 function mapStateToProps(state) {
   const { authentication } = state
-  console.log(authentication)
   return { isAuthenticated: authentication.isAuthenticated }
 }
 

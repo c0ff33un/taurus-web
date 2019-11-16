@@ -55,71 +55,64 @@ function login(email, password) {
   .then(response => response.json())
   .catch(error => {throw new Error(error)})
   .then(response => {
-    if(!response.data){
+    if (!response.data) {
       throw new Error(response.errors[0].message)
-    }else{
+    } else {
       jwt = response.data.login.jwt
       return response
     }
   })
   .catch(error => {throw new Error(error)})
   .then(response => {
-    const user = {
+    return {
         data: response.data.login.user,
         token: jwt
     }
-    localStorage.setItem('user', JSON.stringify(user));
   })
 }
 
 function guestLogin(){
-const data = {
-  "query": "mutation {guest{user{id handle email guest} jwt}}"
+  const data = {
+    "query": "mutation {guest{user{id handle email guest} jwt}}"
+  }
+  var jwt
+  return fetch(url, requestOptions(data))
+  .then(response => response.json())
+  .catch(error => console.log(error))
+  .then(response => {
+    if (!response.data) {
+      throw new Error(response.errors[0].message)
+    } else{
+      jwt = response.data.guest.jwt
+      return response
+    }
+  })
+  .catch(error => console.log(error))
+  .then(response => {
+    return {
+        data: response.data.guest.user,
+        token: jwt
+    }
+  })
 }
 
-var jwt
-return fetch(url, requestOptions(data))
-.then(response => response.json())
-.catch(error => console.log(error))
-.then(response => {
-  if(!response.data){
-    throw new Error(response.errors[0].message)
-  }else{
-    jwt = response.data.guest.jwt
-    return response
-  }
-})
-.catch(error => console.log(error))
-.then(response => {
-  const user = {
-      data: response.data.guest.user,
-      token: jwt
-  }
-  localStorage.setItem('user', JSON.stringify(user));
-})
-}
-
-function logout() {
-
+function logout(token) {
   const mutation = {
     "query": `mutation {logout{msg}}`
   }
-
-  let user = JSON.parse(localStorage.getItem('user'))
   var options = {
     method: "POST",
     headers: { 
       "Content-Type": "application/json",
-      "Authorization": `Token ${user.token}`
+      "Authorization": `Token ${token}`
     },
     body: JSON.stringify(mutation),
   }
 
   return fetch(url,options)
-  .then( response=> {
+  .then(response => {
     console.log( response )
     response.json()
   })
   .catch(error => {throw new Error(error)})
-  .then(localStorage.removeItem('user'))
 }

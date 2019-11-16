@@ -1,4 +1,6 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { loadingActions } from './Redux/Actions'
 import { withRouter } from 'react-router-dom'
 import Routes from './Routes'
 import './App.css'
@@ -21,7 +23,6 @@ class App extends React.Component {
 
   toggleReady = () => {
     this.setState({ready: !this.state.ready});
-    console.log(this.state.ready);
   }
 
   connect = (roomId, token) => {
@@ -33,10 +34,12 @@ class App extends React.Component {
       this.setState({ ws, roomId })
       ws.send(JSON.stringify({ "type" : "connect" }))
       this.props.history.push("/game")
+      this.props.finishLoading();
     }
     
     ws.onerror = (event) => {
       alert('Error connecting to room')
+      this.props.finishLoading();
     }
 
     ws.onclose = () => {
@@ -45,9 +48,7 @@ class App extends React.Component {
     }
 
     ws.onmessage = (e) => {
-      console.log('e.data', e.data)
       const messages = e.data.split("\n")
-      console.log("messages", messages)
       for (var i = 0; i < messages.length - 1; ++i) {
         const message = JSON.parse(messages[i])
         console.log("message", message)
@@ -87,7 +88,6 @@ class App extends React.Component {
   render() {
     const connect = this.connect;
     const { ws, messageLog, roomId, players, grid } = this.state;
-    console.log(this.state)
     return (
       <div className="App">
         <Routes appProps={{ws, roomId, players, messageLog, connect, grid}}/>
@@ -96,4 +96,6 @@ class App extends React.Component {
   }
 }
 
-export default withRouter(App);
+export default connect(null, {
+  finishLoading: loadingActions.finishLoading
+})(withRouter(App))

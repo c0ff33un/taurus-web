@@ -1,7 +1,7 @@
 import React from 'react'
 import {Button, TextField, Container, Typography, Grid} from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import { userActions } from '../../Redux/Actions'
+import { userActions, loadingActions } from '../../Redux/Actions'
 import { connect } from 'react-redux'
 
 const styles = theme => ({
@@ -25,20 +25,20 @@ const styles = theme => ({
 
 class Menu extends React.Component {
   constructor(props){
-    super(props);
-    this.performLogout = this.performLogout.bind(this);
-    this.state = { roomid: ''}
+    super(props)
+    this.performLogout = this.performLogout.bind(this)
+    this.state = { roomid: '' }
   }
 
   performLogout = (e) => {
     e.preventDefault()
+    this.props.startLoading()
     this.props.logout()
-    this.props.history.push('/')
   }
 
   createRoom = (event) => {
     const apiURL = process.env.REACT_APP_API_URL
-    const token = JSON.parse(localStorage.getItem("user")).token
+    const token = this.props.token
     const options = {
       headers : {
         'Accept' : 'application/json',
@@ -48,20 +48,23 @@ class Menu extends React.Component {
       method : 'POST',
       body : JSON.stringify({"query": "mutation{room{id}}"})
     }
+    this.props.startLoading()
     fetch(`${apiURL}`, options)
     .then(response => response.json())
     .then(json => {
       const roomid = json.data.room.id
-      console.log(json.data.room.id)
-      this.props.connect(roomid, token);
+      this.props.connect(roomid, token)
+    })
+    .catch(error => {
     })
   }
   
   joinRoom = (event) => {
     event.preventDefault()
     const { roomid } = this.state
-    const token = JSON.parse(localStorage.getItem("user")).token
-    this.props.connect(roomid, token);
+    const token = this.props.token
+    this.props.startLoading()
+    this.props.connect(roomid, token)
   }
 
   handleChange = (event, name) => {
@@ -70,7 +73,8 @@ class Menu extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes } = this.props
+    console.log(this.props.loading)
     return (
       <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
@@ -80,7 +84,13 @@ class Menu extends React.Component {
           <form className={classes.form} noValidate>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                  <Button fullWidth variant="contained" color="primary" className={classes.customBtn} onClick={this.createRoom}>
+                  <Button 
+                    fullWidth 
+                    disabled={this.props.loading}
+                    variant="contained" 
+                    color="primary" 
+                    className={classes.customBtn} 
+                    onClick={this.createRoom}>
                     Create Room
                   </Button>
               </Grid>
@@ -100,6 +110,7 @@ class Menu extends React.Component {
                 <Grid item>
                     <Button
                       style={{height: "100%"}}
+                      disabled={this.props.loading}
                       fullWidth 
                       variant="contained" 
                       color="primary" 
@@ -110,7 +121,13 @@ class Menu extends React.Component {
                 </Grid>  
               </Grid>
               <Grid item xs={12}>
-                <Button fullWidth variant="contained" color="secondary" className={classes.customBtn} onClick={this.performLogout}>
+                <Button 
+                  fullWidth 
+                  disabled={this.props.loading}
+                  variant="contained" 
+                  color="secondary" 
+                  className={classes.customBtn} 
+                  onClick={this.performLogout}>
                       Logout
                 </Button>
               </Grid>
@@ -122,13 +139,13 @@ class Menu extends React.Component {
   }
 }
 
-function mapState(state) {
-  const { logginIn } = state.authentication;
-  return { logginIn }
+function mapStateToProps(state) {
+  const { logginIn, user } = state.authentication
+  return { logginIn, token: user.token, loading: state.loading }
 }
 
-const menuConnection = connect(mapState, {
-  logout: userActions.logout
+export default connect(mapStateToProps, {
+  logout: userActions.logout,
+  startLoading: loadingActions.startLoading,
+  finishLoading: loadingActions.finishLoading,
 }) ( withStyles(styles)(Menu))
-
-export default menuConnection

@@ -11,17 +11,34 @@ export const userConstants = {
     LOGIN_FAILURE: 'USERS_LOGIN_FAILURE',
 
     LOGOUT: 'USERS_LOGOUT'
-};
-
-export const userActions = {
-   register,
-   login,
-   guestLogin,
-   logout
 }
 
+export const userActions = {
+  register,
+  login,
+  guestLogin,
+  logout,
+}
+
+export const loadingActions = {
+  startLoading,
+  finishLoading,
+}
+
+export const START_LOADING='START_LOADING'
+export const FINISH_LOADING='FINISH_LOADING'
+
+function startLoading() {
+  return { type: START_LOADING }
+}
+
+function finishLoading() {
+  return { type: FINISH_LOADING }
+}
+
+
 function register(user) {
-    return dispatch => {
+    return (dispatch) => {
         dispatch(request(user));
         return userHelper.register(user)
             .then(user => dispatch(success(user)) )
@@ -35,7 +52,7 @@ function register(user) {
 
 
 function login(email, password) {
-    return dispatch => {
+    return (dispatch) => {
         dispatch(request({ email }));
         return userHelper.login(email, password)
             .then(user => dispatch(success(user)))
@@ -49,7 +66,7 @@ function login(email, password) {
 
 
 function guestLogin(){
-    return dispatch => {
+    return (dispatch) => {
         dispatch(guest());
         return userHelper.guestLogin()
             .then(user => dispatch(success(user)))
@@ -62,6 +79,12 @@ function guestLogin(){
 }
 
 function logout(){
-    userHelper.logout()
-    return { type: userConstants.LOGOUT } 
+  return (dispatch, getState) =>{
+    const { token } = getState().authentication.user
+    return userHelper.logout(token)
+      .then(() => {
+        dispatch({ type: userConstants.LOGOUT })
+        dispatch(finishLoading())
+      })
+  }
 }

@@ -1,7 +1,8 @@
-import React, { Fragment } from 'react';
+import React, { Fragment } from 'react'
+import { connect } from 'react-redux'
 import './Game.css'
 import { Button, Container, Grid, TextField, Typography } from '@material-ui/core'
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles'
 
 const CELL_SIZE = 25;
 const WIDTH = 625;
@@ -38,7 +39,7 @@ class GameController extends React.Component {
     this.state = { 
       rows : HEIGHT / CELL_SIZE, 
       cols : WIDTH / CELL_SIZE
-    };
+    }
   }
 
   randomGrid = () => {
@@ -46,13 +47,12 @@ class GameController extends React.Component {
     const n = rows * cols;
     const grid = [];
     for (let i = 0; i < n; ++i) {
-      grid.push({wall: Math.random() >= 0.5});
+      grid.push({wall: Math.random() >= 0.5})
     }
-    return grid;
+    return grid
   }
 
   setupGame = async (event) => {
-    console.log('Setup Game')
     event.preventDefault();
     
     // Grid endponint from the API
@@ -66,12 +66,12 @@ class GameController extends React.Component {
         grid(settings:{seed: "${seed}" w:"${cols}" h:"${rows}"}){seed exit{x y} matrix}}`
     }
 
-    let user = JSON.parse(localStorage.getItem('user'))
+    const { token } = this.props
     var options = {
       method: "POST",
       headers: { 
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${user.token}`
+        "Authorization": `Bearer ${token}`
       },
       body: JSON.stringify(mutation),
     }
@@ -274,34 +274,32 @@ var lastPressed = new Date().getTime()
 
 class Game extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     const rows = HEIGHT / CELL_SIZE, cols = WIDTH / CELL_SIZE;
     const grid = [];
     for (let row = 0; row < rows; ++row) {
       for (let col = 0; col < cols; ++col) {
         const wall = false;
-        grid.push({row, col, wall});
+        grid.push({row, col, wall})
       }
     }
-    this.state = {rows, cols, grid, players: {}};
+    this.state = {rows, cols, grid, players: {}}
   }
   
   moveMessage = (direction) => {
     const { ws } = this.props;
-    const obj = {"type": "move", "direction" : direction};
-    console.log(direction);
-    ws.send(JSON.stringify(obj));
+    const obj = {"type": "move", "direction" : direction}
+    console.log(direction)
+    ws.send(JSON.stringify(obj))
   }
   
   keyPressed = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     while( (new Date().getTime() - lastPressed) < 50 )
     {
 
     }
-    console.log("Sending request")
-    console.log(new Date().getTime())
     lastPressed = new Date().getTime()
     switch (event.key) {
       case 'a':
@@ -330,7 +328,7 @@ class Game extends React.Component {
   }
 
   render() {
-    const { players, classes } = this.props;
+    const { token, players, classes } = this.props;
     const { cols } = this.state;
     const { grid } = this.props;
     var draw = false;
@@ -345,14 +343,13 @@ class Game extends React.Component {
       }
       gridItems = drawGrid.map((cell, index) => {
         const x = Math.floor(index / cols), y = index % cols;
-        const key = x.toString() + '-' + y.toString();
+        const key = x.toString() + '-' + y.toString()
         var className;
         if (cell && !cell.occupied) {
           className = "Wall Cell";
         } else if( !cell.occupied ) {
           className = "Cell"
         } else if( x === 0 || x === 24 || y === 0 || y === 24 ){
-           console.log('exit');
           className = "Win Cell"
         } else{
           className = "Occupied Cell"
@@ -366,7 +363,7 @@ class Game extends React.Component {
     return (
       <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
-          <GameController classes={classes} history={this.props.history} players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
+          <GameController token={token} classes={classes} history={this.props.history} players={this.props.players} ws={this.props.ws} roomId={this.props.roomId}/>
           <MessageList messageLog={this.props.messageLog}/>  
           <MessageForm classes={classes} ws={this.props.ws}/>
           <div
@@ -384,4 +381,9 @@ class Game extends React.Component {
   }
 }
 
-export default withStyles(styles)(Game);
+function mapStateToProps(state) {
+  const { user } = state.authentication
+  return { token: user.token }
+}
+
+export default connect(mapStateToProps)(withStyles(styles)(Game))

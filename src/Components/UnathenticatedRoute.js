@@ -20,8 +20,6 @@ function querystring(name, url = window.location.href) {
 
 function UnauthenticatedRoute({ component: C, appProps, ...rest }) {
   const redirect = querystring("redirect")
-  console.log(redirect)
-  console.log(rest)
   return (
     <Route
       {...rest}
@@ -37,8 +35,6 @@ function UnauthenticatedRoute({ component: C, appProps, ...rest }) {
 
 function mapStateToProps(state) {
   const { authentication } = state
-  console.log('here')
-  console.log(authentication)
   return { isAuthenticated: authentication.isAuthenticated }
 }
 

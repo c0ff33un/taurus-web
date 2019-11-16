@@ -1,5 +1,5 @@
-import {combineReducers} from 'redux'
-import {userConstants} from '../Actions'
+import { combineReducers } from 'redux'
+import { userConstants, START_LOADING, FINISH_LOADING } from '../Actions'
 
 function registration( state = {}, action ) {
     switch(action.type) {
@@ -14,8 +14,18 @@ function registration( state = {}, action ) {
     }
 }
 
-let user = JSON.parse(localStorage.getItem('user'));
-const initialState = user ? { isAuthenticated: true, user } : {};
+const initialState = {}
+
+function loading(state=false, action) {
+  switch (action.type) {
+    case START_LOADING:
+      return true
+    case FINISH_LOADING:
+      return false
+    default:
+      return state
+  }
+}
 
 function authentication(state = initialState, action) {
     switch (action.type) {
@@ -43,6 +53,7 @@ function authentication(state = initialState, action) {
 }
 
 export default combineReducers({
+  loading,
   registration,
   authentication
 })
