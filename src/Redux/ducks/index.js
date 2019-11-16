@@ -1,7 +1,8 @@
 import { combineReducers } from 'redux'
 import { userConstants, START_LOADING, FINISH_LOADING } from '../Actions'
+import gameController from './gameController'
 
-function registration( state = {}, action ) {
+function registration(state={}, action) {
     switch(action.type) {
         case userConstants.REGISTER_REQUEST:
             return { registering: true };
@@ -27,7 +28,7 @@ function loading(state=false, action) {
   }
 }
 
-function authentication(state = initialState, action) {
+function authentication(state=initialState, action) {
     switch (action.type) {
       case userConstants.LOGIN_REQUEST:
         return {
@@ -55,5 +56,6 @@ function authentication(state = initialState, action) {
 export default combineReducers({
   loading,
   registration,
-  authentication
+  authentication,
+  gameController,
 })

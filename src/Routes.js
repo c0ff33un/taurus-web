@@ -1,7 +1,7 @@
 import React from 'react';
 import Login from './Containers/Auth/Login';
 import SignUp from './Containers/Auth/SignUp';
-import Game from './Containers/Game/Game';
+import Game from './Containers/Game';
 import Menu from './Containers/Menu/Menu'
 import { Route, Switch } from 'react-router-dom'
 import AuthenticatedRoute from './Components/AuthenticatedRoute'

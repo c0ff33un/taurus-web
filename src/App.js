@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { loadingActions } from './Redux/Actions'
+import { gameServerActions } from './Redux/ducks/gameServer'
 import { withRouter } from 'react-router-dom'
 import Routes from './Routes'
 import './App.css'
@@ -27,6 +28,7 @@ class App extends React.Component {
 
   connect = (roomId, token) => {
     const apiURL = process.env.REACT_APP_GAME_URL
+    console.log(apiURL)
     var ws = new W3CWebSocket(`ws://${apiURL}/ws/${roomId}?token=${token}`);
 
     ws.onopen = () => {
@@ -52,6 +54,7 @@ class App extends React.Component {
       for (var i = 0; i < messages.length - 1; ++i) {
         const message = JSON.parse(messages[i])
         console.log("message", message)
+        this.props.addGameServerMessage(message)
         switch (message.type) {
           case "connect":
             const id = message.id
@@ -97,5 +100,6 @@ class App extends React.Component {
 }
 
 export default connect(null, {
-  finishLoading: loadingActions.finishLoading
+  finishLoading: loadingActions.finishLoading,
+  addGameServerMessage: gameServerActions.addGameServerMessage,
 })(withRouter(App))

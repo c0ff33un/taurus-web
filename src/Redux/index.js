@@ -4,8 +4,7 @@ import { createLogger } from 'redux-logger'
 import { persistStore, persistReducer } from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import storage from 'redux-persist/lib/storage'
-
-import rootReducer from './Reducers'
+import rootReducer from './ducks'
 
 const persistConfig = {
   key: 'root',

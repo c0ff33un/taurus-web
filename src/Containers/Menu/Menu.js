@@ -56,6 +56,7 @@ class Menu extends React.Component {
       this.props.connect(roomid, token)
     })
     .catch(error => {
+      this.props.finishLoading()
     })
   }
   
@@ -74,7 +75,6 @@ class Menu extends React.Component {
 
   render() {
     const { classes } = this.props
-    console.log(this.props.loading)
     return (
       <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
@@ -86,7 +86,6 @@ class Menu extends React.Component {
               <Grid item xs={12}>
                   <Button 
                     fullWidth 
-                    disabled={this.props.loading}
                     variant="contained" 
                     color="primary" 
                     className={classes.customBtn} 
@@ -123,7 +122,6 @@ class Menu extends React.Component {
               <Grid item xs={12}>
                 <Button 
                   fullWidth 
-                  disabled={this.props.loading}
                   variant="contained" 
                   color="secondary" 
                   className={classes.customBtn} 
