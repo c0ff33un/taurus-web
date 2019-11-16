@@ -216,7 +216,8 @@ class GameController extends React.Component {
 class MessageList extends React.Component {
 
   scrollToBottom = () => {
-    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+    // this.messagesEnd.scrollTo({top:this.messagesEnd.top-100})
+    this.messagesEnd.scrollIntoView({ block: "nearest", behavior: "smooth", inline: "nearest" });
   }
   
   componentDidMount() {
@@ -231,21 +232,17 @@ class MessageList extends React.Component {
     const { messageLog } = this.props
     console.log(messageLog)
     return (
-      // <div>
+      <List component="ul" style={{maxHeight: "150px", overflow: "auto"}}>
 
-      // </div>
-      <List component="nav" style={{maxHeight: "150px", overflow: "auto"}}>
-          <div style={{ float:"left", clear: "both" }}
-            ref={(el) => { this.messagesEnd = el; }}>
-          </div> 
         <ListItem>
-        <Typography component="div">
-          {messageLog.map((item, index) => <p key = {index} > {item} </p>)}
-        </Typography>
- 
+        <div style={{ float:"left", clear: "both" }}
+          ref={(el) => { this.messagesEnd = el; }}>
+        </div> 
+          <Typography component="div">
+            { messageLog.map((item, index) => <p key = {index} > {item} </p>) }
+          </Typography>
         </ListItem>
       </List>
-
     );
   }
 }
