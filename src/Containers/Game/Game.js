@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import './Game.css'
-import { Button, Container, Grid, TextField, Typography } from '@material-ui/core'
+import { Button, Container, Grid, TextField, Typography, List, ListItem } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
 const CELL_SIZE = 25;
@@ -214,13 +214,38 @@ class GameController extends React.Component {
 }
 
 class MessageList extends React.Component {
+
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: "smooth" });
+  }
+  
+  componentDidMount() {
+    this.scrollToBottom();
+  }
+  
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
+
   render() {
     const { messageLog } = this.props
     console.log(messageLog)
     return (
-      <ul>
-        {messageLog.map((item, index) => <p key = {index} > {item} </p>)}
-      </ul>
+      // <div>
+
+      // </div>
+      <List component="nav" style={{maxHeight: "150px", overflow: "auto"}}>
+          <div style={{ float:"left", clear: "both" }}
+            ref={(el) => { this.messagesEnd = el; }}>
+          </div> 
+        <ListItem>
+        <Typography component="div">
+          {messageLog.map((item, index) => <p key = {index} > {item} </p>)}
+        </Typography>
+ 
+        </ListItem>
+      </List>
+
     );
   }
 }
