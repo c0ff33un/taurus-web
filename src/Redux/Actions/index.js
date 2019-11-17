@@ -1,4 +1,5 @@
 import { userHelper } from '../Helpers'
+import { finishLoading } from '../ducks/loading'
 
 export const userConstants = {
     REGISTER_REQUEST: 'USERS_REGISTER_REQUEST',
@@ -19,23 +20,6 @@ export const userActions = {
   guestLogin,
   logout,
 }
-
-export const loadingActions = {
-  startLoading,
-  finishLoading,
-}
-
-export const START_LOADING='START_LOADING'
-export const FINISH_LOADING='FINISH_LOADING'
-
-function startLoading() {
-  return { type: START_LOADING }
-}
-
-function finishLoading() {
-  return { type: FINISH_LOADING }
-}
-
 
 function register(user) {
     return (dispatch) => {

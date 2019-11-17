@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux'
-import { userConstants, START_LOADING, FINISH_LOADING } from '../Actions'
+import { userConstants } from '../Actions'
 import gameController from './gameController'
+import messageLog from './messageLog'
+import loading from './loading'
+import websockets from './websockets'
 
 function registration(state={}, action) {
     switch(action.type) {
@@ -16,17 +19,6 @@ function registration(state={}, action) {
 }
 
 const initialState = {}
-
-function loading(state=false, action) {
-  switch (action.type) {
-    case START_LOADING:
-      return true
-    case FINISH_LOADING:
-      return false
-    default:
-      return state
-  }
-}
 
 function authentication(state=initialState, action) {
     switch (action.type) {
@@ -58,4 +50,6 @@ export default combineReducers({
   registration,
   authentication,
   gameController,
+  messageLog,
+  websockets
 })
