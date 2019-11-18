@@ -146,7 +146,8 @@ class GameController extends React.Component {
   }
 
   render () {
-    const { classes, connected } = this.props
+    const { classes, connected, gameSetup } = this.props
+    console.log(gameSetup)
     return (
       <Fragment>
         {connected? (
@@ -172,7 +173,7 @@ class GameController extends React.Component {
               <Grid item xs={6}>
                 <Button
                   fullWidth
-                  disabled={this.props.loading}
+                  disabled={this.props.loading || !this.props.gameSetup}
                   variant="contained"
                   color="primary"
                   className={classes.submit}
@@ -184,6 +185,7 @@ class GameController extends React.Component {
               <Grid item xs={12}>
                 <Button 
                   fullWidth 
+                  disabled={this.props.loading}
                   variant="contained" 
                   color="secondary" 
                   className={classes.customBtn} 
