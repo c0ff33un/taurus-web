@@ -27,23 +27,29 @@ const socketMiddleware = () => {
       store.dispatch(addGameServerMessage(message))
     }
   }
+  
+  const onerror = store => () => {
+    store.dispatch(finishLoading())
+    alert('Error connecting to Server')
+  }
 
   return store => next => action => {
     const { WS_CONNECT, WS_DISCONNECT, WS_MESSAGE } = webSocketConstants
 
     switch (action.type) {
       case WS_CONNECT:
-        if (socket === null) {
-          console.log('connecting')
-          const { url } = action.payload
-          console.log(url)
-          socket = new WebSocket(url)
-
-          socket.onmessage = onmessage(store)
-          socket.onclose = onclose(store)
-          socket.onopen = onopen(store)
+        console.log('connecting')
+        if (socket !== null) {
+          socket.close()
         }
-        
+        const { url } = action.payload
+      
+        socket = new WebSocket(url)
+
+        socket.onmessage = onmessage(store)
+        socket.onclose = onclose(store)
+        socket.onopen = onopen(store)
+        socket.onerror = onerror(store)
         break;
       case WS_DISCONNECT:
         if (socket !== null) {

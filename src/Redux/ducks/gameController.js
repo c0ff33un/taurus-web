@@ -46,6 +46,7 @@ function gameController(state=initialState, action) {
     case UPDATE_PLAYER:
       const { id, x, y } = action.payload
       return {...state, players: {
+        ...state.players,
         [id] : {x, y}
       }}
     default:

@@ -77,6 +77,10 @@ class Menu extends React.Component {
     this.setState({[name] : event.target.value})
   }
 
+  handleSubmit = (event) => {
+    event.preventDefault()
+  }
+
   render() {
     const { classes, connected } = this.props
     if (connected) {
@@ -92,7 +96,7 @@ class Menu extends React.Component {
               <Typography  variant="h2">
                 τrus
               </Typography>
-              <form className={classes.form} noValidate>
+              <form className={classes.form} onSubmit={this.handleSubmit} noValidate>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
                       <Button 
@@ -109,7 +113,6 @@ class Menu extends React.Component {
                     <Grid item>
                       <TextField
                         disabled={this.props.loading}
-                        onSubmit={(e) => {e.preventdefault()}} 
                         variant="outlined"
                         required
                         name="roomId"

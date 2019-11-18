@@ -1,1 +1,1 @@
-sudo docker push miaortizma/taurus-web
+sudo docker push taurusgame/web

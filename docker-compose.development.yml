@@ -1,7 +1,11 @@
 version: '3'
 services:
+  taurus-web:
+    image: taurusgame/web
+    ports:
+      - "5000:5000"
   taurus-game-server-ms:
-    image: miaortizma/taurus-game-server-ms
+    image: taurusgame/game-server-ms
     environment:
       NO_AUTH: "NO_AUTH"
     ports:
