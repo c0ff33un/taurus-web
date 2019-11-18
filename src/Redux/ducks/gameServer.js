@@ -4,7 +4,7 @@ import { GameControllerActions }from './gameController'
 const ADD_GAMESERVER_MESSAGE='ADD_GAMESERVER_MESSAGE'
 
 export function addGameServerMessage(message) {
-  const { setupGame, updatePlayer, addPlayer } = GameControllerActions
+  const { setupGame, startGame, updatePlayer, addPlayer } = GameControllerActions
   return (dispatch) => {
     console.log('THE MESSAGE:', message)
     switch(message.type) {
@@ -13,7 +13,6 @@ export function addGameServerMessage(message) {
         break;
       case "connect":
         const { id, handle } = message
-        console.log(handle)
         dispatch(addPlayer(id))
         dispatch(addMessage({ text: "User " + handle + " Connected"}))
         break;
@@ -21,7 +20,10 @@ export function addGameServerMessage(message) {
         dispatch(updatePlayer(message))
         break;
       case "setup":
-        dispatch(setupGame(message))
+        dispatch(setupGame())
+        break;
+      case "start":
+        dispatch(startGame(message))
         break;
       default:
         dispatch({ type: ADD_GAMESERVER_MESSAGE, payload: { message }})

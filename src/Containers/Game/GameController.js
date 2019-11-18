@@ -17,6 +17,7 @@ class GameController extends React.Component {
     this.state = { 
       rows : HEIGHT / CELL_SIZE, 
       cols : WIDTH / CELL_SIZE,
+      gameFocused: false,
     }
   }
 
@@ -100,7 +101,6 @@ class GameController extends React.Component {
       console.log(error)
       dispatch(finishLoading())
     })
-    
   }
 
   startGame = (event) => {
@@ -119,7 +119,7 @@ class GameController extends React.Component {
     .then(json => {
       console.log(json)
       dispatch(finishLoading())
-      this.props.focusGameContainer()
+      //this.props.focusGameContainer()
       return json
     })
     .catch((error) => {
@@ -137,6 +137,12 @@ class GameController extends React.Component {
 
   handleChange = (event, name) => {
     this.setState({[name] : event.target.value})
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.focusGame && !prevProps.focusGame) {
+      this.setState({ gameFocused: true })
+    }
   }
 
   render () {

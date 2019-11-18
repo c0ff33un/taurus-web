@@ -1,17 +1,26 @@
+import { persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+
 const GAME_SETUP='GAME_SETUP'
+const GAME_START='GAME_START'
 const INVALIDATE_GAME='INVALIDATE_GAME'
 const ADD_PLAYER='ADD_PLAYER'
 const UPDATE_PLAYER='UPDATE_PLAYER'
 
 export const GameControllerActions = {
   setupGame,
+  startGame,
   invalidateGame,
   addPlayer,
   updatePlayer
 }
 
-export function setupGame(message) {
-  return { type: GAME_SETUP, payload: message }
+export function setupGame() {
+  return { type: GAME_SETUP }
+}
+
+export function startGame(message) {
+  return { type: GAME_START, payload: message }
 }
 
 export function invalidateGame() {
@@ -26,19 +35,20 @@ export function updatePlayer(message) {
   return { type: UPDATE_PLAYER, payload: message }
 }
 
-const initialState={ gameSetup: false, grid: null, players: {} }
+const initialState={ gameSetup: false, focusGame: false, grid: null, players: {} }
 
 function gameController(state=initialState, action) {
   switch(action.type) {
     case INVALIDATE_GAME:
-      return {...state, gameSetup: false, grid: null }
+      return { ...state, focusGame: false, gameSetup: false, grid: null, players: {}}
     case GAME_SETUP:
-      console.log('GAME_SETUP')
+      return { ...state, gameSetup: true }
+    case GAME_START:
       const { grid } = action.payload
-      return {...state, gameSetup: true, grid }
+      return { ...state, grid, focusGame: true}
     case ADD_PLAYER: {
       const { id } = action.payload
-      return {...state, players: {
+      return { ...state, players: {
         ...state.players,
         [id] : {}
       }}
@@ -54,4 +64,10 @@ function gameController(state=initialState, action) {
   }
 }
 
-export default gameController
+const persistConfig = {
+  key : 'gameController',
+  storage: storage,
+  blacklist: ['focusGame']
+}
+
+export default persistReducer(persistConfig, gameController)

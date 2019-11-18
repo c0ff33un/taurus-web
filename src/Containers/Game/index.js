@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 import './Game.css'
 import { Container } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import { wsMessage } from '../../Redux/ducks/websockets'
 import WebSocketConnection from '../../Components/WebSocketConnection'
 import GameController from './GameController'
 import MessageList from './MessageList'
 import MessageForm from './MessageForm'
+import Board from './Board'
 
 const CELL_SIZE = 25;
 const WIDTH = 625;
@@ -39,8 +39,6 @@ const styles = theme => ({
 });
 
 
-var lastPressed = new Date().getTime()
-
 class Game extends React.Component {
   constructor(props) {
     super(props)
@@ -52,60 +50,15 @@ class Game extends React.Component {
         grid.push({row, col, wall})
       }
     }
-    this.gameContainer = React.createRef()
     this.state = {rows, cols, grid, players: {}}
   }
-
-  focusGameContainer = () => {
-    this.gameContainer.current.focus()
-  }
-  
-  moveMessage = (direction) => {
-    const { dispatch } = this.props;
-    dispatch(wsMessage({ type: "move", "direction": direction }))
-  }
-  
-  keyPressed = (event) => {
-    event.preventDefault()
-
-    while( (new Date().getTime() - lastPressed) < 50 )
-    {
-
-    }
-    lastPressed = new Date().getTime()
-    switch (event.key) {
-      case 'a':
-      case 'A':
-      case 'ArrowLeft':
-        this.moveMessage('left');
-        break;
-      case 's':
-      case 'S':
-      case 'ArrowDown':
-        this.moveMessage('down');
-        break;
-      case 'w':
-      case 'W':
-      case 'ArrowUp':
-        this.moveMessage('up');
-        break;
-      case 'd':
-      case 'D':
-      case 'ArrowRight':
-        this.moveMessage('right');
-        break;
-      default:
-        break;
-    }
-  }
-
+ 
   render() {
-    const { players, grid, classes } = this.props;
+    const { players, focusGame, grid, classes } = this.props;
     const { cols } = this.state;
-    var draw = false;
+    var draw = grid !== null;
     var gridItems = null;
-    if (grid !== null) {
-      draw = true;
+    if (draw) {
       const drawGrid = [...grid];
       for (var key in players) {
         var x = players[key]["x"];
@@ -135,19 +88,14 @@ class Game extends React.Component {
       <WebSocketConnection>
       <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
-          <GameController focusGameContainer={() => this.focusGameContainer()} classes={classes} history={this.props.history} />
+          <GameController classes={classes} history={this.props.history} />
           <MessageList />  
           <MessageForm classes={classes} />
-          <div
-            ref={this.gameContainer}
-            className="Container"
-            tabIndex="0"
-            onKeyDown={this.keyPressed}
-          >
-            <div className="Board">
-              {draw && gridItems}
-            </div>
-          </div>
+          {draw && 
+            <Board
+              gridItems={gridItems}
+            />
+          }
         </div>
       </Container>
       </WebSocketConnection>
@@ -157,7 +105,7 @@ class Game extends React.Component {
 
 function mapStateToProps(state) {
   const { gameController } = state
-  return { grid: gameController.grid, players: gameController.players }
+  return { focusGame: gameController.focusGame, grid: gameController.grid, players: gameController.players }
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(Game))

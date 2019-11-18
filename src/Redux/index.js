@@ -11,7 +11,7 @@ const persistConfig = {
   key: 'root',
   storage,
   stateReconciler: autoMergeLevel2,
-  blacklist: ['websockets']
+  blacklist: ['websockets', 'gameController']
 }
 
 

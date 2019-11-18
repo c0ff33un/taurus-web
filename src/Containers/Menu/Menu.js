@@ -126,7 +126,7 @@ class Menu extends React.Component {
                     <Grid item>
                         <Button
                           style={{height: "100%"}}
-                          disabled={this.props.loading}
+                          disabled={this.props.loading || this.state.roomId === ""}
                           fullWidth 
                           variant="contained" 
                           color="primary" 
