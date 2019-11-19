@@ -1,12 +1,8 @@
 export const userHelper = {
-  register,
   login,
   guestLogin,
   logout
 }
-
-
-const url = process.env.REACT_APP_API_URL
 
 function requestOptions(data){
   return {
@@ -16,32 +12,7 @@ function requestOptions(data){
   }
 }
 
-function register(user) {
-  const {handle, email, password} = user
-  const data = {
-    "query": `mutation {signup(user:{handle:"${handle}" email:"${email}" password:"${password}"}){id handle email guest}}`
-  }
-
-  return fetch(url,requestOptions(data))
-  .then(response => response.json())
-  .catch(error => console.log(error))
-  .then(response => {
-    if(!response.data){
-      throw new Error(response.errors[0].message)
-    }else{
-      return response
-    }
-  })
-  .catch(error => console.log(error))
-  .then(response => {
-    /*const user = {
-      data: response.data.signup.user,
-    }*/
-    
-    // -------- Do stuff here ----------
-
-  })
-}
+const url = process.env.REACT_APP_API_URL
 
 function login(email, password) {
 

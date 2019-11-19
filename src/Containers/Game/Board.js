@@ -13,7 +13,6 @@ class Board extends React.Component {
     this.gameContainer.current.focus()
   }
 
- 
   moveMessage = (direction) => {
     const { dispatch } = this.props;
     dispatch(wsMessage({ type: "move", "direction": direction }))

@@ -2,7 +2,7 @@ import { addMessage } from './messageLog'
 import { GameControllerActions }from './gameController' 
 
 const ADD_GAMESERVER_MESSAGE='ADD_GAMESERVER_MESSAGE'
-
+//should be moved to middleware
 export function addGameServerMessage(message) {
   const { setupGame, startGame, updatePlayer, addPlayer } = GameControllerActions
   return (dispatch) => {
@@ -30,11 +30,3 @@ export function addGameServerMessage(message) {
     }
   }
 }
-
-
-
-const initialState={}
-function gameServer(state=initialState, action) {
-}
-
-export default gameServer

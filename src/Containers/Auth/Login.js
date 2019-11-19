@@ -1,8 +1,8 @@
 import React from 'react';
-import {Avatar, Button, TextField,
-  Link, Grid, Box, Container, Typography} from '@material-ui/core';
-import {withStyles} from '@material-ui/core/styles';
-import { userActions } from '../../Redux/Actions'
+import { Avatar, Button, TextField,
+  Link, Grid, Box, Container, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/styles';
+import { userActions } from '../../Redux/ducks/authentication'
 import { connect } from 'react-redux';
 
 function Copyright() {

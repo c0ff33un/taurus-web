@@ -14,10 +14,15 @@ const persistConfig = {
   blacklist: ['websockets', 'gameController']
 }
 
-
-
 const loggerMiddleware = createLogger()
 const persistedReducer = persistReducer(persistConfig, rootReducer)
+const log = process.env.NODE_ENV === 'development'
 
-export const store = createStore(persistedReducer, applyMiddleware(thunkMiddleware, loggerMiddleware, wsMiddleware))
+const middleware = [
+  thunkMiddleware,
+  wsMiddleware,
+  log && loggerMiddleware
+]
+
+export const store = createStore(persistedReducer, applyMiddleware(...middleware))
 export const persistor = persistStore(store)

@@ -54,7 +54,7 @@ class Game extends React.Component {
   }
  
   render() {
-    const { players, focusGame, grid, classes } = this.props;
+    const { players, grid, classes } = this.props;
     const { cols } = this.state;
     var draw = grid !== null;
     var gridItems = null;
@@ -105,7 +105,7 @@ class Game extends React.Component {
 
 function mapStateToProps(state) {
   const { gameController } = state
-  return { focusGame: gameController.focusGame, grid: gameController.grid, players: gameController.players }
+  return { grid: gameController.grid, players: gameController.players }
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(Game))

@@ -2,8 +2,7 @@ import React, { Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
 import {Button, TextField, Container, Typography, Grid} from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import { userActions } from '../../Redux/Actions'
-import { invalidateGame } from '../../'
+import { logout } from '../../Redux/ducks/authentication'
 import { loadingActions } from '../../Redux/ducks/loading'
 import { wsConnect } from '../../Redux/ducks/websockets'
 import { connect } from 'react-redux'
@@ -25,7 +24,6 @@ const styles = theme => ({
     alignItems: 'center',
   },
 });
-
 
 class Menu extends React.Component {
   constructor(props){
@@ -164,7 +162,7 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, {
-  logout: userActions.logout,
+  logout,
   startLoading: loadingActions.startLoading,
   finishLoading: loadingActions.finishLoading,
   wsConnect

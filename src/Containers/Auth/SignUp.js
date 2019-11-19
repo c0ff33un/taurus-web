@@ -2,7 +2,7 @@ import React from 'react';
 import {Avatar, Button, TextField,
   Link, Grid, Box, Container, Typography} from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { userActions } from '../../Redux/Actions'
+import { register } from '../../Redux/ducks/registration'
 import { connect } from 'react-redux';
 
 
@@ -151,5 +151,5 @@ function mapState(state) {
   return { registering };
 }
 
-const registerConnection = connect( mapState, { register: userActions.register } )( withStyles(styles)(SignUp) )
+const registerConnection = connect( mapState, { register } )( withStyles(styles)(SignUp) )
 export default registerConnection

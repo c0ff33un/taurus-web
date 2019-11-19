@@ -5,7 +5,6 @@ import './App.css'
 class App extends React.Component {
 
   render() {
-    const connect = this.connect;
     return (
       <div className="App">
         <Routes />
