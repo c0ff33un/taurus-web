@@ -34,16 +34,15 @@ export function wsConnect(parameters) {
     const apiURL = process.env.REACT_APP_GAME_URL
     const calurl = `ws://${apiURL}/ws/${roomId}?token=${token}`
     console.log('calurl', calurl)
-    return { type: WS_CONNECT, payload: { url: calurl }}
+    return { type: WS_CONNECT, payload: { url: calurl, roomId }}
   }
   //const apiURL = process.env.REACT_APP_GAME_URL
   //url = `ws://${apiURL}/ws/${roomId}?token=${token}`
-  return { type: WS_CONNECT, payload: { url }}
+  return { type: WS_CONNECT, payload: { url, roomId }}
 }
 
-export function wsConnected(url) {
-  const roomId = url.split("/")[5].split("?")[0]
-  return { type: WS_CONNECTED, payload : { url, roomId }}
+export function wsConnected() {
+  return { type: WS_CONNECTED }
 }
 
 export function wsDisconnect() {
@@ -61,9 +60,12 @@ export function wsMessage(message) {
 const initialState = { connected: false, url: null, roomId: null  }
 function websockets(state=initialState, action) {
   switch(action.type) {
-    case WS_CONNECTED:
+    case WS_CONNECT: {
       const { url, roomId } = action.payload
-      return { ...state, connected: true, url, roomId }
+      return { ...state, url, roomId }
+    }
+    case WS_CONNECTED:
+      return { ...state, connected: true }
     case WS_DISCONNECTED:
       return { ...state, connected: false, url: null, roomId: null }
     default:

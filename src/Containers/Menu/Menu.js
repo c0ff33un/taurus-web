@@ -3,7 +3,9 @@ import { Redirect } from 'react-router-dom'
 import {Button, TextField, Container, Typography, Grid} from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { logout } from '../../Redux/ducks/authentication'
-import { loadingActions } from '../../Redux/ducks/loading'
+import { startLoading, finishLoading } from '../../Redux/ducks/loading'
+import { invalidateGame } from '../../Redux/ducks/gameController'
+import { invalidateMessages } from '../../Redux/ducks/messageLog'
 import { wsConnect } from '../../Redux/ducks/websockets'
 import { connect } from 'react-redux'
 
@@ -34,13 +36,43 @@ class Menu extends React.Component {
 
   performLogout = (e) => {
     e.preventDefault()
-    this.props.startLoading()
-    this.props.logout()
+    const { dispatch } = this.props
+    dispatch(startLoading())
+    dispatch(logout())
+  }
+
+  noAuthCreateRoom = () => {
+    const apiURL = process.env.REACT_APP_GAME_URL
+    const { token, dispatch } = this.props
+    const options = {
+      method : 'POST',
+    }
+    fetch(`http://${apiURL}/room`, options)
+    .then(response => {
+      return response.json()
+    })
+    .then(json => {
+      const roomId = json.id
+      dispatch(wsConnect({ token, roomId }))
+    })
+    .catch(error => {
+      alert('Error communicating to game server')
+      dispatch(finishLoading())
+    })
   }
 
   createRoom = (event) => {
+    const { token, dispatch } = this.props
+    dispatch(startLoading())
+    dispatch(invalidateGame())
+    dispatch(invalidateMessages())
+    const noAuth = process.env.REACT_APP_NO_AUTH
+    if (noAuth !== undefined) {
+      console.log('NoAuthCreateRoom')
+      this.noAuthCreateRoom()
+      return
+    }
     const apiURL = process.env.REACT_APP_API_URL
-    const token = this.props.token
     const options = {
       headers : {
         'Accept' : 'application/json',
@@ -50,26 +82,25 @@ class Menu extends React.Component {
       method : 'POST',
       body : JSON.stringify({"query": "mutation{room{id}}"})
     }
-    this.props.startLoading()
     fetch(`${apiURL}`, options)
     .then(response => response.json())
     .then(json => {
       const roomId = json.data.room.id
-      this.props.wsConnect({ token, roomId })
+      dispatch(wsConnect({ token, roomId }))
     })
     .catch(error => {
-      this.props.finishLoading()
+      alert('Error communicating with game server.')
+      dispatch(finishLoading())
     })
   }
   
   joinRoom = (event) => {
     event.preventDefault()
     const { roomId } = this.state
-    const token = this.props.token
-    this.props.startLoading()
-    console.log(roomId)
-    this.props.wsConnect({ token, roomId })
- }
+    const { token, dispatch } = this.props
+    dispatch(startLoading())
+    dispatch(wsConnect({ token, roomId }))
+  }
 
   handleChange = (event, name) => {
     event.preventDefault()
@@ -161,9 +192,4 @@ function mapStateToProps(state) {
   return { logginIn, token: user.token, loading, connected: websockets.connected }
 }
 
-export default connect(mapStateToProps, {
-  logout,
-  startLoading: loadingActions.startLoading,
-  finishLoading: loadingActions.finishLoading,
-  wsConnect
-}) ( withStyles(styles)(Menu))
+export default connect(mapStateToProps) ( withStyles(styles)(Menu))

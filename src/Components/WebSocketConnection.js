@@ -4,9 +4,10 @@ import { wsConnect } from '../Redux/ducks/websockets'
 
 class WebSocketConnection extends React.Component {
   componentDidMount() {
-    const { dispatch, url, connected } = this.props
-    if (!connected) {
-      dispatch(wsConnect({ url }))
+    const { dispatch, url, roomId, connected } = this.props
+    if (!connected && url) {
+      alert('Connection Lost, attempting to Reconnect')
+      dispatch(wsConnect({ url, roomId }))
     }
   }
 
@@ -16,8 +17,8 @@ class WebSocketConnection extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { url, connected } = state.websockets
-  return { url, connected }
+  const { url, roomId, connected } = state.websockets
+  return { url, roomId, connected }
 }
 
 export default connect(mapStateToProps)(WebSocketConnection)

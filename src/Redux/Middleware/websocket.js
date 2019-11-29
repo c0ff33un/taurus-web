@@ -10,9 +10,8 @@ const socketMiddleware = () => {
 
 
   const onopen = store => (event) => {
-    console.log('websocket open', event.target.url)
     store.dispatch(wsMessage({ type: "connect" }))
-    store.dispatch(wsConnected(event.target.url))
+    store.dispatch(wsConnected())
     store.dispatch(finishLoading())
   }
 
@@ -38,7 +37,6 @@ const socketMiddleware = () => {
 
     switch (action.type) {
       case WS_CONNECT:
-        console.log('connecting')
         if (socket !== null) {
           socket.close()
         }
@@ -50,15 +48,13 @@ const socketMiddleware = () => {
         socket.onclose = onclose(store)
         socket.onopen = onopen(store)
         socket.onerror = onerror(store)
-        break;
+        return next(action);
       case WS_DISCONNECT:
         if (socket !== null) {
           socket.close()
           socket = null
-          console.log('Websocket closed')
-        } else {
         }
-        break;
+        return next(action);
       case WS_MESSAGE:
         console.log('sending a message', action.payload)
         socket.send(JSON.stringify(action.payload))

@@ -17,7 +17,6 @@ class GameController extends React.Component {
     this.state = { 
       rows : HEIGHT / CELL_SIZE, 
       cols : WIDTH / CELL_SIZE,
-      gameFocused: false,
     }
   }
 
@@ -119,7 +118,6 @@ class GameController extends React.Component {
     .then(json => {
       console.log(json)
       dispatch(finishLoading())
-      //this.props.focusGameContainer()
       return json
     })
     .catch((error) => {
@@ -139,12 +137,6 @@ class GameController extends React.Component {
     this.setState({[name] : event.target.value})
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.focusGame && !prevProps.focusGame) {
-      this.setState({ gameFocused: true })
-    }
-  }
-
   render () {
     const { classes, connected, gameSetup } = this.props
     console.log(gameSetup)
@@ -161,7 +153,7 @@ class GameController extends React.Component {
               <Grid item xs={6}>
                 <Button
                   fullWidth
-                  disabled={this.props.loading}
+                  disabled={this.props.loading || this.props.gameRunning}
                   variant="contained"
                   color="primary"
                   className={classes.submit}
@@ -173,7 +165,7 @@ class GameController extends React.Component {
               <Grid item xs={6}>
                 <Button
                   fullWidth
-                  disabled={this.props.loading || !this.props.gameSetup}
+                  disabled={this.props.loading || !this.props.gameSetup || this.props.gameRunning}
                   variant="contained"
                   color="primary"
                   className={classes.submit}
