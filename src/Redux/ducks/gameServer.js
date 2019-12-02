@@ -1,5 +1,6 @@
 import { addMessage } from './messageLog'
 import { GameControllerActions }from './gameController' 
+import { batch } from 'react-redux'
 
 const ADD_GAMESERVER_MESSAGE='ADD_GAMESERVER_MESSAGE'
 //should be moved to middleware
@@ -11,11 +12,15 @@ export function addGameServerMessage(message) {
       case "message":
         dispatch(addMessage(message))
         break;
-      case "connect":
+      case "connect": {
         const { id, handle } = message
-        dispatch(addPlayer(id))
-        dispatch(addMessage({ text: "User " + handle + " Connected"}))
+        batch(() => {
+          dispatch(addPlayer(id))
+          dispatch(addMessage({ text: `User ${handle} Connected`}))
+        })
         break;
+
+      }
       case "move":
         dispatch(updatePlayer(message))
         break;
@@ -25,9 +30,14 @@ export function addGameServerMessage(message) {
       case "start":
         dispatch(startGame(message))
         break;
-      case "win":
-        dispatch(finishGame(message))
+      case "win": {
+        const { handle } = message
+        batch(() => {
+          dispatch(addMessage({ text: `User ${handle} Won` }))
+          dispatch(finishGame(message))
+        })
         break;
+      }
       default:
         dispatch({ type: ADD_GAMESERVER_MESSAGE, payload: { message }})
     }

@@ -13,15 +13,15 @@ class Board extends React.Component {
     this.gameContainer.current.focus()
   }
 
-  moveMessage = (direction) => {
-    const { dispatch } = this.props;
-    dispatch(wsMessage({ type: "move", "direction": direction }))
+  moveMessage = direction => {
+    const { dispatch } = this.props
+    dispatch(wsMessage({ type: 'move', direction: direction }))
   }
 
-  keyPressed = (event) => {
+  keyPressed = event => {
     event.preventDefault()
     const { lastPressed } = this.state
-    if ((new Date().getTime() - lastPressed) < 200) {
+    if (new Date().getTime() - lastPressed < 200) {
       return
     }
     this.setState({ lastPressed: new Date().getTime() })
@@ -29,28 +29,27 @@ class Board extends React.Component {
       case 'a':
       case 'A':
       case 'ArrowLeft':
-        this.moveMessage('left');
-        break;
+        this.moveMessage('left')
+        break
       case 's':
       case 'S':
       case 'ArrowDown':
-        this.moveMessage('down');
-        break;
+        this.moveMessage('down')
+        break
       case 'w':
       case 'W':
       case 'ArrowUp':
-        this.moveMessage('up');
-        break;
+        this.moveMessage('up')
+        break
       case 'd':
       case 'D':
       case 'ArrowRight':
-        this.moveMessage('right');
-        break;
+        this.moveMessage('right')
+        break
       default:
-        break;
+        break
     }
   }
-
 
   render() {
     const { gridItems } = this.props
@@ -61,13 +60,9 @@ class Board extends React.Component {
         tabIndex="0"
         onKeyDown={this.keyPressed}
       >
-        <div 
-          className="Board"
-        >
-          {this.props.gridItems}
-        </div>
+        <div className="Board">{this.props.gridItems}</div>
       </div>
-    );
+    )
   }
 }
 

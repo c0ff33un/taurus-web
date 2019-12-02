@@ -40,7 +40,6 @@ const styles = theme => ({
   },
 });
 
-
 class Login extends React.Component {
   constructor(props){
     super(props);

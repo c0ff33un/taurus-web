@@ -22,7 +22,7 @@ const middleware = [
   thunkMiddleware,
   wsMiddleware,
   log && loggerMiddleware
-]
+].filter(Boolean)
 
 export const store = createStore(persistedReducer, applyMiddleware(...middleware))
 export const persistor = persistStore(store)
