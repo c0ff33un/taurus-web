@@ -54,13 +54,14 @@ function gameController(state=initialState, action) {
       return { ...state, grid, gameRunning: true }
     case GAME_FINISH:
       return { ...state, gameSetup: false, gameRunning: false }
-    case ADD_PLAYER: {
+    /*case ADD_PLAYER: {
       const { id } = action.payload
       return { ...state, players: {
         ...state.players,
         [id] : {}
       }}
     }
+    */
     case UPDATE_PLAYER:
       const { id, x, y } = action.payload
       return {...state, players: {
