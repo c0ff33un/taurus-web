@@ -6,6 +6,7 @@ const GAME_START='GAME_START'
 const GAME_FINISH='GAME_FINISH'
 const INVALIDATE_GAME='INVALIDATE_GAME'
 const ADD_PLAYER='ADD_PLAYER'
+const REMOVE_PLAYER='REMOVE_PLAYER'
 const UPDATE_PLAYER='UPDATE_PLAYER'
 
 export const GameControllerActions = {
@@ -14,6 +15,7 @@ export const GameControllerActions = {
   finishGame,
   invalidateGame,
   addPlayer,
+  removePlayer,
   updatePlayer
 }
 
@@ -33,8 +35,12 @@ export function invalidateGame() {
   return { type: INVALIDATE_GAME }
 }
 
-export function addPlayer(id) {
-  return { type: ADD_PLAYER, payload: { id }}
+export function addPlayer(id, length) {
+  return { type: ADD_PLAYER, payload: { id, length }}
+}
+
+export function removePlayer(id, length) {
+  return { type: REMOVE_PLAYER, payload: { id, length } }
 }
 
 export function updatePlayer(message) {
@@ -54,14 +60,14 @@ function gameController(state=initialState, action) {
       return { ...state, grid, gameRunning: true }
     case GAME_FINISH:
       return { ...state, gameSetup: false, gameRunning: false }
-    /*case ADD_PLAYER: {
-      const { id } = action.payload
-      return { ...state, players: {
-        ...state.players,
-        [id] : {}
-      }}
+    case ADD_PLAYER: {
+      const { length } = action.payload
+      return { ...state, length }
     }
-    */
+    case REMOVE_PLAYER: {
+      const { length } = action.payload
+      return { ...state, length }
+    }
     case UPDATE_PLAYER:
       const { id, x, y } = action.payload
       return {...state, players: {

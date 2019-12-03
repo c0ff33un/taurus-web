@@ -5,21 +5,19 @@ import { batch } from 'react-redux'
 const ADD_GAMESERVER_MESSAGE='ADD_GAMESERVER_MESSAGE'
 //should be moved to middleware
 export function addGameServerMessage(message) {
-  const { setupGame, startGame, updatePlayer, addPlayer, finishGame } = GameControllerActions
+  const { setupGame, startGame, updatePlayer, addPlayer, removePlayer, finishGame } = GameControllerActions
   return (dispatch) => {
-    console.log('THE MESSAGE:', message)
     switch(message.type) {
       case "message":
         dispatch(addMessage(message))
         break;
       case "connect": {
-        const { id, handle } = message
+        const { id, handle, length } = message
         batch(() => {
-          dispatch(addPlayer(id))
+          dispatch(addPlayer(id, length))
           dispatch(addMessage({ text: `User ${handle} Connected`}))
         })
         break;
-
       }
       case "move":
         dispatch(updatePlayer(message))
@@ -35,6 +33,14 @@ export function addGameServerMessage(message) {
         batch(() => {
           dispatch(addMessage({ text: `User ${handle} Won` }))
           dispatch(finishGame(message))
+        })
+        break;
+      }
+      case "leave":{
+        const { id, handle, length } = message
+        batch(() => {
+          dispatch(removePlayer(id, length))
+          dispatch(addMessage({ text: `User ${handle} left`}))
         })
         break;
       }

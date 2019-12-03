@@ -10,10 +10,8 @@ import { wsConnect } from '../../Redux/ducks/websockets'
 import { connect } from 'react-redux'
 
 const styles = theme => ({
-  '@global': {
-    body: {
+  body: {
       backgroundColor: theme.palette.common.white,
-    },
   },
   form: {
     width: '100%', // Fix IE 11 issue.
@@ -68,7 +66,6 @@ class Menu extends React.Component {
     dispatch(invalidateMessages())
     const noAuth = process.env.REACT_APP_NO_AUTH
     if (noAuth !== undefined) {
-      console.log('NoAuthCreateRoom')
       this.noAuthCreateRoom()
       return
     }
@@ -113,9 +110,6 @@ class Menu extends React.Component {
 
   render() {
     const { classes, connected } = this.props
-    if (connected) {
-      console.log('redirecting to game')
-    }
     return (
       <Fragment>
         {connected? (

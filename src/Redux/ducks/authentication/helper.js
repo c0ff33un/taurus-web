@@ -49,7 +49,6 @@ function guestLogin(){
   var jwt
   return fetch(url, requestOptions(data))
   .then(response => response.json())
-  .catch(error => console.log(error))
   .then(response => {
     if (!response.data) {
       throw new Error(response.errors[0].message)
@@ -58,13 +57,13 @@ function guestLogin(){
       return response
     }
   })
-  .catch(error => console.log(error))
   .then(response => {
     return {
         data: response.data.guest.user,
         token: jwt
     }
   })
+  .catch(error => console.log(error))
 }
 
 function logout(token) {
@@ -82,7 +81,6 @@ function logout(token) {
 
   return fetch(url,options)
   .then(response => {
-    console.log( response )
     response.json()
   })
   .catch(error => {throw new Error(error)})

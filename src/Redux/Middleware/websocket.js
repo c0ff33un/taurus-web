@@ -29,6 +29,7 @@ const socketMiddleware = () => {
   
   const onerror = store => () => {
     store.dispatch(finishLoading())
+    store.dispatch(wsDisconnected())
     alert('Error connecting to Server')
   }
 
@@ -56,9 +57,8 @@ const socketMiddleware = () => {
         }
         return next(action);
       case WS_MESSAGE:
-        console.log('sending a message', action.payload)
         socket.send(JSON.stringify(action.payload))
-        break;
+        return next(action)
       default:
         return next(action);
     }

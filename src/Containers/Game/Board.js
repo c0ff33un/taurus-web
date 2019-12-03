@@ -14,8 +14,10 @@ class Board extends React.Component {
   }
 
   moveMessage = direction => {
-    const { dispatch } = this.props
-    dispatch(wsMessage({ type: 'move', direction: direction }))
+    const { dispatch, gameRunning } = this.props
+    if (gameRunning) {
+      dispatch(wsMessage({ type: 'move', direction: direction }))
+    }
   }
 
   keyPressed = event => {
@@ -66,4 +68,9 @@ class Board extends React.Component {
   }
 }
 
-export default connect()(Board)
+function mapStateToProps(state) {
+  const { gameRunning } = state.gameController
+  return { gameRunning }
+}
+
+export default connect(mapStateToProps)(Board)
