@@ -23,7 +23,7 @@ class Board extends React.Component {
   keyPressed = event => {
     event.preventDefault()
     const { lastPressed } = this.state
-    if (new Date().getTime() - lastPressed < 200) {
+    if (new Date().getTime() - lastPressed < 50) {
       return
     }
     this.setState({ lastPressed: new Date().getTime() })

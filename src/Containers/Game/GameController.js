@@ -219,7 +219,7 @@ class GameController extends React.Component {
                   >
                     <DialogContent>
                       <DialogContentText id="alert-dialog-description">
-                        You are the last player in the room. If you leave the room will be destroyed.
+                        You are the last player in the room. If you leave, the room will be destroyed.
                       </DialogContentText>
                     </DialogContent>
                     <DialogActions>
