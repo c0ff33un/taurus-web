@@ -11,9 +11,9 @@ import {
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import { login, guestLogin } from '../../Redux/ducks/authentication'
-import { startLoading, finishLoading } from '../../Redux/ducks/loading'
+import { startLoading } from '../../Redux/ducks/loading'
 import { connect } from 'react-redux'
-import { ReCaptcha } from 'react-recaptcha-google'
+import ReCaptcha from '../../Components/ReCaptcha'
 
 function Copyright() {
   return (
@@ -50,30 +50,20 @@ const styles = theme => ({
   },
 })
 
+
 class Login extends React.Component {
   constructor(props) {
+    const reCaptcha = process.env.REACT_APP_NO_AUTH === undefined
     super(props)
     this.state = {
       email: '',
       password: '',
-      disabled: true
-    }
-  }
-
-  componentDidMount() {
-    if (this.captchaDemo) {
-      this.captchaDemo.reset()
-    }
-  }
-
-  onLoadRecaptcha = () => {
-    if (this.captchaDemo) {
-      this.captchaDemo.reset();
+      disabled: reCaptcha,
+      reCaptcha
     }
   }
 
   verifyCallback = (recaptchaToken) => {
-    console.log('Recaptchaedasd')
     this.setState({disabled:false})
   }
 
@@ -94,7 +84,7 @@ class Login extends React.Component {
 
   render() {
     const { classes, loading } = this.props
-    const { disabled } = this.state
+    const { disabled, reCaptcha } = this.state
     return (
       <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
@@ -135,14 +125,10 @@ class Login extends React.Component {
             /> 
             <Grid container justify='center'>
               <Grid container item justify='center' xs={12}>
-                <ReCaptcha
-                  ref={(el) => {this.captchaDemo = el;}}
-                  size="normal"
-                  render="explicit"
-                  sitekey={process.env.REACT_APP_SITE_KEY}
-                  onloadCallback={this.onLoadRecaptcha}
+                {reCaptcha && <ReCaptcha 
+                  visible={reCaptcha}
                   verifyCallback={this.verifyCallback}
-                />
+                />}
               </Grid>
             </Grid>
             <Grid container spacing={1}>

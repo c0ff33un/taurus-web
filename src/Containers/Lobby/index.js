@@ -39,9 +39,8 @@ class CreateRoom extends React.Component {
     const options = {
       method : 'POST',
     }
-    const apiURL = process.env.REACT_APP_GAME_URL
-    console.log("apiURL: " + apiURL)
-    fetch(`http://${apiURL}/room`, options)
+    const gameURL = process.env.REACT_APP_GAME_URL
+    fetch(`http${gameURL}/room`, options)
     .then(response => {
       console.log(response.body)
       return response.json()

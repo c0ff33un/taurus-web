@@ -32,7 +32,7 @@ export function wsConnect(parameters) {
   const { token, roomId, url } = parameters
   if (url === undefined) {
     const apiURL = process.env.REACT_APP_GAME_URL
-    const calurl = `ws://${apiURL}/ws/${roomId}?token=${token}`
+    const calurl = `ws${apiURL}/ws/${roomId}?token=${token}`
     return { type: WS_CONNECT, payload: { url: calurl, roomId }}
   }
   //const apiURL = process.env.REACT_APP_GAME_URL

@@ -87,7 +87,7 @@ class GameController extends React.Component {
     }
     const { roomId } = this.props
     const gameURL = process.env.REACT_APP_GAME_URL
-    fetch(`http://${gameURL}/room/setup/${roomId}`, options1)
+    fetch(`http${gameURL}/room/setup/${roomId}`, options1)
       .then(response => {
         console.log(response.body)
         return response.json()
@@ -109,9 +109,9 @@ class GameController extends React.Component {
     const options = {
       method: 'PUT',
     }
-    const apiURL = process.env.REACT_APP_GAME_URL
+    const gameURL = process.env.REACT_APP_GAME_URL
     dispatch(startLoading())
-    fetch(`http://${apiURL}/room/start/${roomId}`, options)
+    fetch(`http${gameURL}/room/start/${roomId}`, options)
       .then(response => {
         console.log(response.body)
         return response.json()
@@ -129,7 +129,7 @@ class GameController extends React.Component {
 
 
   goToMenu = () => {
-    const { dispatch, token } = this.props
+    const { dispatch } = this.props
     dispatch(wsMessage({ type: "leave" }))
     dispatch(wsDisconnect())
     dispatch(invalidateGame())
@@ -137,8 +137,7 @@ class GameController extends React.Component {
   }
 
   goToMenuDialog = () => {
-    const { dispatch, token, length } = this.props
-    console.log(`length: ${length}`)
+    const { length } = this.props
     if (length === 1) {
       this.setState({ open: true })
       return

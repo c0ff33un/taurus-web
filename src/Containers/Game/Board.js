@@ -10,6 +10,7 @@ class Board extends React.Component {
   }
 
   componentDidMount() {
+    console.log('focus')
     this.gameContainer.current.focus()
   }
 
