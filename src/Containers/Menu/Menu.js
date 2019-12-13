@@ -109,7 +109,7 @@ class Menu extends React.Component {
   }
 
   render() {
-    const { classes, connected } = this.props
+    const { classes, connected, loading } = this.props
     return (
       <Fragment>
         {connected? (
@@ -125,7 +125,7 @@ class Menu extends React.Component {
                   <Grid item xs={12}>
                       <Button 
                         fullWidth 
-                        disabled={this.props.loading}
+                        disabled={loading}
                         variant="contained" 
                         color="primary" 
                         className={classes.customBtn} 
@@ -136,7 +136,7 @@ class Menu extends React.Component {
                   <Grid item container direction='row' justify='space-between'>
                     <Grid item>
                       <TextField
-                        disabled={this.props.loading}
+                        disabled={loading}
                         variant="outlined"
                         required
                         name="roomId"
@@ -150,7 +150,7 @@ class Menu extends React.Component {
                     <Grid item>
                         <Button
                           style={{height: "100%"}}
-                          disabled={this.props.loading || this.state.roomId === ""}
+                          disabled={loading || this.state.roomId === ""}
                           fullWidth 
                           variant="contained" 
                           color="primary" 
@@ -163,10 +163,12 @@ class Menu extends React.Component {
                   <Grid item xs={12}>
                     <Button 
                       fullWidth 
+                      disabled={loading}
                       variant="contained" 
                       color="secondary" 
                       className={classes.customBtn} 
-                      onClick={this.performLogout}>
+                      onClick={this.performLogout}
+                    >
                           Logout
                     </Button>
                   </Grid>

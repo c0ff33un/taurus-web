@@ -1,9 +1,19 @@
-import React from 'react';
-import { Avatar, Button, TextField,
-  Link, Grid, Box, Container, Typography } from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import { userActions } from '../../Redux/ducks/authentication'
-import { connect } from 'react-redux';
+import React from 'react'
+import {
+  Avatar,
+  Button,
+  TextField,
+  Link,
+  Grid,
+  Box,
+  Container,
+  Typography,
+} from '@material-ui/core'
+import { withStyles } from '@material-ui/core/styles'
+import { login, guestLogin } from '../../Redux/ducks/authentication'
+import { startLoading, finishLoading } from '../../Redux/ducks/loading'
+import { connect } from 'react-redux'
+import { ReCaptcha } from 'react-recaptcha-google'
 
 function Copyright() {
   return (
@@ -12,7 +22,7 @@ function Copyright() {
       {new Date().getFullYear()}
       {'.'}
     </Typography>
-  );
+  )
 }
 
 const styles = theme => ({
@@ -22,7 +32,7 @@ const styles = theme => ({
     },
   },
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(16),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -36,51 +46,59 @@ const styles = theme => ({
     marginTop: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(1, 0, 1),
   },
-});
+})
 
 class Login extends React.Component {
-  constructor(props){
-    super(props);
+  constructor(props) {
+    super(props)
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      disabled: true
     }
-    this.performLogin = this.performLogin.bind(this);
-    this.performLoginGuest = this.performLoginGuest.bind(this);
   }
 
-  performLogin(e){
-    e.preventDefault();
-
-    this.props.login(this.state.email, this.state.password)
-    .then(resp => {
-      if(!resp.error){
-        console.log('jasdf')
-      }
-    }).catch(error => console.log(error))
-    
+  componentDidMount() {
+    if (this.captchaDemo) {
+      this.captchaDemo.reset()
+    }
   }
 
-  performLoginGuest(e){
-    e.preventDefault();
-    
-    this.props.guestLogin()
-    .then(resp => {
-      if(!resp.error){
-      }
-    }).catch(error => console.log(error))
-    
+  onLoadRecaptcha = () => {
+    if (this.captchaDemo) {
+      this.captchaDemo.reset();
+    }
+  }
+
+  verifyCallback = (recaptchaToken) => {
+    console.log('Recaptchaedasd')
+    this.setState({disabled:false})
+  }
+
+  performLogin = e => {
+    e.preventDefault()
+    const { dispatch } = this.props
+    const { email, password } = this.state
+    dispatch(startLoading())
+    dispatch(login(email, password))
+  }
+
+  performLoginGuest = e => {
+    e.preventDefault()
+    const { dispatch } = this.props
+    dispatch(startLoading())
+    dispatch(guestLogin())
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, loading } = this.props
+    const { disabled } = this.state
     return (
       <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-          </Avatar>
+          <Avatar className={classes.avatar} />
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
@@ -95,8 +113,8 @@ class Login extends React.Component {
               name="email"
               autoComplete="email"
               autoFocus
-              onChange={(e)=>{
-                this.setState({email: e.target.value});
+              onChange={e => {
+                this.setState({ email: e.target.value })
               }}
               value={this.state.email}
             />
@@ -110,11 +128,23 @@ class Login extends React.Component {
               type="password"
               id="password"
               autoComplete="current-password"
-              onChange={(e)=>{
-                this.setState({password: e.target.value});
+              onChange={e => {
+                this.setState({ password: e.target.value })
               }}
               value={this.state.password}
-            />
+            /> 
+            <Grid container justify='center'>
+              <Grid container item justify='center' xs={12}>
+                <ReCaptcha
+                  ref={(el) => {this.captchaDemo = el;}}
+                  size="normal"
+                  render="explicit"
+                  sitekey={process.env.REACT_APP_SITE_KEY}
+                  onloadCallback={this.onLoadRecaptcha}
+                  verifyCallback={this.verifyCallback}
+                />
+              </Grid>
+            </Grid>
             <Grid container spacing={1}>
               <Grid item xs={6}>
                 <Button
@@ -123,6 +153,7 @@ class Login extends React.Component {
                   color="primary"
                   className={classes.submit}
                   onClick={this.performLogin}
+                  disabled={loading || disabled}
                 >
                   Log In
                 </Button>
@@ -134,6 +165,7 @@ class Login extends React.Component {
                   color="secondary"
                   className={classes.submit}
                   onClick={this.performLoginGuest}
+                  disabled={loading || disabled}
                 >
                   Guest
                 </Button>
@@ -159,18 +191,13 @@ class Login extends React.Component {
           <Copyright />
         </Box>
       </Container>
-    );
+    )
   }
 }
 
-function mapState(state) {
-  const { logginIn } = state.authentication;
-  return { logginIn }
+function mapStateToProps(state) {
+  const { logginIn } = state.authentication
+  return { logginIn, loading: state.loading }
 }
 
-const loginConnection = connect(mapState, {
-  login: userActions.login,
-  guestLogin: userActions.guestLogin
-}) ( withStyles(styles)(Login))
-
-export default loginConnection
+export default connect(mapStateToProps)(withStyles(styles)(Login))

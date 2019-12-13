@@ -12,12 +12,18 @@ export const userActions = {
   guestLogin
 }
 
-function login(email, password) {
+export function login(email, password) {
     return (dispatch) => {
         dispatch(request({ email }));
         return userHelper.login(email, password)
-            .then(user => dispatch(success(user)))
-            .catch(error => dispatch(failure(error)));
+        .then(user => {
+          dispatch(success(user))
+          dispatch(finishLoading())
+        })
+        .catch(error => {
+          dispatch(failure(error))
+          dispatch(finishLoading())
+        });
     };
 
     function request(user) { return { type: LOGIN_REQUEST, user } }
@@ -25,12 +31,18 @@ function login(email, password) {
     function failure(error) { return { type: LOGIN_FAILURE, error } }
 }
 
-function guestLogin(){
+export function guestLogin(){
     return (dispatch) => {
         dispatch(guest());
         return userHelper.guestLogin()
-            .then(user => dispatch(success(user)))
-            .catch(error => dispatch(failure(error)))
+        .then(user => {
+          dispatch(success(user))
+          dispatch(finishLoading())
+        })
+        .catch(error => {
+          dispatch(failure(error))
+          dispatch(finishLoading())
+        })
     };
     
     function guest() { return { type: LOGIN_REQUEST} }
