@@ -40,13 +40,12 @@ class Menu extends React.Component {
   }
 
   noAuthCreateRoom = () => {
-    const gameURL = process.env.REACT_APP_GAME_URL
+    const gameAPIURL = process.env.REACT_APP_GAME_API_URL
     const { token, dispatch } = this.props
     const options = {
       method : 'POST',
     }
-    console.log(gameURL)
-    fetch(`http${gameURL}/room`, options)
+    fetch(`${gameAPIURL}/room`, options)
     .then(response => {
       return response.json()
     })

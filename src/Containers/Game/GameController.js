@@ -86,8 +86,8 @@ class GameController extends React.Component {
       }),
     }
     const { roomId } = this.props
-    const gameURL = process.env.REACT_APP_GAME_URL
-    fetch(`http${gameURL}/room/setup/${roomId}`, options1)
+    const gameAPIURL = process.env.REACT_APP_GAME_API_URL
+    fetch(`${gameAPIURL}/room/setup/${roomId}`, options1)
       .then(response => {
         console.log(response.body)
         return response.json()
@@ -109,9 +109,9 @@ class GameController extends React.Component {
     const options = {
       method: 'PUT',
     }
-    const gameURL = process.env.REACT_APP_GAME_URL
+    const gameAPIURL = process.env.REACT_APP_GAME_API_URL
     dispatch(startLoading())
-    fetch(`http${gameURL}/room/start/${roomId}`, options)
+    fetch(`${gameAPIURL}/room/start/${roomId}`, options)
       .then(response => {
         console.log(response.body)
         return response.json()
