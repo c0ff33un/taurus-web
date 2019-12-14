@@ -99,6 +99,11 @@ class Menu extends React.Component {
     dispatch(wsConnect({ token, roomId }))
   }
 
+  goToStatistics = (event) => {
+    event.preventDefault()
+    this.props.history.push('/stats') 
+  }
+
   handleChange = (event, name) => {
     event.preventDefault()
     this.setState({[name] : event.target.value})
@@ -122,6 +127,18 @@ class Menu extends React.Component {
               </Typography>
               <form className={classes.form} onSubmit={this.handleSubmit} noValidate>
                 <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                      <Button
+                        style={{height: "100%"}}
+                        disabled={loading || this.props.guest }
+                        fullWidth 
+                        variant="contained" 
+                        color="primary" 
+                        size="large"
+                        onClick={this.goToStatistics}>
+                        My Statistics 
+                      </Button>
+                  </Grid>  
                   <Grid item xs={12}>
                       <Button 
                         fullWidth 
@@ -185,7 +202,7 @@ class Menu extends React.Component {
 function mapStateToProps(state) {
   const { logginIn, user } = state.authentication
   const { loading, websockets } = state
-  return { logginIn, token: user.token, loading, connected: websockets.connected }
+  return { logginIn, token: user.token, guest: user.data.guest, loading, connected: websockets.connected }
 }
 
 export default connect(mapStateToProps) ( withStyles(styles)(Menu))
