@@ -11,14 +11,24 @@ import App from './App'
 import Loading from './Containers/Loading'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
+import { onError } from 'apollo-link-error'
+
+const client = new ApolloClient({
+  uri: process.env.REACT_APP_API_URL,
+});
+
 render(
     <Provider store={store}>
-      <Router>
-        <CssBaseline />
-        <PersistGate loading={<Loading />} persistor={persistor}>
-          <App />
-        </PersistGate>
-      </Router>
+      <ApolloProvider client={client}>
+        <Router>
+          <CssBaseline />
+          <PersistGate loading={<Loading />} persistor={persistor}>
+            <App />
+          </PersistGate>
+        </Router>
+      </ApolloProvider>
     </Provider>,
     document.querySelector('#root')
   )

@@ -14,10 +14,30 @@ function requestOptions(data){
 
 const url = process.env.REACT_APP_API_URL
 
+function confirm(token){
+  const data = {
+    "query": `mutation {confirmation(token: \"${token}\"){id }}`
+  }
+
+  return fetch(url, requestOptions(data))
+  .then(response => response.json())
+  .catch(error => {throw new Error(error)})
+  .then(response =>{
+    if(!response.data){
+      throw new Error(response.errors[0].message)
+    }else{
+      return response
+    }
+  })
+  .catch(error=> {throw new Error(error)})
+  .then(response => { return response.data })
+}
+
+
 function login(email, password) {
 
   const data = {
-    "query": `mutation {login(user:{email:"${email}" password:"${password}"}) {user{id handle email guest} jwt} }`
+    "query": `mutation {confirmation(user:{email:"${email}" password:"${password}"}) {user{id handle email guest} jwt} }`
   }
 
   var jwt
