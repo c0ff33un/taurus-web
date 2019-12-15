@@ -17,7 +17,7 @@ const url = process.env.REACT_APP_API_URL
 function login(email, password) {
 
   const data = {
-    "query": `mutation {login(user:{email:"${email}" password:"${password}"}) {user{id handle email guest} jwt} }`
+    "query": `mutation {confirmation(user:{email:"${email}" password:"${password}"}) {user{id handle email guest} jwt} }`
   }
 
   var jwt

@@ -1,106 +1,99 @@
 import React, { Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
-import { connect } from 'react-redux'
+import { connect, useDispatch, useSelector } from 'react-redux'
 import { startLoading, finishLoading } from '../../Redux/ducks/loading'
 import { invalidateGame } from '../../Redux/ducks/gameController'
 import { invalidateMessages } from '../../Redux/ducks/messageLog'
 import { wsMessage, wsDisconnect } from '../../Redux/ducks/websockets'
 
 import { Button, Grid, Typography, Dialog, DialogActions, DialogContent, DialogContentText } from '@material-ui/core'
+import { gql } from 'apollo-boost'
+import { useMutation } from '@apollo/react-hooks';
 const CELL_SIZE = 25
 const WIDTH = 625
 const HEIGHT = 625
+
+
+function SetupGame(props) {
+  const { classes } = props
+  const { room, loading, gameRunning } = useSelector((state) => { 
+    return { room: state.websockets.roomId, loading: state.loading, gameRunning: state.gameController.gameRunning } 
+  })
+  const seed = Math.floor(Math.random() * Math.pow(10, 9)) 
+  const rows = HEIGHT / CELL_SIZE
+  const cols = WIDTH / CELL_SIZE
+
+  const SETUP_GAME = gql`
+    mutation {
+      roomSetup(room: "${room}", seed: ${seed}, rows: ${rows}, cols: ${cols}) {
+        id
+      }
+    }
+  `
+  const [ setupGame, { loading : loadingMutation, data } ] = useMutation(SETUP_GAME)
+  const dispatch = useDispatch()
+  if (loading && data) {
+    dispatch(finishLoading())
+  }
+  return (
+    <Button
+      fullWidth
+      disabled={loading || gameRunning}
+      variant="contained"
+      color="primary"
+      className={classes.submit}
+      onClick={() => {
+        dispatch(startLoading())
+        setupGame()
+      }}
+    >
+      Setup Game
+    </Button>
+  )
+}
+
+
+function StartGame(props) {
+  const { classes } = props
+  const { room, loading, gameRunning } = useSelector((state) => { 
+    return { room: state.websockets.roomId, loading: state.loading, gameRunning: state.gameController.gameRunning } 
+  })
+
+  const START_GAME = gql`
+    mutation {
+      roomStart(room: "${room}") {
+        id
+      }
+    }
+  `
+  const [ startGame, { loading : loadingMutation, data } ] = useMutation(START_GAME)
+  const dispatch = useDispatch()
+  if (loading && data) {
+    dispatch(finishLoading())
+  }
+  return (
+    <Button
+      fullWidth
+      disabled={loading || gameRunning}
+      variant="contained"
+      color="primary"
+      className={classes.submit}
+      onClick={() => {
+        dispatch(startLoading())
+        startGame()
+      }}
+    >
+      Start Game
+    </Button>
+  )
+}
 
 class GameController extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      rows: HEIGHT / CELL_SIZE,
-      cols: WIDTH / CELL_SIZE,
       open: false
     }
-  }
-
-  setupGame = async event => {
-    event.preventDefault()
-
-    // Grid endponint from the API
-    const apiURL = process.env.REACT_APP_API_URL
-
-    const seed = Math.floor(Math.random() * Math.pow(10, 18))
-    const { rows, cols } = this.state
-
-    const mutation = {
-      query: `mutation{
-        grid(settings:{seed: "${seed}" w:"${cols}" h:"${rows}"}){seed exit{x y} matrix}}`,
-    }
-
-    const { dispatch, token } = this.props
-    var options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(mutation),
-    }
-    dispatch(startLoading())
-    let response
-    try {
-      response = await fetch(apiURL, options).then(res => res.json())
-    } catch (e) {
-      throw new Error(e)
-    }
-
-    let mat = response.data.grid.matrix
-    let exit = response.data.grid.exit
-
-    //Temporally beginPosition search from players
-
-    var currentDistance = 0
-    var currentBegin = exit
-
-    for (let x = 0; x < rows; ++x) {
-      for (let y = 0; y < cols; ++y) {
-        let pos = x * cols + y
-        if (mat[pos] === false) {
-          let manhattanDistance = Math.abs(x - exit.x) + Math.abs(y - exit.y)
-          if (manhattanDistance > currentDistance) {
-            currentDistance = manhattanDistance
-            currentBegin = { x, y }
-          }
-        }
-      }
-    }
-
-    //game setup through the websocket
-
-    const options1 = {
-      method: 'PUT',
-      body: JSON.stringify({
-        rows: parseInt(rows),
-        cols: parseInt(cols),
-        exit: exit,
-        begin: currentBegin,
-        grid: mat,
-      }),
-    }
-    const { roomId } = this.props
-    const gameAPIURL = process.env.REACT_APP_GAME_API_URL
-    fetch(`${gameAPIURL}/room/setup/${roomId}`, options1)
-      .then(response => {
-        console.log(response.body)
-        return response.json()
-      })
-      .then(json => {
-        console.log(json)
-        dispatch(finishLoading())
-        return json
-      })
-      .catch(error => {
-        console.log(error)
-        dispatch(finishLoading())
-      })
   }
 
   startGame = event => {
@@ -159,7 +152,7 @@ class GameController extends React.Component {
   }
 
   render() {
-    const { classes, connected, gameSetup } = this.props
+    const { loading, classes, connected, gameRunning, gameSetup } = this.props
     return (
       <Fragment>
         {connected ? (
@@ -171,38 +164,16 @@ class GameController extends React.Component {
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <Button
-                  fullWidth
-                  disabled={this.props.loading || this.props.gameRunning}
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={this.setupGame}
-                >
-                  Setup Game
-                </Button>
+                <SetupGame classes={classes} />
               </Grid>
               <Grid item xs={6}>
-                <Button
-                  fullWidth
-                  disabled={
-                    this.props.loading ||
-                    !this.props.gameSetup ||
-                    this.props.gameRunning
-                  }
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={this.startGame}
-                >
-                  Start Game
-                </Button>
+                <StartGame classes={classes} />
               </Grid>
               <Grid item xs={12}>
                 <div>
                   <Button
                     fullWidth
-                    disabled={this.props.loading}
+                    disabled={loading}
                     variant="contained"
                     color="secondary"
                     className={classes.customBtn}
