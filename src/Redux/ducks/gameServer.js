@@ -37,6 +37,7 @@ export function addGameServerMessage(message) {
         break;
       }
       case "leave":{
+        console.log("Leave Message")
         const { id, handle, length } = message
         batch(() => {
           dispatch(removePlayer(id, length))
