@@ -30,5 +30,9 @@
 }
 
 .Occupied {
-  background-color: red;
+  background-color: hsl(random(360), 100, 50);
+}
+
+.Me {
+  background-color: Blue;
 }

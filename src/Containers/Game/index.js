@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import './Game.css'
+import './Game.scss'
 import { Container } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 import WebSocketConnection from '../../Components/WebSocketConnection'
@@ -54,16 +54,17 @@ class Game extends React.Component {
   }
  
   render() {
-    const { players, grid, classes } = this.props;
+    const { players, grid, classes, user_id } = this.props;
     const { cols } = this.state;
     var draw = grid !== null;
     var gridItems = null;
     if (draw) {
       const drawGrid = [...grid];
+      let me_id = null
       for (var key in players) {
-        var x = players[key]["x"];
-        var y = players[key]["y"];
-        drawGrid[y * cols + x] = {"occupied": true};
+      const { x, y } = players[key]
+        drawGrid[y * cols + x] = { "occupied": true, "me": key === user_id };
+        if (key == user_id) me_id = y * cols + x
       }
       gridItems = drawGrid.map((cell, index) => {
         const x = Math.floor(index / cols), y = index % cols;
@@ -75,7 +76,9 @@ class Game extends React.Component {
           className = "Cell"
         } else if( x === 0 || x === 24 || y === 0 || y === 24 ){
           className = "Win Cell"
-        } else{
+        } else if ( (cell.occupied && cell.me) || index == me_id ) {
+          className = "Me Cell"
+        } else {
           className = "Occupied Cell"
         }
 
@@ -104,8 +107,8 @@ class Game extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { gameController } = state
-  return { grid: gameController.grid, players: gameController.players }
+  const { gameController, authentication } = state
+  return { grid: gameController.grid, players: gameController.players, user_id: authentication.user.data.id}
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(Game))
