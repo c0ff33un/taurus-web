@@ -30,7 +30,7 @@ function SetupGame(props) {
       }
     }
   `
-  const [ setupGame, { loading : loadingMutation, data } ] = useMutation(SETUP_GAME)
+  const [ setupGame, { /*loading : loadingMutation,*/ data } ] = useMutation(SETUP_GAME)
   const dispatch = useDispatch()
   if (loading && data) {
     dispatch(finishLoading())
@@ -66,7 +66,7 @@ function StartGame(props) {
       }
     }
   `
-  const [ startGame, { loading : loadingMutation, data } ] = useMutation(START_GAME)
+  const [ startGame, { /*loading : loadingMutation,*/ data } ] = useMutation(START_GAME)
   const dispatch = useDispatch()
   if (loading && data) {
     dispatch(finishLoading())
@@ -152,7 +152,7 @@ class GameController extends React.Component {
   }
 
   render() {
-    const { loading, classes, connected, gameRunning, gameSetup } = this.props
+    const { loading, classes, connected, /*gameRunning, gameSetup*/ } = this.props
     return (
       <Fragment>
         {connected ? (

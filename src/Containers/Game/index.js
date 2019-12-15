@@ -55,21 +55,23 @@ class Game extends React.Component {
  
   render() {
     const { players, grid, classes, user_id } = this.props;
+    const colors = ['Red', 'Coffee', 'Blue', 'Green']
     const { cols } = this.state;
     var draw = grid !== null;
     var gridItems = null;
     if (draw) {
       const drawGrid = [...grid];
       let me_id = null
+      let i = 0
       for (var key in players) {
-      const { x, y } = players[key]
-        drawGrid[y * cols + x] = { "occupied": true, "me": key === user_id };
+        const { x, y } = players[key]
+        drawGrid[y * cols + x] = { "occupied": true, "me": key === user_id, "color":i++ };
         if (key == user_id) me_id = y * cols + x
       }
       gridItems = drawGrid.map((cell, index) => {
         const x = Math.floor(index / cols), y = index % cols;
         const key = x.toString() + '-' + y.toString()
-        var className;
+        var className, color;
         if (cell && !cell.occupied) {
           className = "Wall Cell";
         } else if( !cell.occupied ) {
@@ -79,12 +81,13 @@ class Game extends React.Component {
         } else if ( (cell.occupied && cell.me) || index == me_id ) {
           className = "Me Cell"
         } else {
-          className = "Occupied Cell"
+          className = `${colors[cell.color%4]} Cell`;
         }
 
         return <div
             key={key}
-            className={className}></div>
+            className={className}
+            ></div>
       })
     }
     return (
