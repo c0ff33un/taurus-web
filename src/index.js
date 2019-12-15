@@ -13,7 +13,6 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from '@apollo/react-hooks';
-import { onError } from 'apollo-link-error'
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_API_URL,

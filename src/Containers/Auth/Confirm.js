@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
-import {Avatar, Button, TextField,
-  Link, Grid, Box, Container, Typography, CircularProgress,
-  Card, CardActions, CardContent} from '@material-ui/core';
+import React from 'react';
+import { Box, Container, Typography, CircularProgress } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import { register } from '../../Redux/ducks/registration'
 import { connect } from 'react-redux';
@@ -48,7 +46,7 @@ const styles = theme => ({
 function ConfirmHook(props) {
   const { token } = props
   const CONFIRMATION = gql`
-    mutation{
+    mutation {
       confirmation(token: "${token}") {
         id
         handle
