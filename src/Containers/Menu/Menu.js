@@ -7,7 +7,10 @@ import { startLoading, finishLoading } from '../../Redux/ducks/loading'
 import { invalidateGame } from '../../Redux/ducks/gameController'
 import { invalidateMessages } from '../../Redux/ducks/messageLog'
 import { wsConnect } from '../../Redux/ducks/websockets'
-import { connect, batch } from 'react-redux'
+import { connect, batch, useSelector, useDispatch } from 'react-redux'
+
+import { gql } from 'apollo-boost'
+import { useMutation } from '@apollo/react-hooks';
 
 const styles = theme => ({
   body: {
@@ -25,6 +28,39 @@ const styles = theme => ({
   },
 });
 
+function CreateRoom(props) {
+  const { classes } = props
+  const CREATE_ROOM = gql`
+    mutation {
+      room {
+        id
+      }
+    }
+  `
+  const [ createRoom, { data } ] = useMutation(CREATE_ROOM)
+
+  const dispatch = useDispatch()
+  const loading = useSelector(state => state.loading)
+
+  if (loading && data) {
+    dispatch(finishLoading())
+  }
+  return (
+    <Button 
+      fullWidth 
+      disabled={loading}
+      variant="contained" 
+      color="primary" 
+      className={classes.customBtn} 
+      onClick={() => { 
+        dispatch(startLoading())
+        createRoom()
+      }}>
+      Create Room
+    </Button>
+  )
+}
+
 class Menu extends React.Component {
   constructor(props){
     super(props)
@@ -39,36 +75,12 @@ class Menu extends React.Component {
     dispatch(logout())
   }
 
-  noAuthCreateRoom = () => {
-    const gameAPIURL = process.env.REACT_APP_GAME_API_URL
-    const { token, dispatch } = this.props
-    const options = {
-      method : 'POST',
-    }
-    fetch(`${gameAPIURL}/room`, options)
-    .then(response => {
-      return response.json()
-    })
-    .then(json => {
-      const roomId = json.id
-      dispatch(wsConnect({ token, roomId }))
-    })
-    .catch(error => {
-      alert('Error communicating to game server')
-      dispatch(finishLoading())
-    })
-  }
-
   createRoom = (event) => {
     const { token, dispatch } = this.props
     dispatch(startLoading())
     dispatch(invalidateGame())
     dispatch(invalidateMessages())
-    const noAuth = process.env.REACT_APP_NO_AUTH
-    if (noAuth !== undefined) {
-      this.noAuthCreateRoom()
-      return
-    }
+    // useful for developing without deploying local API
     const apiURL = process.env.REACT_APP_API_URL
     const options = {
       headers : {
@@ -187,9 +199,10 @@ class Menu extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { logginIn, user } = state.authentication
+  const { logginIn, jwt } = state.authentication
   const { loading, websockets } = state
-  return { logginIn, token: user.token, loading, connected: websockets.connected }
+  console.log(state.authentication)
+  return { logginIn, token: jwt, loading, connected: websockets.connected }
 }
 
 export default connect(mapStateToProps) ( withStyles(styles)(Menu))

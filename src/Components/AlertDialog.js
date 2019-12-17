@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
-export default function AlertDialog() {
+export default function AlertDialog(props) {
   const [open, setOpen] = React.useState(false)
 
   const handleClickOpen = () => {
@@ -20,6 +20,8 @@ export default function AlertDialog() {
   const handleCancel = () => {
     setOpen(false)
   }
+
+  const { text, handle } = props
 
   return (
     <div>

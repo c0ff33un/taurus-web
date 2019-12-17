@@ -111,7 +111,7 @@ class Game extends React.Component {
 
 function mapStateToProps(state) {
   const { gameController, authentication } = state
-  return { grid: gameController.grid, players: gameController.players, user_id: authentication.user.data.id}
+  return { grid: gameController.grid, players: gameController.players, user_id: authentication.user.id}
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(Game))
