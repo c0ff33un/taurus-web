@@ -35,7 +35,7 @@ const apiUrl = process.env.REACT_APP_API_URL
 
 export function login(email, password) {
   const data = {
-    "query": `mutation {confirmation(user:{email:"${email}" password:"${password}"}) {user{id handle email guest} jwt} }`
+    "query": `mutation {login(user:{email:"${email}" password:"${password}"}) {user{id handle email guest} jwt} }`
   }
   return dispatch => {
     dispatch(loginRequest({ email }));
@@ -43,9 +43,19 @@ export function login(email, password) {
       .then(res => res.json())
       .then(res => {
         if (!res.data) {
-
+          throw new Error(res.errors[0].message)
         }
+        const { user, jwt } = res.data.login
+        dispatch(loginSuccess(user, jwt))
+        return res
       })
+      .catch(err => {
+        alert(`Sorry, that didn't work`)
+        //dispatch(errorAlert(`Sorry, that didn't work`))
+        dispatch(loginFailure(err))
+        return err
+      })
+      .finally(() => dispatch(finishLoading()))
   };
 }
 
@@ -70,7 +80,7 @@ export function guestLogin(){
         dispatch(loginFailure(err))
         return err
       })
-      .finally(() => { dispatch(finishLoading()); })
+      .finally(() => dispatch(finishLoading()))
   }
 }
 
