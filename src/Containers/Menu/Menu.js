@@ -7,7 +7,7 @@ import { startLoading, finishLoading } from '../../Redux/ducks/loading'
 import { invalidateGame } from '../../Redux/ducks/gameController'
 import { invalidateMessages } from '../../Redux/ducks/messageLog'
 import { wsConnect } from '../../Redux/ducks/websockets'
-import { connect } from 'react-redux'
+import { connect, batch } from 'react-redux'
 
 const styles = theme => ({
   body: {
@@ -95,8 +95,12 @@ class Menu extends React.Component {
     event.preventDefault()
     const { roomId } = this.state
     const { token, dispatch } = this.props
-    dispatch(startLoading())
-    dispatch(wsConnect({ token, roomId }))
+    batch(() => {
+      dispatch(startLoading())
+      dispatch(invalidateGame())
+      dispatch(invalidateMessages())
+      dispatch(wsConnect({ token, roomId }))
+    })
   }
 
   goToStatistics = (event) => {

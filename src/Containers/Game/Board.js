@@ -55,7 +55,7 @@ class Board extends React.Component {
   }
 
   render() {
-    const { gridItems } = this.props
+    // const { gridItems } = this.props
     return (
       <div
         ref={this.gameContainer}

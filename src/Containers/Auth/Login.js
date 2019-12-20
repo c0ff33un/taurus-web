@@ -53,7 +53,8 @@ const styles = theme => ({
 
 class Login extends React.Component {
   constructor(props) {
-    const reCaptcha = process.env.REACT_APP_NO_AUTH === undefined
+    //const reCaptcha = process.env.REACT_APP_NO_AUTH === undefined
+    const reCaptcha = false
     super(props)
     this.state = {
       email: '',

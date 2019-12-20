@@ -1,1 +1,1 @@
-sudo docker push taurusgame/web
+docker push taurusgame/web

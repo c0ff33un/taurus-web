@@ -19,16 +19,29 @@
   outline: 1px solid grey;
   width: 25px;
   height: 25px;
+  &.Blue{
+    background-color: #3F88C5;
+  }
+  &.Red{
+    background-color: #D72638;
+  }
+  &.Coffee{
+    background-color: #813405;
+  }
+  &.Green{
+    background-color: #5FAD56;
+  }
 }
 
 .Win {
-  background-color: yellow;
+  background-color: black;
 }
 
 .Wall {
   background-color: black;
 }
 
-.Occupied {
-  background-color: red;
+
+.Me {
+  background-color: #29335C;
 }
