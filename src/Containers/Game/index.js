@@ -66,19 +66,19 @@ class Game extends React.Component {
       for (var key in players) {
         const { x, y } = players[key]
         drawGrid[y * cols + x] = { "occupied": true, "me": key === user_id, "color":i++ };
-        if (key == user_id) me_id = y * cols + x
+        if (key === user_id) me_id = y * cols + x
       }
       gridItems = drawGrid.map((cell, index) => {
         const x = Math.floor(index / cols), y = index % cols;
         const key = x.toString() + '-' + y.toString()
-        var className, color;
+        var className;
         if (cell && !cell.occupied) {
           className = "Wall Cell";
         } else if( !cell.occupied ) {
           className = "Cell"
         } else if( x === 0 || x === 24 || y === 0 || y === 24 ){
           className = "Win Cell"
-        } else if ( (cell.occupied && cell.me) || index == me_id ) {
+        } else if ( (cell.occupied && cell.me) || index === me_id ) {
           className = "Me Cell"
         } else {
           className = `${colors[cell.color%4]} Cell`;

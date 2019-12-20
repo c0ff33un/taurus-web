@@ -47,7 +47,7 @@ function ConfirmHook(props) {
   const { token } = props
   const CONFIRMATION = gql`
     mutation {
-      confirmation(token: "${token}") {
+      confirmAccount(token: "${token}") {
         id
         handle
         email

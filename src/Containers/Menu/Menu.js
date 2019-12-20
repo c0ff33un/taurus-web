@@ -40,10 +40,14 @@ function CreateRoom(props) {
   const [ createRoom, { data } ] = useMutation(CREATE_ROOM)
 
   const dispatch = useDispatch()
-  const loading = useSelector(state => state.loading)
+  const { loading, token } = useSelector(state => {
+    return { loading: state.loading, token: state.authentication.jwt }
+  })
 
   if (loading && data) {
     dispatch(finishLoading())
+    const roomId = data.room.id
+    dispatch(wsConnect({token, roomId}))
   }
   return (
     <Button 
@@ -54,6 +58,8 @@ function CreateRoom(props) {
       className={classes.customBtn} 
       onClick={() => { 
         dispatch(startLoading())
+        dispatch(invalidateGame())
+        dispatch(invalidateMessages())
         createRoom()
       }}>
       Create Room
@@ -78,8 +84,6 @@ class Menu extends React.Component {
   createRoom = (event) => {
     const { token, dispatch } = this.props
     dispatch(startLoading())
-    dispatch(invalidateGame())
-    dispatch(invalidateMessages())
     // useful for developing without deploying local API
     const apiURL = process.env.REACT_APP_API_URL
     const options = {
@@ -139,15 +143,7 @@ class Menu extends React.Component {
               <form className={classes.form} onSubmit={this.handleSubmit} noValidate>
                 <Grid container spacing={2}>
                   <Grid item xs={12}>
-                      <Button 
-                        fullWidth 
-                        disabled={loading}
-                        variant="contained" 
-                        color="primary" 
-                        className={classes.customBtn} 
-                        onClick={this.createRoom}>
-                        Create Room
-                      </Button>
+                    <CreateRoom classes={classes} />
                   </Grid>
                   <Grid item container direction='row' justify='space-between'>
                     <Grid item>
