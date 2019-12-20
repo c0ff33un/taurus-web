@@ -1,14 +1,14 @@
 .Container {
   width: 100vw;
-  height: 100vh;
+  height: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .Board {
-  width: 625px;
-  height: 625px;
+  width: 50vw;
+  height: 50vw;
   margin: auto 0;
   display: flex;
   flex-direction: row;
@@ -16,32 +16,32 @@
 }
 
 .Cell { 
-  outline: 1px solid grey;
-  width: 25px;
-  height: 25px;
+  // outline: 1px solid grey;
+  width: 2vw;
+  height: 2vw;
   &.Blue{
-    background-color: #3F88C5;
+    background-color: #3f89c5;
   }
   &.Red{
-    background-color: #D72638;
+    background-color: #ee2b3e;
   }
   &.Coffee{
-    background-color: #813405;
+    background-color: #b84a07;
   }
   &.Green{
-    background-color: #5FAD56;
+    background-color: #28ce16;
   }
 }
 
 .Win {
-  background-color: black;
+  background-color: #ffd700;
 }
 
 .Wall {
-  background-color: black;
+  background-color: hsl(300-(random(100)),50%,50%);
 }
 
 
 .Me {
-  background-color: #29335C;
+  background-color: #2fd884;
 }

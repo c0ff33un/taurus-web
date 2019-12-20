@@ -11,27 +11,37 @@ import App from './App'
 import Loading from './Containers/Loading'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
-import ApolloClient from 'apollo-boost';
-import { ApolloProvider } from '@apollo/react-hooks';
+import ApolloClient from 'apollo-boost'
+import { ApolloProvider } from '@apollo/react-hooks'
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_API_URL,
-});
+  request: operation => {
+    const { jwt: token } = store.getState().authentication
+    if (token !== undefined) {
+      operation.setContext({
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      })
+    }
+  }
+})
 
 render(
-    <Provider store={store}>
-      <ApolloProvider client={client}>
-        <Router>
-          <CssBaseline />
-          <PersistGate loading={<Loading />} persistor={persistor}>
-            <App />
-          </PersistGate>
-        </Router>
-      </ApolloProvider>
-    </Provider>,
-    document.querySelector('#root')
-  )
+  <Provider store={store}>
+    <ApolloProvider client={client}>
+      <Router>
+        <CssBaseline />
+        <PersistGate loading={<Loading />} persistor={persistor}>
+          <App />
+        </PersistGate>
+      </Router>
+    </ApolloProvider>
+  </Provider>,
+  document.querySelector('#root')
+)
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.unregister()
