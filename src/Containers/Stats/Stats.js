@@ -9,6 +9,7 @@ import PieChart, {
   Connector,
   Size
 } from 'devextreme-react/pie-chart';
+import authentication from '../../Redux/ducks/authentication'
 
 const styles = theme => ({
   body: {
@@ -27,8 +28,8 @@ const styles = theme => ({
 });
 
 const data = [
-  { region: 'Wins', val: 2010200 },
-  { region: 'Loses', val: 5104756 }
+  { region: 'Wins', val: Math.floor(Math.random() * (+(4) - +(0))) + +(0) },
+  { region: 'Loses', val: Math.floor(Math.random() * (+(4) - +(0))) + +(0) }
 ];
 
 class Stats extends React.Component {
@@ -52,7 +53,7 @@ class Stats extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault()
   }
-
+  
   pointClickHandler(e) {
     this.toggleVisibility(e.target);
   }
@@ -132,7 +133,7 @@ class Stats extends React.Component {
 function mapStateToProps(state) {
   const { logginIn, user } = state.authentication
   const { loading, websockets } = state
-  return { logginIn, token: user.token, handle: user.data.handle, loading, connected: websockets.connected }
+  return { logginIn, token: authentication.jwt, handle: user.handle, userId: user.id, loading, connected: websockets.connected }
 }
 
 export default connect(mapStateToProps) ( withStyles(styles)(Stats))
