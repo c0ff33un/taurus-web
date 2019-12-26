@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box, Container, Typography, CircularProgress } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
-import { register } from '../../Redux/ducks/registration'
 import { connect } from 'react-redux';
 
 import { useMutation } from '@apollo/react-hooks';
@@ -99,11 +98,5 @@ class Confirm extends React.Component {
   } 
 }
 
-function mapState(state) {
-  const { registering } = state.registration;
-  console.log("AAAAAA",registering)
-  return { registering };
-}
-
-const registerConnection = connect( mapState, { register } )( withStyles(styles)(Confirm) )
+const registerConnection = connect()(withStyles(styles)(Confirm))
 export default registerConnection

@@ -1,29 +1,21 @@
-import React from 'react'
+import React, { Fragment, useState } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
 import {
   Avatar,
   Button,
-  TextField,
   Link,
   Grid,
   Box,
   Container,
   Typography,
 } from '@material-ui/core'
+import { TextField, Copyright } from '../../Components'
 import { withStyles } from '@material-ui/core/styles'
 import { login, guestLogin } from '../../Redux/ducks/authentication'
 import { startLoading } from '../../Redux/ducks/loading'
 import { connect } from 'react-redux'
 import ReCaptcha from '../../Components/ReCaptcha'
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'τrus '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  )
-}
 
 const styles = theme => ({
   '@global': {
@@ -50,6 +42,33 @@ const styles = theme => ({
   },
 })
 
+function LoginFields(props) {
+  
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const onChange = handler => { return event => handler(event.target.value) }
+  console.log(email, password)
+  return (
+    <Fragment>
+      <TextField
+        variant="outlined"
+        margin="normal"
+        label="Email Address"
+        autoComplete="email"
+        autoFocus
+        onChange={onChange(setEmail)}
+      />
+      <TextField
+        variant="outlined"
+        margin="normal"
+        label="Password"
+        type="password"
+        autoComplete="new-password"
+        onChange={onChange(setPassword)}
+      /> 
+    </Fragment>
+  )
+}
 
 class Login extends React.Component {
   constructor(props) {
@@ -66,14 +85,6 @@ class Login extends React.Component {
 
   verifyCallback = (recaptchaToken) => {
     this.setState({disabled:false})
-  }
-
-  performLogin = e => {
-    e.preventDefault()
-    const { dispatch } = this.props
-    const { email, password } = this.state
-    dispatch(startLoading())
-    dispatch(login(email, password))
   }
 
   performLoginGuest = e => {
@@ -93,37 +104,8 @@ class Login extends React.Component {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} noValidate>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              autoFocus
-              onChange={e => {
-                this.setState({ email: e.target.value })
-              }}
-              value={this.state.email}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={e => {
-                this.setState({ password: e.target.value })
-              }}
-              value={this.state.password}
-            /> 
+          <form className={classes.form} onSubmit={event => event.preventDefault()} noValidate>
+            <LoginFields />
             <Grid container justify='center'>
               <Grid container item justify='center' xs={12}>
                 {reCaptcha && <ReCaptcha 
@@ -167,7 +149,7 @@ class Login extends React.Component {
               </Grid>
               */}
               <Grid item>
-                <Link href="signup" variant="body2">
+                <Link component={RouterLink} to="/signup" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

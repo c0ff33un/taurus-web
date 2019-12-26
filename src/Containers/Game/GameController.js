@@ -55,8 +55,9 @@ function SetupGame(props) {
 
 function StartGame(props) {
   const { classes } = props
-  const { room, loading, gameRunning } = useSelector((state) => { 
-    return { room: state.websockets.roomId, loading: state.loading, gameRunning: state.gameController.gameRunning } 
+  const { room, loading, gameRunning, gameSetup } = useSelector((state) => { 
+    const { websockets, gameController, loading } = state
+    return { room: websockets.roomId, loading, gameRunning: gameController.gameRunning, gameSetup: gameController.gameSetup } 
   })
 
   const START_GAME = gql`
@@ -74,7 +75,7 @@ function StartGame(props) {
   return (
     <Button
       fullWidth
-      disabled={loading || gameRunning}
+      disabled={ loading || gameRunning || !gameSetup }
       variant="contained"
       color="primary"
       className={classes.submit}

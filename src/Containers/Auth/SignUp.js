@@ -1,20 +1,22 @@
-import React from 'react';
-import {Avatar, Button, TextField,
-  Link, Grid, Box, Container, Typography} from '@material-ui/core';
-import { withStyles } from '@material-ui/core/styles';
-import { register } from '../../Redux/ducks/registration'
-import { connect } from 'react-redux';
+import React, { Fragment } from 'react'
+import { Link as RouterLink } from 'react-router-dom'
+import {
+  Avatar,
+  Button,
+  Link,
+  Grid,
+  Box,
+  Container,
+  Typography,
+} from '@material-ui/core'
+import { TextField, Copyright } from '../../Components'
+import { withStyles, makeStyles } from '@material-ui/core/styles'
+import { useSelector, useDispatch } from 'react-redux'
+import { startLoading, finishLoading } from '../../Redux/ducks/loading'
+import { setEmail, setHandle, setPassword } from '../../Redux/ducks/registration'
 
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'τrus '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { gql } from 'apollo-boost'
+import { useMutation } from '@apollo/react-hooks'
 
 const styles = theme => ({
   '@global': {
@@ -39,117 +41,113 @@ const styles = theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
-});
+})
+
+const useStyles = makeStyles(styles)
+
+function SignUpButton(props) {
+  const classes = useStyles()
+  const { loading, email, handle, password }  = useSelector(state => {
+    const { loading, registration } = state
+    return { loading, ...registration }
+  })
+  const dispatch = useDispatch()
+
+  const SIGN_UP = gql`
+    mutation {
+      signup(email: "${email}", handle: "${handle}", password: "${password}") {
+        handle
+        email
+      }
+    }
+  `
+  const [signUp, { error, data }] = useMutation(SIGN_UP, { errorPolicy: 'all' })
+  if (loading && data) {
+    dispatch(finishLoading())
+  } 
+  var errors = null
+  if (error) {
+    errors = error.graphQLErrors.map(({ message }, i) => (<span key={i}>{message}</span>) )
+  }
+  return (
+    <Fragment>
+      <Button
+        disabled={loading}
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        className={classes.submit}
+        onClick={() => {
+          dispatch(startLoading())
+          signUp().catch(err => {
+            dispatch(finishLoading())
+          })
+        }}
+      >
+        Sign Up
+      </Button>
+      <pre>
+        {errors !== null && errors}
+      </pre>
+    </Fragment>
+  )
+}
+
+
+
+function SignUpForm(props) {
+  const { email, handle, password } = useSelector(state => state.registration)
+  const dispatch = useDispatch()
+  const onChange = handler => { return event => dispatch(handler(event.target.value)) }
+
+  return (
+    <Fragment>
+      <Grid item xs={12}>
+        <TextField label="Email" autoComplete="email" onChange={onChange(setEmail)} value={email} />
+      </Grid>
+      <Grid item xs={12}>
+        <TextField label="Username" autoComplete="nickname" onChange={onChange(setHandle)} value={handle} />
+      </Grid>
+      <Grid item xs={12}>
+        <TextField label="Password" autoComplete="new-password" onChange={onChange(setPassword)} value={password} type="password"/>
+      </Grid>
+    </Fragment>
+  )
+}
 
 class SignUp extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            handle: '',
-            email: '',
-            password: ''
-        }
-        this.performSignUp = this.performSignUp.bind(this);
-    }
-
-    performSignUp(e) {
-        e.preventDefault()
-        this.props.register(this.state)
-        .then(response => {
-          console.log(response)
-          if(!response.error) {
-            this.props.history.push("/")
-          } else {
-            alert("Register Error")
-          }
-        })
-    }
-
-    render () {
+  render() {
     const { classes } = this.props
     return (
-        <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs">
         <div className={classes.paper}>
-            <Avatar className={classes.avatar}>
-            </Avatar>
-            <Typography component="h1" variant="h5">
+          <Avatar className={classes.avatar} />
+          <Typography component="h1" variant="h5">
             Sign up
-            </Typography>
-            <form className={classes.form} noValidate>
+          </Typography>
+          <form className={classes.form} onSubmit={event => event.preventDefault()} noValidate>
             <Grid container spacing={2}>
-                <Grid item xs={12}>
-                <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="handle"
-                    label="User Handle"
-                    name="handle"
-                    autoComplete="handle"
-                    onChange={ (e) => this.setState({handle:e.target.value }) }
-                    vaule = {this.state.handle}
-                />
-                </Grid>
-                <Grid item xs={12}>
-                <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    name="email"
-                    autoComplete="email"
-                    onChange={ (e) => this.setState({email:e.target.value }) }
-                    vaule = {this.state.email}
-                />
-                </Grid>
-                <Grid item xs={12}>
-                <TextField
-                    variant="outlined"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                    onChange={ (e) => this.setState({password:e.target.value }) }
-                    vaule = {this.state.password}
-                />
-                </Grid>
+              <SignUpForm />
+              <Grid item xs={12}>
+                <SignUpButton />
+              </Grid>
             </Grid>
-            <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="primary"
-                className={classes.submit}
-                onClick={this.performSignUp}
-            >
-                Sign Up
-            </Button>
             <Grid container justify="flex-end">
-                <Grid item>
-                <Link href="/" variant="body2">
-                    Already have an account? Sign in
+              <Grid item>
+                <Link component={RouterLink} to="/" variant="body2">
+                  Already have an account? Sign in
                 </Link>
-                </Grid>
+              </Grid>
             </Grid>
-            </form>
+          </form>
         </div>
         <Box mt={5}>
-            <Copyright />
+          <Copyright />
         </Box>
-        </Container>
-    );
-   } 
+      </Container>
+    )
+  }
 }
 
-function mapState(state) {
-  const { registering } = state.registration;
-  return { registering };
-}
-
-const registerConnection = connect( mapState, { register } )( withStyles(styles)(SignUp) )
-export default registerConnection
+export default withStyles(styles)(SignUp)

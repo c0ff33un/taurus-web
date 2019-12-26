@@ -6,11 +6,10 @@ import { w3cwebsocket as WebSocket } from "websocket"
 
 const socketMiddleware = () => {
   let socket = null
-  const { wsConnected, wsDisconnected, wsMessage } = webSocketActions
+  const { wsConnected, wsDisconnected } = webSocketActions
 
 
   const onopen = store => (event) => {
-    store.dispatch(wsMessage({ type: "connect" }))
     store.dispatch(wsConnected())
     store.dispatch(finishLoading())
   }
