@@ -6,7 +6,9 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
 
-export default function AlertDialog(props) {
+type ComponentProps = { text: string, handle: string, handleClose: (event: React.MouseEvent<HTMLButtonElement>) => void }
+
+export default function AlertDialog({ text, handle, handleClose }: ComponentProps) {
   const [open, setOpen] = React.useState(false)
 
   const handleClickOpen = () => {
@@ -20,8 +22,6 @@ export default function AlertDialog(props) {
   const handleCancel = () => {
     setOpen(false)
   }
-
-  const { text, handle } = props
 
   return (
     <div>

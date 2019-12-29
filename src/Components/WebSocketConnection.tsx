@@ -2,7 +2,16 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { wsConnect } from '../Redux/ducks/websockets'
 
-class WebSocketConnection extends React.Component {
+
+type Props = {
+  url: string,
+  roomId: string,
+  connected: boolean,
+  children: React.ReactNode,
+  dispatch: any
+}
+
+class WebSocketConnection extends React.Component<Props> {
   componentDidMount() {
     const { dispatch, url, roomId, connected } = this.props
     if (!connected && url) {
@@ -16,7 +25,7 @@ class WebSocketConnection extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: any) {
   const { url, roomId, connected } = state.websockets
   return { url, roomId, connected }
 }

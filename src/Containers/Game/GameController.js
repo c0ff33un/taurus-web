@@ -7,7 +7,7 @@ import { invalidateMessages } from '../../Redux/ducks/messageLog'
 import { wsMessage, wsDisconnect } from '../../Redux/ducks/websockets'
 
 import { Button, Grid, Typography, Dialog, DialogActions, DialogContent, DialogContentText } from '@material-ui/core'
-import { gql } from 'apollo-boost'
+import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks';
 const CELL_SIZE = 25
 const WIDTH = 625

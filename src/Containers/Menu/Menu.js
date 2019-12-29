@@ -1,15 +1,16 @@
 import React, { Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
-import {Button, TextField, Container, Typography, Grid} from '@material-ui/core'
+import { Button, TextField } from '../../Components'
+import { Container, Typography, Grid } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import { logout } from '../../Redux/ducks/authentication'
+import { connect, batch, useSelector, useDispatch } from 'react-redux'
 import { startLoading, finishLoading } from '../../Redux/ducks/loading'
 import { invalidateGame } from '../../Redux/ducks/gameController'
 import { invalidateMessages } from '../../Redux/ducks/messageLog'
 import { wsConnect } from '../../Redux/ducks/websockets'
-import { connect, batch, useSelector, useDispatch } from 'react-redux'
+import { setUnAuthenticated } from '../../Redux/ducks/authenticated'
 
-import { gql } from 'apollo-boost'
+import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks';
 
 const styles = theme => ({
@@ -29,7 +30,6 @@ const styles = theme => ({
 });
 
 function CreateRoom(props) {
-  const { classes } = props
   const CREATE_ROOM = gql`
     mutation {
       room {
@@ -40,22 +40,16 @@ function CreateRoom(props) {
   const [ createRoom, { data } ] = useMutation(CREATE_ROOM)
 
   const dispatch = useDispatch()
-  const { loading, token } = useSelector(state => {
-    return { loading: state.loading, token: state.authentication.jwt }
-  })
+  const loading = useSelector(state => { return state.loading })
 
   if (loading && data) {
     dispatch(finishLoading())
     const roomId = data.room.id
-    dispatch(wsConnect({token, roomId}))
+    dispatch(wsConnect(roomId))
   }
   return (
     <Button 
-      fullWidth 
-      disabled={loading}
-      variant="contained" 
       color="primary" 
-      className={classes.customBtn} 
       onClick={() => { 
         dispatch(startLoading())
         dispatch(invalidateGame())
@@ -78,31 +72,9 @@ class Menu extends React.Component {
     e.preventDefault()
     const { dispatch } = this.props
     dispatch(startLoading())
-    dispatch(logout())
-  }
-
-  createRoom = (event) => {
-    const { token, dispatch } = this.props
-    dispatch(startLoading())
-    // useful for developing without deploying local API
-    const apiURL = process.env.REACT_APP_API_URL
-    const options = {
-      headers : {
-        'Accept' : 'application/json',
-        'Content-Type' : 'application/json',
-        'Authorization' : `Bearer ${token}`
-      },
-      method : 'POST',
-      body : JSON.stringify({"query": "mutation{room{id}}"})
-    }
-    fetch(`${apiURL}`, options)
-    .then(response => response.json())
-    .then(json => {
-      const roomId = json.data.room.id
-      dispatch(wsConnect({ token, roomId }))
-    })
-    .catch(error => {
-      alert('Error communicating with game server.')
+    // still need to make request to API and clean Apollo Local Cache
+    batch(() => {
+      dispatch(setUnAuthenticated())
       dispatch(finishLoading())
     })
   }
@@ -110,12 +82,12 @@ class Menu extends React.Component {
   joinRoom = (event) => {
     event.preventDefault()
     const { roomId } = this.state
-    const { token, dispatch } = this.props
+    const { dispatch } = this.props
     batch(() => {
       dispatch(startLoading())
       dispatch(invalidateGame())
       dispatch(invalidateMessages())
-      dispatch(wsConnect({ token, roomId }))
+      dispatch(wsConnect({ roomId }))
     })
   }
 
@@ -129,7 +101,7 @@ class Menu extends React.Component {
   }
 
   render() {
-    const { classes, connected, loading } = this.props
+    const { classes, connected } = this.props
     return (
       <Fragment>
         {connected? (
@@ -148,9 +120,6 @@ class Menu extends React.Component {
                   <Grid item container direction='row' justify='space-between'>
                     <Grid item>
                       <TextField
-                        disabled={loading}
-                        variant="outlined"
-                        required
                         name="roomId"
                         label="Room Id"
                         type="string"
@@ -162,11 +131,10 @@ class Menu extends React.Component {
                     <Grid item>
                         <Button
                           style={{height: "100%"}}
-                          disabled={loading || this.state.roomId === ""}
-                          fullWidth 
-                          variant="contained" 
+                          disabled={this.state.roomId === ""}
                           color="primary" 
                           size="large"
+                          className={"none"} 
                           onClick={this.joinRoom}>
                           Join Room
                         </Button>
@@ -174,14 +142,10 @@ class Menu extends React.Component {
                   </Grid>
                   <Grid item xs={12}>
                     <Button 
-                      fullWidth 
-                      disabled={loading}
-                      variant="contained" 
                       color="secondary" 
-                      className={classes.customBtn} 
                       onClick={this.performLogout}
                     >
-                          Logout
+                      Logout
                     </Button>
                   </Grid>
                 </Grid>
@@ -195,10 +159,8 @@ class Menu extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { logginIn, jwt } = state.authentication
   const { loading, websockets } = state
-  console.log(state.authentication)
-  return { logginIn, token: jwt, loading, connected: websockets.connected }
+  return { loading, connected: websockets.connected }
 }
 
 export default connect(mapStateToProps) ( withStyles(styles)(Menu))

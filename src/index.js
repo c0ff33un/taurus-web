@@ -11,21 +11,32 @@ import App from './App'
 import Loading from './Containers/Loading'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
-import ApolloClient from 'apollo-boost'
 import { ApolloProvider } from '@apollo/react-hooks'
+import ApolloClient from 'apollo-client'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { HttpLink } from 'apollo-link-http'
+import { onError } from 'apollo-link-error'
+import { ApolloLink } from 'apollo-link'
+
+console.log(`using api ${process.env.REACT_APP_API_URL}`)
 
 const client = new ApolloClient({
-  uri: process.env.REACT_APP_API_URL,
-  request: operation => {
-    const { jwt: token } = store.getState().authentication
-    if (token !== undefined) {
-      operation.setContext({
-        headers: {
-          authorization: `Bearer ${token}`
-        }
-      })
-    }
-  }
+  link: ApolloLink.from([
+    onError(({ graphQLErrors, networkError }) => {
+      if (graphQLErrors)
+        graphQLErrors.forEach(({ message, locations, path }) =>
+          console.log(
+            `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+          ),
+        );
+      if (networkError) console.log(`[Network error]: ${networkError}`);
+    }),
+    new HttpLink({
+      uri: process.env.REACT_APP_API_URL,
+      credentials: 'same-origin'
+    }),
+  ]),
+  cache: new InMemoryCache()
 })
 
 render(

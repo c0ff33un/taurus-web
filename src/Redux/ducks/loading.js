@@ -6,13 +6,8 @@ export const loadingActions = {
   finishLoading,
 }
 
-export function startLoading() {
-  return { type: START_LOADING }
-}
-
-export function finishLoading() {
-  return { type: FINISH_LOADING }
-}
+export function startLoading() { return { type: START_LOADING }}
+export function finishLoading() { return { type: FINISH_LOADING }}
 
 export default function loading(state=false, action) {
   switch (action.type) {

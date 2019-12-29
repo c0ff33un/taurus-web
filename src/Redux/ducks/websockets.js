@@ -29,10 +29,10 @@ export const webSocketActions = {
 }
 
 export function wsConnect(parameters) {
-  const { token, roomId, url } = parameters
+  const { roomId, url } = parameters
   if (url === undefined) {
     const gameWSURL = process.env.REACT_APP_GAME_WS_URL
-    const calurl = `${gameWSURL}/ws/${roomId}?token=${token}`
+    const calurl = `${gameWSURL}/ws/${roomId}`
     return { type: WS_CONNECT, payload: { url: calurl, roomId }}
   }
   //const apiURL = process.env.REACT_APP_GAME_URL

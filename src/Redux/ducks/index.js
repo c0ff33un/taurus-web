@@ -3,14 +3,16 @@ import gameController from './gameController'
 import messageLog from './messageLog'
 import loading from './loading'
 import websockets from './websockets'
-import authentication from './authentication'
+import login from './login'
+import authenticated from './authenticated'
 import registration from './registration'
 
 export default combineReducers({
   loading,
   registration,
-  authentication,
+  login,
   gameController,
   messageLog,
-  websockets
+  websockets,
+  authenticated
 })
