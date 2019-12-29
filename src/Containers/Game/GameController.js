@@ -1,18 +1,16 @@
 import React, { Fragment } from 'react'
 import { Redirect } from 'react-router-dom'
 import { connect, useDispatch, useSelector } from 'react-redux'
-import { startLoading, finishLoading } from '../../Redux/ducks/loading'
-import { invalidateGame } from '../../Redux/ducks/gameController'
-import { invalidateMessages } from '../../Redux/ducks/messageLog'
-import { wsMessage, wsDisconnect } from '../../Redux/ducks/websockets'
-
+import { startLoading, finishLoading } from 'Redux/ducks/loading'
+import { invalidateGame } from 'Redux/ducks/gameController'
+import { invalidateMessages } from 'Redux/ducks/messageLog'
+import { wsMessage, wsDisconnect } from 'Redux/ducks/websockets'
 import { Button, Grid, Typography, Dialog, DialogActions, DialogContent, DialogContentText } from '@material-ui/core'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks';
 const CELL_SIZE = 25
 const WIDTH = 625
 const HEIGHT = 625
-
 
 function SetupGame(props) {
   const { classes } = props

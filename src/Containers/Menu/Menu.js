@@ -41,11 +41,11 @@ function CreateRoom(props) {
 
   const dispatch = useDispatch()
   const loading = useSelector(state => { return state.loading })
-
   if (loading && data) {
     dispatch(finishLoading())
+    console.log(data)
     const roomId = data.room.id
-    dispatch(wsConnect(roomId))
+    dispatch(wsConnect({ roomId }))
   }
   return (
     <Button 
@@ -56,7 +56,7 @@ function CreateRoom(props) {
         dispatch(invalidateMessages())
         createRoom()
       }}>
-      Create Room
+      Create Game
     </Button>
   )
 }
@@ -136,7 +136,7 @@ class Menu extends React.Component {
                           size="large"
                           className={"none"} 
                           onClick={this.joinRoom}>
-                          Join Room
+                          Join Game
                         </Button>
                     </Grid>  
                   </Grid>

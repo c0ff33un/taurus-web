@@ -33,7 +33,6 @@ const client = new ApolloClient({
     }),
     new HttpLink({
       uri: process.env.REACT_APP_API_URL,
-      credentials: 'same-origin'
     }),
   ]),
   cache: new InMemoryCache()

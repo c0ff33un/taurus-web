@@ -7,6 +7,8 @@ import login from './login'
 import authenticated from './authenticated'
 import registration from './registration'
 
+
+
 export default combineReducers({
   loading,
   registration,
