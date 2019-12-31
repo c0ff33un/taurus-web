@@ -1,57 +1,77 @@
 import React from 'react'
-import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import DialogTitle from '@material-ui/core/DialogTitle'
+import {
+  Button,
+  Dialog as MaterialDialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@material-ui/core'
 
-type ComponentProps = { text: string, handle: string, handleClose: (event: React.MouseEvent<HTMLButtonElement>) => void }
+type ComponentProps = {
+  title: string
+  text: string
+  open: boolean
+  setOpen: (val: boolean) => void
+  agreeText?: string
+  cancelText?: string
+  handleAgree: () => void
+  handleCancel?: () => void
+}
 
-export default function AlertDialog({ text, handle, handleClose }: ComponentProps) {
-  const [open, setOpen] = React.useState(false)
-
-  const handleClickOpen = () => {
-    setOpen(true)
-  }
+export default function Dialog({
+  title,
+  text,
+  open,
+  setOpen,
+  agreeText: agreeTextProp,
+  cancelText: cancelTextProp,
+  handleAgree: handleAgreeProp,
+  handleCancel: handleCancelProp,
+}: ComponentProps) {
 
   const handleAgree = () => {
+    handleAgreeProp()
     setOpen(false)
   }
 
   const handleCancel = () => {
+    if (handleCancelProp) {
+      handleCancelProp()
+    }
     setOpen(false)
   }
 
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  const agreeText = agreeTextProp ? agreeTextProp : 'Yes'
+  const cancelText = cancelTextProp ? cancelTextProp : 'Cancel'
+
   return (
-    <div>
-      <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Open alert dialog
-      </Button>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleAgree} color="primary" autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+    <MaterialDialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">
+        {title}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          {text}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCancel} color="primary">
+          {cancelText}
+        </Button>
+        <Button onClick={handleAgree} color="primary" autoFocus>
+          {agreeText}
+        </Button>
+      </DialogActions>
+    </MaterialDialog>
   )
 }

@@ -33,30 +33,29 @@ interface wsConnectAction {
 }
 
 export function wsConnect(roomId: string): WebSocketsActions {
-  const calurl = `ws://localhost:4000/ws/${roomId}`
+  console.log(process.env.REACT_APP_DOMAIN)
+  const calurl = `ws://${process.env.REACT_APP_DOMAIN}/ws/${roomId}`
   return { type: WS_CONNECT, payload: {roomId, url: calurl} }
 }
 
 interface wsConnectedAction {
   type: typeof WS_CONNECTED
 }
-
 export function wsConnected(): WebSocketsActions {
   return { type: WS_CONNECTED }
+}
+
+
+interface wsDisconnect {
+  type: typeof WS_DISCONNECT
+}
+export function wsDisconnect() {
+  return { type: WS_DISCONNECT }
 }
 
 interface wsDisconnectedAction {
   type: typeof WS_DISCONNECTED
 }
-
-interface wsDisconnect {
-  type: typeof WS_DISCONNECT
-}
-
-export function wsDisconnect() {
-  return { type: WS_DISCONNECT }
-}
-
 export function wsDisconnected(): WebSocketsActions {
   return { type: WS_DISCONNECTED }
 }

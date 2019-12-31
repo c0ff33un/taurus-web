@@ -93,25 +93,24 @@ class Board extends React.Component {
     }
   }
 
-
   render() {
     // const { gridItems } = this.props
     return (
       <Fragment>
-      <Swipe
-        onSwipeStart={this.onSwipeStart}
-        onSwipeEnd={this.onSwipeEnd}
-        onSwipeMove={this.onSwipeMove}
-      >
-        <div
-          ref={this.gameContainer}
-          className="Container"
-          tabIndex="0"
-          onKeyDown={this.keyPressed}
+        <Swipe
+          onSwipeStart={this.onSwipeStart}
+          onSwipeEnd={this.onSwipeEnd}
+          onSwipeMove={this.onSwipeMove}
         >
-          <div className="Board">{this.props.gridItems}</div>
-        </div>
-      </Swipe>
+          <div
+            ref={this.gameContainer}
+            className="Container"
+            tabIndex="0"
+            onKeyDown={this.keyPressed}
+          >
+            <div className="Board">{this.props.gridItems}</div>
+          </div>
+        </Swipe>
       </Fragment>
     )
   }
