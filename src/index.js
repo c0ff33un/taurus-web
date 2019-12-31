@@ -19,6 +19,7 @@ import { onError } from 'apollo-link-error'
 import { ApolloLink } from 'apollo-link'
 
 console.log(`using api ${process.env.REACT_APP_API_URL}`)
+console.log('cookies', document.cookie)
 
 const client = new ApolloClient({
   link: ApolloLink.from([
@@ -33,6 +34,7 @@ const client = new ApolloClient({
     }),
     new HttpLink({
       uri: process.env.REACT_APP_API_URL,
+      credentials: 'include' // include for development (until ingress is added to develop environment) same-origin for production (same-origin checks schema, domain and port)
     }),
   ]),
   cache: new InMemoryCache()

@@ -1,25 +1,22 @@
 import React, { Fragment } from 'react'
-import {
-  Avatar,
-  Grid,
-  Box,
-  Container,
-  Typography,
-} from '@material-ui/core'
-import { Button, TextField, Link, Copyright } from '../../Components'
+import { Avatar, Grid, Box, Container, Typography } from '@material-ui/core'
+import { Button, TextField, Link, Copyright } from 'Components'
 import { WithStyles, withStyles } from '@material-ui/core/styles'
 import { useSelector, useDispatch } from 'react-redux'
-import { startLoading, finishLoading } from '../../Redux/ducks/loading'
-import { setEmail, setHandle, setPassword } from '../../Redux/ducks/registration'
+import { startLoading, finishLoading } from 'Redux/ducks/loading'
+import { setEmail, setHandle, setPassword } from 'Redux/ducks/registration'
+import { RootState } from 'Redux'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
-import styles from './styles'
+import styles from '../styles'
 
 function SignUpButton() {
-  const { loading, email, handle, password }  = useSelector((state: any) => {
-    const { loading, registration } = state
-    return { loading, ...registration }
-  })
+  const { loading, email, handle, password } = useSelector(
+    (state: RootState) => {
+      const { loading, registration } = state
+      return { loading, ...registration }
+    }
+  )
   const dispatch = useDispatch()
 
   const SIGN_UP = gql`
@@ -34,11 +31,13 @@ function SignUpButton() {
   if (loading && data) {
     dispatch(finishLoading())
     console.log('data', data)
-  } 
+  }
   var errors = null
   if (error) {
     console.log(error)
-    errors = error.graphQLErrors.map(({ message }, i) => (<span key={i}>{message}</span>) )
+    errors = error.graphQLErrors.map(({ message }, i) => (
+      <span key={i}>{message}</span>
+    ))
   }
   return (
     <Fragment>
@@ -53,30 +52,50 @@ function SignUpButton() {
       >
         Sign Up
       </Button>
-      <pre>
-        {errors !== null && errors}
-      </pre>
+      <pre>{errors !== null && errors}</pre>
     </Fragment>
   )
 }
 
 function SignUpForm() {
-  const { email, handle, password } = useSelector((state: any) => state.registration)
+  const { email, handle, password } = useSelector(
+    (state: RootState) => state.registration
+  )
   const dispatch = useDispatch()
-  const onChange = (handler: (arg0: string) => void) => { 
-    return (event: React.ChangeEvent<HTMLInputElement>) => dispatch(handler(event.target.value)) 
+  const onChange = (handler: (arg0: string) => void) => {
+    return (event: React.ChangeEvent<HTMLInputElement>) =>
+      dispatch(handler(event.target.value))
   }
 
   return (
     <Fragment>
       <Grid item xs={12}>
-        <TextField id="email" label="Email" autoComplete="email" onChange={onChange(setEmail)} value={email} />
+        <TextField
+          id="email"
+          label="Email"
+          autoComplete="email"
+          onChange={onChange(setEmail)}
+          value={email}
+        />
       </Grid>
       <Grid item xs={12}>
-        <TextField id="handle" label="Username" autoComplete="nickname" onChange={onChange(setHandle)} value={handle} />
+        <TextField
+          id="handle"
+          label="Username"
+          autoComplete="nickname"
+          onChange={onChange(setHandle)}
+          value={handle}
+        />
       </Grid>
       <Grid item xs={12}>
-        <TextField id="password" label="Password" autoComplete="new-password" onChange={onChange(setPassword)} value={password} type="password"/>
+        <TextField
+          id="password"
+          label="Password"
+          autoComplete="new-password"
+          onChange={onChange(setPassword)}
+          value={password}
+          type="password"
+        />
       </Grid>
     </Fragment>
   )
@@ -94,7 +113,11 @@ class SignUp extends React.Component<Props> {
           <Typography component="h1" variant="h5">
             Register
           </Typography>
-          <form className={classes.form} onSubmit={event => event.preventDefault()} noValidate>
+          <form
+            className={classes.form}
+            onSubmit={event => event.preventDefault()}
+            noValidate
+          >
             <Grid container spacing={2}>
               <SignUpForm />
               <Grid item xs={12}>
@@ -103,7 +126,7 @@ class SignUp extends React.Component<Props> {
             </Grid>
             <Grid container justify="flex-end">
               <Grid item>
-                <Link to='/' variant='body2'>
+                <Link to="/" variant="body2">
                   Already have an account? Register here
                 </Link>
               </Grid>

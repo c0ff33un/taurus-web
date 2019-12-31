@@ -3,41 +3,16 @@ import { connect } from 'react-redux'
 import './Game.scss'
 import { Container } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
-import WebSocketConnection from '../../Components/WebSocketConnection'
+import WebSocketConnection from 'Components/WebSocketConnection'
 import GameController from './GameController'
 import MessageList from './MessageList'
 import MessageForm from './MessageForm'
 import Board from './Board'
+import styles from '../styles'
 
 const CELL_SIZE = 25;
 const WIDTH = 625;
 const HEIGHT = 625;
-
-const styles = theme => ({
-  '@global': {
-    body: {
-      backgroundColor: theme.palette.common.white,
-    },
-  },
-  paper: {
-    marginTop: theme.spacing(16),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(1, 0, 2),
-  },
-});
-
 
 class Game extends React.Component {
   constructor(props) {
@@ -110,8 +85,8 @@ class Game extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { gameController, authentication } = state
-  return { grid: gameController.grid, players: gameController.players, user_id: authentication.user.id}
+  const { gameController, me } = state
+  return { grid: gameController.grid, players: gameController.players, user_id: me.id }
 }
 
 export default connect(mapStateToProps)(withStyles(styles)(Game))

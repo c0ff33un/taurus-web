@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { wsMessage } from '../../Redux/ducks/websockets'
+import { wsMessage } from 'Redux/ducks/websockets'
 import { TextField } from '@material-ui/core'
 
 class MessageForm extends React.Component {

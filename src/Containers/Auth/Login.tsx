@@ -6,18 +6,20 @@ import {
   Container,
   Typography,
 } from '@material-ui/core'
-import { Button, TextField, Copyright, Link } from '../../Components'
+import { Button, TextField, Copyright, Link } from 'Components'
 import { WithStyles, withStyles } from '@material-ui/core/styles'
-import { useSelector, useDispatch } from 'react-redux'
-import { startLoading, finishLoading } from '../../Redux/ducks/loading'
-import { setEmail, setPassword, cleanCredentials } from '../../Redux/ducks/login'
-import { setAuthenticated } from '../../Redux/ducks/authenticated'
+import { batch, useSelector, useDispatch } from 'react-redux'
+import { startLoading, finishLoading } from 'Redux/ducks/loading'
+import { setEmail, setPassword, cleanCredentials } from 'Redux/ducks/login'
+import { setPlayer } from 'Redux/ducks/me'
+import { RootState } from 'Redux'
+import { setAuthenticated } from 'Redux/ducks/authenticated'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
-import styles from './styles'
+import styles from '../styles'
 
 function LoginFields() {
-  const { email, password, loading } = useSelector((state: any) => {
+  const { email, password, loading } = useSelector((state: RootState) => {
     return {
       ...state.login,
       loading: state.loading
@@ -31,8 +33,8 @@ function LoginFields() {
     mutation {
       login(email: "${email}", password: "${password}") {
         player {
+          id
           handle
-          email
         }
         token
       }
@@ -43,8 +45,11 @@ function LoginFields() {
     if (!error) {
       const { player } = data.login
       console.log(player)
-      dispatch(cleanCredentials())
-      dispatch(setAuthenticated())
+      batch(() => {
+        dispatch(cleanCredentials())
+        dispatch(setAuthenticated())
+        dispatch(setPlayer(player))
+      })
     }
     dispatch(finishLoading())
   }
@@ -55,24 +60,20 @@ function LoginFields() {
   return (
     <>
       <TextField
-        id="email"
         margin="normal"
         label="Email Address"
         autoComplete="email"
         autoFocus
         value={email}
         onChange={onChange(setEmail)}
-        disabled={loading}
       />
       <TextField
-        id="password"
         margin="normal"
         label="Password"
         type="password"
         autoComplete="current-password"
         value={password}
         onChange={onChange(setPassword)}
-        disabled={loading}
       /> 
       <Grid container spacing={1}>
         <Grid item xs={12}>

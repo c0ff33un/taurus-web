@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
-import { wsMessage } from '../../Redux/ducks/websockets'
+import { wsMessage } from 'Redux/ducks/websockets'
 import Swipe from 'react-easy-swipe'
 
 class Board extends React.Component {

@@ -1,91 +1,15 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Redirect } from 'react-router-dom'
-import { connect, useDispatch, useSelector } from 'react-redux'
+import { connect } from 'react-redux'
 import { startLoading, finishLoading } from 'Redux/ducks/loading'
 import { invalidateGame } from 'Redux/ducks/gameController'
 import { invalidateMessages } from 'Redux/ducks/messageLog'
 import { wsMessage, wsDisconnect } from 'Redux/ducks/websockets'
-import { Button, Grid, Typography, Dialog, DialogActions, DialogContent, DialogContentText } from '@material-ui/core'
-import gql from 'graphql-tag'
-import { useMutation } from '@apollo/react-hooks';
-const CELL_SIZE = 25
-const WIDTH = 625
-const HEIGHT = 625
+import { Button as MaterialButton, Grid, Typography, Dialog, DialogActions, DialogContent, DialogContentText } from '@material-ui/core'
+import { Button } from 'Components'
 
-function SetupGame(props) {
-  const { classes } = props
-  const { room, loading, gameRunning } = useSelector((state) => { 
-    return { room: state.websockets.roomId, loading: state.loading, gameRunning: state.gameController.gameRunning } 
-  })
-  const seed = Math.floor(Math.random() * Math.pow(10, 9)) 
-  const rows = HEIGHT / CELL_SIZE
-  const cols = WIDTH / CELL_SIZE
-
-  const SETUP_GAME = gql`
-    mutation {
-      roomSetup(room: "${room}", seed: ${seed}, rows: ${rows}, cols: ${cols}) {
-        id
-      }
-    }
-  `
-  const [ setupGame, { /*loading : loadingMutation,*/ data } ] = useMutation(SETUP_GAME)
-  const dispatch = useDispatch()
-  if (loading && data) {
-    dispatch(finishLoading())
-  }
-  return (
-    <Button
-      fullWidth
-      disabled={loading || gameRunning}
-      variant="contained"
-      color="primary"
-      className={classes.submit}
-      onClick={() => {
-        dispatch(startLoading())
-        setupGame()
-      }}
-    >
-      Setup Game
-    </Button>
-  )
-}
-
-
-function StartGame(props) {
-  const { classes } = props
-  const { room, loading, gameRunning, gameSetup } = useSelector((state) => { 
-    const { websockets, gameController, loading } = state
-    return { room: websockets.roomId, loading, gameRunning: gameController.gameRunning, gameSetup: gameController.gameSetup } 
-  })
-
-  const START_GAME = gql`
-    mutation {
-      roomStart(room: "${room}") {
-        id
-      }
-    }
-  `
-  const [ startGame, { /*loading : loadingMutation,*/ data } ] = useMutation(START_GAME)
-  const dispatch = useDispatch()
-  if (loading && data) {
-    dispatch(finishLoading())
-  }
-  return (
-    <Button
-      fullWidth
-      disabled={ loading || gameRunning || !gameSetup }
-      variant="contained"
-      color="primary"
-      className={classes.submit}
-      onClick={() => {
-        dispatch(startLoading())
-        startGame()
-      }}
-    >
-      Start Game
-    </Button>
-  )
-}
+import SetupGame from './SetupGame'
+import StartGame from './StartGame'
 
 class GameController extends React.Component {
   constructor(props) {
@@ -151,11 +75,11 @@ class GameController extends React.Component {
   }
 
   render() {
-    const { loading, classes, connected, /*gameRunning, gameSetup*/ } = this.props
+    const { connected } = this.props
     return (
-      <Fragment>
+      <>
         {connected ? (
-          <Fragment>
+          <>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Typography variant="subtitle1">
@@ -163,19 +87,15 @@ class GameController extends React.Component {
                 </Typography>
               </Grid>
               <Grid item xs={6}>
-                <SetupGame classes={classes} />
+                <SetupGame />
               </Grid>
               <Grid item xs={6}>
-                <StartGame classes={classes} />
+                <StartGame />
               </Grid>
               <Grid item xs={12}>
                 <div>
                   <Button
-                    fullWidth
-                    disabled={loading}
-                    variant="contained"
                     color="secondary"
-                    className={classes.customBtn}
                     onClick={this.goToMenuDialog}
                   >
                     Return to menu
@@ -192,31 +112,29 @@ class GameController extends React.Component {
                       </DialogContentText>
                     </DialogContent>
                     <DialogActions>
-                      <Button onClick={this.handleCancel} color="primary">
+                      <MaterialButton onClick={this.handleCancel} color="primary">
                         Cancel
-                      </Button>
-                      <Button onClick={this.handleAgree} color="primary" autoFocus>
+                      </MaterialButton>
+                      <MaterialButton onClick={this.handleAgree} color="primary" autoFocus>
                         Leave
-                      </Button>
+                      </MaterialButton>
                     </DialogActions>
                   </Dialog>
                 </div>
               </Grid>
             </Grid>
-          </Fragment>
+          </>
         ) : (
           <Redirect to={'/menu'} />
         )}
-      </Fragment>
+      </>
     )
   }
 }
 
 function mapStateToProps(state) {
-  const { loading, authentication, gameController, websockets } = state
+  const { gameController, websockets } = state
   return {
-    token: authentication.user.token,
-    loading,
     ...gameController,
     ...websockets,
   }

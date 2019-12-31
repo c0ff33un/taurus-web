@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 
 const styles = (theme: Theme) => ({
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(2, 0, 1),
   },
 })
 

@@ -1,5 +1,5 @@
-import { webSocketConstants, webSocketActions } from '../ducks/websockets'
-import { finishLoading } from '../ducks/loading'
+import { webSocketConstants, webSocketActions } from 'Redux/ducks/websockets'
+import { finishLoading } from 'Redux/ducks/loading'
 import { addGameServerMessage } from '../ducks/gameServer'
 import { w3cwebsocket as WebSocket } from "websocket"
 
@@ -10,11 +10,13 @@ const socketMiddleware = () => {
 
 
   const onopen = store => (event) => {
+    console.log('WS opened')
     store.dispatch(wsConnected())
     store.dispatch(finishLoading())
   }
 
   const onclose = store => () => {
+    console.log('WS closed')
     store.dispatch(wsDisconnected())
   }
 
@@ -26,7 +28,8 @@ const socketMiddleware = () => {
     }
   }
   
-  const onerror = store => () => {
+  const onerror = store => err => {
+    console.log(err)
     store.dispatch(finishLoading())
     store.dispatch(wsDisconnected())
     alert('Error connecting to Server')
