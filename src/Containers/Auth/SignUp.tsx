@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { Avatar, Grid, Box, Container, Typography } from '@material-ui/core'
-import { Button, TextField, Link, Copyright } from 'Components'
+import { Button, TextField, PeekPassword, Link, Copyright } from 'Components'
 import { WithStyles, withStyles } from '@material-ui/core/styles'
 import { useDispatch } from 'react-redux'
 import { startLoading, finishLoading } from 'Redux/ducks/loading'
@@ -68,7 +68,7 @@ function SignUpForm() {
   }
 
   return (
-    <Fragment>
+    <>
       <Grid item xs={12}>
         <TextField
           id="email"
@@ -88,16 +88,14 @@ function SignUpForm() {
         />
       </Grid>
       <Grid item xs={12}>
-        <TextField
-          id="password"
+        <PeekPassword
           label="Password"
           autoComplete="new-password"
           onChange={onChange(setPassword)}
           value={password}
-          type="password"
         />
       </Grid>
-    </Fragment>
+    </>
   )
 }
 

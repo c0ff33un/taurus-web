@@ -6,7 +6,7 @@ import {
   Container,
   Typography,
 } from '@material-ui/core'
-import { Button, TextField, Copyright, Link } from 'Components'
+import { Button, TextField, Copyright, Link, PeekPassword } from 'Components'
 import { WithStyles, withStyles } from '@material-ui/core/styles'
 import { batch, useSelector, useDispatch } from 'react-redux'
 import { startLoading, finishLoading } from 'Redux/ducks/loading'
@@ -34,6 +34,7 @@ function LoginFields() {
       login(email: "${email}", password: "${password}") {
         player {
           id
+          email
           handle
         }
         token
@@ -67,10 +68,9 @@ function LoginFields() {
         value={email}
         onChange={onChange(setEmail)}
       />
-      <TextField
+      <PeekPassword
         margin="normal"
         label="Password"
-        type="password"
         autoComplete="current-password"
         value={password}
         onChange={onChange(setPassword)}
@@ -125,7 +125,7 @@ class Login extends React.Component<Props> {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form} onSubmit={event => event.preventDefault()} noValidate>
+          <form className={classes.form} autoComplete={"on"} onSubmit={event => event.preventDefault()} noValidate>
             <LoginFields />
             <Grid container>
               {/*
@@ -135,7 +135,7 @@ class Login extends React.Component<Props> {
                 </Link>   
               </Grid>
               */}
-              <Grid item>
+              <Grid item xs>
                 <Link to="/signup" variant="body2">
                   {"Don't have an account? Register here"}
                 </Link>

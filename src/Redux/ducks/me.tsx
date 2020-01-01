@@ -3,6 +3,7 @@ const INVALIDATE_PLAYER='INVALIDATE_PLAYER'
 
 type Player = {
   id: string
+  email: string
   handle: string
 }
 
@@ -18,7 +19,7 @@ type MeActionTypes = setPlayerAction | invalidatePlayerAction
 export function setPlayer(player: Player): MeActionTypes { return { type: SET_PLAYER, payload: player }}
 export function invalidatePlayer(): MeActionTypes { return { type: INVALIDATE_PLAYER }}
 
-const initialState : Player = {id: '', handle: ''}
+const initialState : Player = {id: '', email: '', handle: ''}
 export default function me(state=initialState, action: MeActionTypes): Player {
   switch(action.type) {
     case SET_PLAYER:

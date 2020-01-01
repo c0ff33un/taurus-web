@@ -1,6 +1,6 @@
 import React from 'react'
 import { Redirect } from 'react-router-dom'
-import { Button, TextField } from 'Components'
+import { Button, ButtonLink, TextField } from 'Components'
 import { Container, Typography, Grid } from '@material-ui/core'
 import { WithStyles, withStyles } from '@material-ui/core/styles'
 import { connect, batch, useSelector, useDispatch } from 'react-redux'
@@ -104,7 +104,7 @@ class Menu extends React.Component<Props, State> {
               >
                 <Grid container spacing={1}>
                   <Grid item xs={12}>
-                    <Button color="primary">Profile</Button>
+                    <ButtonLink color="primary" to="/profile">Profile</ButtonLink>
                   </Grid>
                   <Grid item xs={12}>
                     <CreateRoom />

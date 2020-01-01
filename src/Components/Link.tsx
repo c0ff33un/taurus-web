@@ -3,8 +3,7 @@ import { Link as MaterialLink, LinkProps as MaterialLinkProps } from '@material-
 import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router-dom'
 
 type Props = RouterLinkProps & MaterialLinkProps
-const Link = (props: Props) => {
-  const { to, ...rest } = props
+const Link = ({to, ...rest}: Props) => {
   return <MaterialLink component={RouterLink} to={to} {...rest}/>
 }
 

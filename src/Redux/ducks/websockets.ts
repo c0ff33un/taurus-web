@@ -34,7 +34,7 @@ interface wsConnectAction {
 
 export function wsConnect(roomId: string): WebSocketsActions {
   console.log(process.env.REACT_APP_DOMAIN)
-  const calurl = `ws://${process.env.REACT_APP_DOMAIN}/ws/${roomId}`
+  const calurl = `ws://localhost:4000/ws/${roomId}`
   return { type: WS_CONNECT, payload: {roomId, url: calurl} }
 }
 
