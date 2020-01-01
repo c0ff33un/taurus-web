@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "lib": [
-      "es6",
+      "es6", // added
       "dom",
       "dom.iterable",
       "esnext"
@@ -18,13 +18,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true,
     "jsx": "react",
-    "baseUrl": "src"
-  },
-  "include": [
-    "src"
-  ]
+    "baseUrl": "src", // added 
+  }
 }
+

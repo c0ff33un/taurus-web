@@ -9,39 +9,34 @@ import AuthenticatedRoute from './Components/AuthenticatedRoute'
 import UnathenticatedRoute from './Components/UnathenticatedRoute'
 import NotFound from './Containers/NotFound'
 
-export default function Routes({ appProps }) {
+export default function Routes() {
   return (
     <Switch>
       <UnathenticatedRoute
         exact
         path="/"
         component={Login}
-        appProps={appProps}
       />
       <UnathenticatedRoute
         exact
         path="/signup"
         component={SignUp}
-        appProps={appProps}
       />
       <UnathenticatedRoute
         exact
         path="/confirm/:token"
         component={Confirm}
-        appProps={appProps}
       />
 
       <AuthenticatedRoute
         exact
         path="/menu"
         component={Menu}
-        appProps={appProps}
       />
       <AuthenticatedRoute
         exact
         path="/game"
         component={Game}
-        appProps={appProps}
       />
       {/* Finally, catch all unmatched routes */}
       <Route component={NotFound} />

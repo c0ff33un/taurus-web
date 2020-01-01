@@ -9,14 +9,14 @@ const socketMiddleware = () => {
   const { wsConnected, wsDisconnected } = webSocketActions
 
 
-  const onopen = store => (event) => {
-    console.log('WS opened')
+  const onopen = store => () => {
+    //console.log('WS opened')
     store.dispatch(wsConnected())
     store.dispatch(finishLoading())
   }
 
   const onclose = store => () => {
-    console.log('WS closed')
+    //console.log('WS closed')
     store.dispatch(wsDisconnected())
   }
 
@@ -28,8 +28,10 @@ const socketMiddleware = () => {
     }
   }
   
-  const onerror = store => err => {
-    console.log(err)
+  const onerror = store => (err) => {
+    if (window.console) {
+      console.log(err)
+    }
     store.dispatch(finishLoading())
     store.dispatch(wsDisconnected())
     alert('Error connecting to Server')

@@ -14,6 +14,7 @@ type Player = {
   x: number,
   y: number
 }
+
 type GameController = {
   gameSetup: boolean
   gameRunning: boolean

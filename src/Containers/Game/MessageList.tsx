@@ -3,11 +3,8 @@ import { Grid, ListItem, ListItemText } from '@material-ui/core'
 import { FixedSizeList, ListChildComponentProps } from 'react-window'
 import { useTypedSelector } from 'Redux'
 
-const MessageList = () => {
+const MessageList: React.FC = () => {
   const messageLog = useTypedSelector(state => state.messageLog)
-  const ListRef = useRef<FixedSizeList>(null)
-  const length = messageLog.length
-  
   const scrollToBottom = () => {
     const current = ListRef.current
     if (current) {
@@ -15,9 +12,11 @@ const MessageList = () => {
     }
   }
   useEffect(scrollToBottom, [messageLog])
+  const ListRef = useRef<FixedSizeList>(null)
+  const length = messageLog.length
   
-  const renderRow = (props: ListChildComponentProps) => {
-    const { index, style } = props
+  
+  const renderRow = ({ index, style }: ListChildComponentProps)=> {
     return (
       <ListItem style={style} key={index}>
         <ListItemText primary={`${index + 1}: ${messageLog[index]}`}/>

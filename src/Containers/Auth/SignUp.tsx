@@ -2,17 +2,17 @@ import React, { Fragment } from 'react'
 import { Avatar, Grid, Box, Container, Typography } from '@material-ui/core'
 import { Button, TextField, Link, Copyright } from 'Components'
 import { WithStyles, withStyles } from '@material-ui/core/styles'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { startLoading, finishLoading } from 'Redux/ducks/loading'
 import { setEmail, setHandle, setPassword } from 'Redux/ducks/registration'
-import { RootState } from 'Redux'
+import { useTypedSelector } from 'Redux'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
 import styles from '../styles'
 
 function SignUpButton() {
-  const { loading, email, handle, password } = useSelector(
-    (state: RootState) => {
+  const { loading, email, handle, password } = useTypedSelector(
+    state => {
       const { loading, registration } = state
       return { loading, ...registration }
     }
@@ -58,8 +58,8 @@ function SignUpButton() {
 }
 
 function SignUpForm() {
-  const { email, handle, password } = useSelector(
-    (state: RootState) => state.registration
+  const { email, handle, password } = useTypedSelector(
+    state => state.registration
   )
   const dispatch = useDispatch()
   const onChange = (handler: (arg0: string) => void) => {
