@@ -1,33 +1,22 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+import { useTypedSelector } from 'Redux'
 import { wsConnect } from 'Redux/ducks/websockets'
 
 
 type Props = {
-  url: string,
-  roomId: string,
-  connected: boolean,
-  children: React.ReactNode,
-  dispatch: any
+  children: React.ReactNode
 }
 
-class WebSocketConnection extends React.Component<Props> {
-  componentDidMount() {
-    const { dispatch, roomId, connected } = this.props
+const WebSocketConnection = ({ children }: Props) => {
+  const dispatch = useDispatch()
+  const { roomId, connected } = useTypedSelector(state => state.websockets)
+  useEffect(() => {
     if (!connected) {
-      alert('Connection Lost, attempting to Reconnect')
       dispatch(wsConnect(roomId))
     }
-  }
-
-  render() {
-    return <div>{this.props.children}</div>;
-  }
+  })
+  return <div>{children}</div>
 }
 
-function mapStateToProps(state: any) {
-  const { roomId, connected } = state.websockets
-  return {  roomId, connected }
-}
-
-export default connect(mapStateToProps)(WebSocketConnection)
+export default WebSocketConnection

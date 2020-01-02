@@ -64,7 +64,7 @@ export function wsMessage(message: any): WebSocketsActions  {
   return { type: WS_MESSAGE, payload: message }
 }
 
-type WebSocketsActions = wsConnectAction | wsConnectedAction | wsDisconnectedAction | wsMessageAction
+type WebSocketsActions = wsConnectAction | wsConnectedAction | wsDisconnect | wsDisconnectedAction | wsMessageAction
 
 export const webSocketActions = {
   wsConnect,
@@ -88,8 +88,10 @@ function websockets(state=initialState, action: WebSocketsActions): WebSockets {
     return { ...state, roomId, url }
   case WS_CONNECTED:
     return { ...state, connected: true }
-  case WS_DISCONNECTED:
+  case WS_DISCONNECT:
     return initialState
+  case WS_DISCONNECTED:
+    return { ...state, connected: false }
   default:
     return state
   }

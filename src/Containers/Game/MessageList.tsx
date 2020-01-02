@@ -26,7 +26,7 @@ const MessageList: React.FC = () => {
 
   return (
     <Grid container item xs={12} spacing={1}>
-      <FixedSizeList height={200} width={500} itemSize={25} itemCount={length} ref={ListRef} >
+      <FixedSizeList height={100} width={500} itemSize={25} itemCount={length} ref={ListRef} >
         {renderRow}
       </FixedSizeList>
     </Grid>

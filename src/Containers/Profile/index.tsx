@@ -27,6 +27,9 @@ const Stats = () =>{
             <Typography  variant="h2">
               {me.email}
             </Typography>
+            <Typography  variant="h2">
+              {me.id}
+            </Typography>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <ButtonLink

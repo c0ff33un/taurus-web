@@ -16,7 +16,7 @@ const socketMiddleware = () => {
   }
 
   const onclose = store => () => {
-    //console.log('WS closed')
+    console.log('WS closed')
     store.dispatch(wsDisconnected())
   }
 
@@ -29,11 +29,8 @@ const socketMiddleware = () => {
   }
   
   const onerror = store => (err) => {
-    if (window.console) {
-      console.log(err)
-    }
+    console.log('WS error', err)
     store.dispatch(finishLoading())
-    store.dispatch(wsDisconnected())
     alert('Error connecting to Server')
   }
 
@@ -46,7 +43,7 @@ const socketMiddleware = () => {
           socket.close()
         }
         const { url } = action.payload
-      
+        console.log('Connect to WS:', url)
         socket = new WebSocket(url)
 
         socket.onmessage = onmessage(store)
@@ -61,7 +58,12 @@ const socketMiddleware = () => {
         }
         return next(action);
       case WS_MESSAGE:
-        socket.send(JSON.stringify(action.payload))
+        if (socket !== null) {
+          socket.send(JSON.stringify(action.payload))
+        } else {
+          store.dispatch(wsDisconnected())
+          console.error(`NO WS Connection can't send messages`)
+        }
         return next(action)
       default:
         return next(action);

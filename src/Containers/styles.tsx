@@ -1,4 +1,4 @@
-import { createStyles, Theme } from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 const styles = ({ palette, spacing }: Theme) =>
   createStyles({
@@ -22,5 +22,7 @@ const styles = ({ palette, spacing }: Theme) =>
       marginTop: spacing(1),
     },
   })
+
+export const useStyles = makeStyles(styles)
 
 export default styles
