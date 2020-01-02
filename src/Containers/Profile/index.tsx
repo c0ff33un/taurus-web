@@ -2,13 +2,10 @@ import React from 'react'
 import { Redirect } from 'react-router-dom'
 import { ButtonLink } from 'Components'
 import { Container, Typography, Grid } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
 import { useTypedSelector } from 'Redux'
-import styles from '../styles'
+import { useStyles } from '../styles'
 
-const useStyles = makeStyles(styles)
-
-const Stats = () =>{
+const Profile = () => {
   const classes = useStyles()
   const { me, connected } = useTypedSelector(state => {
     return { me: state.me, connected: state.websockets.connected }
@@ -50,4 +47,4 @@ const Stats = () =>{
   );
 }
 
-export default Stats
+export default Profile

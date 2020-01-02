@@ -1,22 +1,18 @@
 import React, { Fragment } from 'react'
 import { Avatar, Grid, Box, Container, Typography } from '@material-ui/core'
 import { Button, TextField, PeekPassword, Link, Copyright } from 'Components'
-import { WithStyles, withStyles } from '@material-ui/core/styles'
 import { useDispatch } from 'react-redux'
 import { startLoading, finishLoading } from 'Redux/ducks/loading'
 import { setEmail, setHandle, setPassword } from 'Redux/ducks/registration'
 import { useTypedSelector } from 'Redux'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
-import styles from '../styles'
+import { useStyles } from '../styles'
 
 function SignUpButton() {
-  const { loading, email, handle, password } = useTypedSelector(
-    state => {
-      const { loading, registration } = state
-      return { loading, ...registration }
-    }
-  )
+  const { loading, email, handle, password } = useTypedSelector(state => {
+    return { loading: state.loading, ...state.registration }
+  })
   const dispatch = useDispatch()
 
   const SIGN_UP = gql`
@@ -99,44 +95,40 @@ function SignUpForm() {
   )
 }
 
-interface Props extends WithStyles<typeof styles> {}
-
-class SignUp extends React.Component<Props> {
-  render() {
-    const { classes } = this.props
-    return (
-      <Container component="main" maxWidth="xs">
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar} />
-          <Typography component="h1" variant="h5">
-            Register
-          </Typography>
-          <form
-            className={classes.form}
-            onSubmit={event => event.preventDefault()}
-            noValidate
-          >
-            <Grid container spacing={2}>
-              <SignUpForm />
-              <Grid item xs={12}>
-                <SignUpButton />
-              </Grid>
+const SignUp = () => {
+  const classes = useStyles()
+  return (
+    <Container component="main" maxWidth="xs">
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar} />
+        <Typography component="h1" variant="h5">
+          Register
+        </Typography>
+        <form
+          className={classes.form}
+          onSubmit={event => event.preventDefault()}
+          noValidate
+        >
+          <Grid container spacing={2}>
+            <SignUpForm />
+            <Grid item xs={12}>
+              <SignUpButton />
             </Grid>
-            <Grid container justify="flex-end">
-              <Grid item>
-                <Link to="/" variant="body2">
-                  Already have an account? Register here
-                </Link>
-              </Grid>
+          </Grid>
+          <Grid container justify="flex-end">
+            <Grid item>
+              <Link to="/" variant="body2">
+                Already have an account? Register here
+              </Link>
             </Grid>
-          </form>
-        </div>
-        <Box mt={5}>
-          <Copyright />
-        </Box>
-      </Container>
-    )
-  }
+          </Grid>
+        </form>
+      </div>
+      <Box mt={5}>
+        <Copyright />
+      </Box>
+    </Container>
+  )
 }
 
-export default withStyles(styles)(SignUp)
+export default SignUp

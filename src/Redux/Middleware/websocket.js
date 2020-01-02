@@ -1,8 +1,6 @@
 import { webSocketConstants, webSocketActions } from 'Redux/ducks/websockets'
 import { finishLoading } from 'Redux/ducks/loading'
 import { addGameServerMessage } from '../ducks/gameServer'
-import { w3cwebsocket as WebSocket } from "websocket"
-
 
 const socketMiddleware = () => {
   let socket = null
@@ -31,7 +29,7 @@ const socketMiddleware = () => {
   const onerror = store => (err) => {
     console.log('WS error', err)
     store.dispatch(finishLoading())
-    alert('Error connecting to Server')
+    //alert('Error connecting to Server')
   }
 
   return store => next => action => {

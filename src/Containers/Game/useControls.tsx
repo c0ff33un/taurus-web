@@ -10,9 +10,9 @@ const useControls = () => {
     dispatch(wsMessage({ type: 'move', direction: direction }))
   }
 
-  const onKeyDown = (event: any) => {
+  const onKeyDown = (event : React.KeyboardEvent<HTMLDivElement>) => {
     event.preventDefault()
-    if (new Date().getTime() - lastUsed < 50) {
+    if (new Date().getTime() - lastUsed < 100) {
       return
     }
     setLastUsed(new Date().getTime())

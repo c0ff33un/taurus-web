@@ -4,11 +4,9 @@ import './index.css'
 import App from './App'
 import * as serviceWorker from './serviceWorker'
 
-
-console.log(`using api ${process.env.REACT_APP_API_URL}`)
 ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
-).render(<App />)
+).render(<App />) // This enables concurrent mode
 //ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

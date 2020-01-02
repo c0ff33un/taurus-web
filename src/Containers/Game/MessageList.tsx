@@ -19,7 +19,7 @@ const MessageList: React.FC = () => {
   const renderRow = ({ index, style }: ListChildComponentProps)=> {
     return (
       <ListItem style={style} key={index}>
-        <ListItemText primary={`${index + 1}: ${messageLog[index]}`}/>
+        <ListItemText primary={messageLog[index]}/>
       </ListItem>
     )
   }

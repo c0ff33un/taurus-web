@@ -7,19 +7,18 @@ import {
   Typography,
 } from '@material-ui/core'
 import { Button, TextField, Copyright, Link, PeekPassword } from 'Components'
-import { WithStyles, withStyles } from '@material-ui/core/styles'
-import { batch, useSelector, useDispatch } from 'react-redux'
+import { batch, useDispatch } from 'react-redux'
 import { startLoading, finishLoading } from 'Redux/ducks/loading'
 import { setEmail, setPassword, cleanCredentials } from 'Redux/ducks/login'
 import { setPlayer } from 'Redux/ducks/me'
-import { RootState } from 'Redux'
+import { useTypedSelector } from 'Redux'
 import { setAuthenticated } from 'Redux/ducks/authenticated'
 import gql from 'graphql-tag'
 import { useMutation } from '@apollo/react-hooks'
-import styles from '../styles'
+import { useStyles } from '../styles'
 
 function LoginFields() {
-  const { email, password, loading } = useSelector((state: RootState) => {
+  const { email, password, loading } = useTypedSelector(state => {
     return {
       ...state.login,
       loading: state.loading
@@ -97,58 +96,38 @@ function LoginFields() {
   )
 }
 
-interface Props extends WithStyles<typeof styles> {}
-
-class Login extends React.Component<Props> {
-  constructor(props: Props) {
-    super(props)
-    //const reCaptcha = process.env.REACT_APP_NO_AUTH === undefined
-    const reCaptcha = false
-    this.state = {
-      email: '',
-      password: '',
-      disabled: reCaptcha,
-      reCaptcha
-    }
-  }
-
-  verifyCallback = () => {
-    this.setState({disabled:false})
-  }
-
-  render() {
-    const { classes } = this.props
-    return (
-      <Container component="main" maxWidth="xs">
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar} />
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <form className={classes.form} autoComplete={"on"} onSubmit={event => event.preventDefault()} noValidate>
-            <LoginFields />
-            <Grid container>
-              {/*
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>   
-              </Grid>
-              */}
-              <Grid item xs>
-                <Link to="/signup" variant="body2">
-                  {"Don't have an account? Register here"}
-                </Link>
-              </Grid>
+const Login = () => {
+  const classes = useStyles()
+  return (
+    <Container component="main" maxWidth="xs">
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar} />
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <form className={classes.form} autoComplete={"on"} onSubmit={event => event.preventDefault()} noValidate>
+          <LoginFields />
+          <Grid container>
+            {/*
+            <Grid item xs>
+              <Link href="#" variant="body2">
+                Forgot password?
+              </Link>   
             </Grid>
-          </form>
-        </div>
-        <Box mt={8}>
-          <Copyright />
-        </Box>
-      </Container>
-    )
-  }
+            */}
+            <Grid item xs>
+              <Link to="/signup" variant="body2">
+                {"Don't have an account? Register here"}
+              </Link>
+            </Grid>
+          </Grid>
+        </form>
+      </div>
+      <Box mt={8}>
+        <Copyright />
+      </Box>
+    </Container>
+  )
 }
 
-export default withStyles(styles)(Login)
+export default Login

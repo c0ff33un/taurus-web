@@ -13,7 +13,12 @@ const MessageForm = () => {
         e.preventDefault()
         dispatch(wsMessage({type: "message", text: message }))
         setMessage('')
-      }}>
+      }}
+      style={{
+        position: 'sticky'
+      }}
+
+    >
       <TextField
         variant="outlined"
         margin="normal"
